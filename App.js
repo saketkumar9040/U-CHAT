@@ -6,67 +6,20 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import ChatListScreen from "./screens/ChatListScreen";
-import ChatSettingScreen from "./screens/ChatSettingScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import { Ionicons, Fontisto } from "@expo/vector-icons";
+import AppNavigator from "./navigations/AppNavigator";
+
+
+
 
 SplashScreen.preventAutoHideAsync();
 
 
-const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
-  NavigationBar.setBackgroundColorAsync("#6F4E37");
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        headerTitle: "",
-        tabBarStyle: {
-          backgroundColor: "#6F4E37",
-        },
-        headerStyle: { backgroundColor: '#6F4E37' }
-        
-      }}
-     
-    >
-      <Tab.Screen
-        name="ChatList"
-        component={ChatListScreen}
-        options={{
-          tabBarLabel: "Chat",
-          tabBarLabelStyle:{
-            color:"white",
-            fontSize:15
-          },
-          tabBarIcon: ({ color, size,focused }) => (
-            <Ionicons name="chatbubble-ellipses" size={size} color={focused ===false?color:"white"} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          tabBarLabel: "Settings",
-          tabBarLabelStyle:{
-            color:"white",
-            fontSize:15
-          },
-          tabBarIcon: ({ color, size , focused }) => (
-            <Fontisto name="player-settings" size={size} color={focused ===false?color:"white"} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
 
 export default function App() {
+
+  NavigationBar.setBackgroundColorAsync("#6F4E37");
+  
   const [appLoaded, setAppLoaded] = useState(false);
 
   useEffect(() => {
@@ -114,34 +67,7 @@ export default function App() {
   return (
     <SafeAreaProvider style={styles.container} onLayout={onLayout}>
       <StatusBar style="light" backgroundColor="#6F4E37" />
-      <NavigationContainer style={{backgroundColor:"#6F4E37"}} >
-        <Stack.Navigator 
-           screenOptions={{
-              // tabBarStyle: {
-              //   backgroundColor: "#6F4E37",
-      
-              // },
-              contentStyle:{
-                backgroundColor: "#6F4E37",
-              },
-           }}  
-           >
-          <Stack.Screen
-            name="Home"
-            component={TabNavigator}
-            options={{ headerShown: false }}
-            
-          />
-          <Stack.Screen
-            name="ChatSettingScreen"
-            component={ChatSettingScreen}
-            options={{
-              gestureEnabled: true,
-              headerTitle: "Settings",
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+        <AppNavigator/>
     </SafeAreaProvider>
   );
 }
