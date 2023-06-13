@@ -28,17 +28,23 @@ const TabNavigator = () => {
         headerTitle: "",
         tabBarStyle: {
           backgroundColor: "#6F4E37",
-
         },
+        headerStyle: { backgroundColor: '#6F4E37' }
+        
       }}
+     
     >
       <Tab.Screen
         name="ChatList"
         component={ChatListScreen}
         options={{
           tabBarLabel: "Chat",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubble-ellipses" size={size} color={color} />
+          tabBarLabelStyle:{
+            color:"white",
+            fontSize:15
+          },
+          tabBarIcon: ({ color, size,focused }) => (
+            <Ionicons name="chatbubble-ellipses" size={size} color={focused ===false?color:"white"} />
           ),
         }}
       />
@@ -47,8 +53,12 @@ const TabNavigator = () => {
         component={SettingsScreen}
         options={{
           tabBarLabel: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <Fontisto name="player-settings" size={size} color={color} />
+          tabBarLabelStyle:{
+            color:"white",
+            fontSize:15
+          },
+          tabBarIcon: ({ color, size , focused }) => (
+            <Fontisto name="player-settings" size={size} color={focused ===false?color:"white"} />
           ),
         }}
       />
