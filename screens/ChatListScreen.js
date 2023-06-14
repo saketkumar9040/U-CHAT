@@ -1,13 +1,18 @@
-import { StyleSheet, Text, View, Button } from 'react-native'
+import { StyleSheet, Text, View, Button, ImageBackground } from 'react-native'
 import React from 'react'
+import backgroundImage from "../assets/images/navigatorBackground2.jpg"
 
 
 const ChatListScreen = ({navigation}) => {
   return (
-    <View style={styles.container}>
-      <Text style={{fontSize:20 ,color:"black"}}>ChatListScreen</Text>
+    <ImageBackground 
+     source={backgroundImage}
+     style={styles.container}
+     resizeMode='cover'
+    >
+      <Text style={{fontSize:25 ,color:"black",backgroundColor:"#fff"}}>ChatListScreen</Text>
       <Button title='Go To Chats' onPress={()=>navigation.navigate("ChatScreen")}/>
-    </View>
+    </ImageBackground>
   )
 }
 

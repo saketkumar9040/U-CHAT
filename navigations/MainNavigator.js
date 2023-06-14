@@ -19,6 +19,7 @@ const TabNavigator = () => {
         headerTitle: "",
         tabBarStyle: {
           backgroundColor: "#6F4E37",
+          height:60,
         },
         headerStyle: { backgroundColor: "#6F4E37" },
       }}
@@ -35,8 +36,8 @@ const TabNavigator = () => {
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name="chatbubble-ellipses"
-              size={size}
-              color={focused === false ? "white" : "#b8b8ba"}
+              size={focused === true ? 35:size}
+              color={focused === true ? "white" : "#b8b8ba"}
             />
           ),
         }}
@@ -53,8 +54,8 @@ const TabNavigator = () => {
           tabBarIcon: ({ color, size, focused }) => (
             <Fontisto
               name="player-settings"
-              size={size}
-              color={focused === false ? "white" : "#b8b8ba"}
+              size={focused === true ? 35:size}
+              color={focused ===true ? "white" : "#b8b8ba"}
             />
           ),
         }}
