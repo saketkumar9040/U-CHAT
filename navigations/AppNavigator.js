@@ -1,8 +1,8 @@
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import MainNavigator from "./MainNavigator";
-import AuthScreen from "../screens/AuthScreen";
+
+import AuthNavigator from "./AuthNavigator";
 
 
 const AppNavigator = () => {
@@ -13,7 +13,7 @@ const AppNavigator = () => {
           isAuth ?(
             <MainNavigator/>
           ):(
-            <AuthScreen/>
+            <AuthNavigator/>
           )
         }
     </NavigationContainer>
@@ -22,4 +22,4 @@ const AppNavigator = () => {
 
 export default AppNavigator;
 
-const styles = StyleSheet.create({});
+
