@@ -15,6 +15,7 @@ import {
   nameVaildator,
   emailValidator,
   passwordValidator,
+  numberValidator,
 } from "../utils/Validators";
 
 const SignUpScreen = ({ navigation }) => {
@@ -24,32 +25,27 @@ const SignUpScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    if(name===""){
-        return alert("Name cannot be empty");
-    }else{
-        nameVaildator(name)
-    }
-    if(email!==""){
-        emailValidator(email)
-    }else{
-        return alert("email cannot be empty");
-    }
-    if(password!==""){
-        passwordValidator(password)
-    }else{
-        return alert("password cannot be empty");
-    }
-    // name !== "" ? nameVaildator(name) : alert("Name cannot be empty");
-    // email !== "" ? emailValidator(email) : alert("Email cannot be empty");
-    // name !== "" ? numberVaildator(number) : alert("Number cannot be empty");
-    // name !== "" ? passwordValidator(password) : alert("password cannot be empty");
+  const submitHandler = () => {
+    if(nameVaildator(name) !== undefined){
+      return alert(nameVaildator(name).name)
+    };
+    if(emailValidator(email) !== undefined){
+      return alert(emailValidator(email).email)
+    };
+    if(numberValidator(number) !== undefined){
+      return alert(numberValidator(number).number)
+    };
+    if(passwordValidator(password) !== undefined){
+      return alert(passwordValidator(password).password)
+    };
 
-    // alert("SignUp Successfully,Please sign in to continue");
-    // setEmail("");
-    // setPassword("");
-    // navigation.navigate("SignInScreen");
+
+    alert("SignUp Successfully,Please sign in to continue");
+    setName("")
+    setEmail("");
+    setNumber("");
+    setPassword("");
+    navigation.navigate("SignInScreen");
   };
 
   return (
@@ -67,6 +63,7 @@ const SignUpScreen = ({ navigation }) => {
             <TextInput
               placeholder="Enter Name"
               placeholderTextColor="#6f4e37"
+              autoCapitalize="none"
               style={styles.textInput}
               selectionColor="#6f4e37"
               value={name}
@@ -82,6 +79,7 @@ const SignUpScreen = ({ navigation }) => {
             <TextInput
               placeholder="Enter E-mail"
               placeholderTextColor="#6f4e37"
+              autoCapitalize="none"
               style={styles.textInput}
               selectionColor="#6f4e37"
               value={email}
@@ -101,7 +99,11 @@ const SignUpScreen = ({ navigation }) => {
               style={styles.textInput}
               selectionColor="#6f4e37"
               value={number}
-              onChangeText={(e) => setNumber(e)}
+              onChangeText={(e) =>
+                e.length > 10
+                  ? alert("Number must be 10 digits ") 
+                  : setNumber(e)
+              }
               keyboardType="numeric"
             />
           </View>
@@ -113,6 +115,7 @@ const SignUpScreen = ({ navigation }) => {
               <TextInput
                 placeholder="Enter Password"
                 placeholderTextColor="#6f4e37"
+                autoCapitalize="none"
                 style={styles.textInput}
                 selectionColor="#6f4e37"
                 value={password}
@@ -128,6 +131,7 @@ const SignUpScreen = ({ navigation }) => {
               <TextInput
                 placeholder="Enter Password"
                 placeholderTextColor="#6f4e37"
+                autoCapitalize="none"
                 style={styles.textInput}
                 selectionColor="#6f4e37"
                 value={password}
@@ -227,13 +231,14 @@ const styles = StyleSheet.create({
     fontSize: 28,
     //  padding:5,
     paddingHorizontal: 20,
-    backgroundColor:"#FEFF75",
+    backgroundColor: "#FEFF75",
+    borderRadius: 35,
   },
   signUpButton: {
     borderWidth: 3,
     borderRadius: 35,
     borderColor: "#6f4e37",
     alignSelf: "center",
-    backgroundColor:"#FEFF75",
+    backgroundColor: "#FEFF75",
   },
 });

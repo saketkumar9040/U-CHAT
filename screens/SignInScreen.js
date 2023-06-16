@@ -12,20 +12,25 @@ import backgroundImage from "../assets/images/authBackground.jpg";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 // import { NavigationContainer } from "@react-navigation/native";
 // import MainNavigator from "../navigations/MainNavigator";
+import { emailValidator, passwordValidator } from "../utils/Validators";
 
-
-
-const SignInScreen = ({navigation}) => {
+const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const submitHandler = () => {
+    if(emailValidator(email) !== undefined){
+      return alert(emailValidator(email).email)
+    };
+    if(passwordValidator(password) !== undefined){
+      return alert(passwordValidator(password).password)
+    };
      alert("Signin Successfully");
      setEmail("");
      setPassword("");
-      //  navigation.navigate("ChatListScreen");
-  }
+    //  navigation.navigate("ChatListScreen");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -42,10 +47,11 @@ const SignInScreen = ({navigation}) => {
           <TextInput
             placeholder="Enter E-mail"
             placeholderTextColor="#6f4e37"
+            autoCapitalize="none"
             style={styles.textInput}
             selectionColor="#6f4e37"
             value={email}
-            onChangeText={(e)=>setEmail(e)}
+            onChangeText={(e) => setEmail(e)}
             keyboardType="email-address"
           />
         </View>
@@ -57,11 +63,12 @@ const SignInScreen = ({navigation}) => {
             <TextInput
               placeholder="Enter Password"
               placeholderTextColor="#6f4e37"
+              autoCapitalize="none"
               style={styles.textInput}
               selectionColor="#6f4e37"
               value={password}
               secureTextEntry={true}
-              onChangeText={(e)=>setPassword(e)}
+              onChangeText={(e) => setPassword(e)}
             />
           </View>
         ) : (
@@ -72,18 +79,36 @@ const SignInScreen = ({navigation}) => {
             <TextInput
               placeholder="Enter Password"
               placeholderTextColor="#6f4e37"
+              autoCapitalize="none"
               style={styles.textInput}
               selectionColor="#6f4e37"
               value={password}
-              onChangeText={(e)=>setPassword(e)}
+              onChangeText={(e) => setPassword(e)}
             />
           </View>
         )}
-        <TouchableOpacity style={styles.buttonContainer} onPress={submitHandler}>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={submitHandler}
+        >
           <Text style={styles.buttonText}>SUBMIT</Text>
         </TouchableOpacity>
-         <Text style={{...styles.signUpText,fontSize:19,marginVertical:20,alignSelf:"center",backgroundColor:"#FEFF75",borderRadius:30,}} >new to U-CHAT ?</Text>
-        <TouchableOpacity style={styles.signUpButton} onPress={()=>navigation.navigate("SignUpScreen")}>
+        <Text
+          style={{
+            ...styles.signUpText,
+            fontSize: 19,
+            marginVertical: 20,
+            alignSelf: "center",
+            backgroundColor: "#FEFF75",
+            borderRadius: 30,
+          }}
+        >
+          new to U-CHAT ?
+        </Text>
+        <TouchableOpacity
+          style={styles.signUpButton}
+          onPress={() => navigation.navigate("SignUpScreen")}
+        >
           <Text style={styles.signUpText}>Sign Up</Text>
         </TouchableOpacity>
       </ImageBackground>
@@ -112,7 +137,7 @@ const styles = StyleSheet.create({
   },
   signInText: {
     fontSize: 35,
-    fontWeight:700,
+    fontWeight: 700,
     color: "#fff",
     alignContent: "center",
   },
@@ -140,28 +165,28 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 20,
-    padding:15,
+    padding: 15,
     alignSelf: "center",
-    backgroundColor:"#6f4e37",
-    borderRadius:40,
+    backgroundColor: "#6f4e37",
+    borderRadius: 40,
   },
-  buttonText:{
-   color:"#fff",
-   fontSize:20,
-   // fontWeight:500,
-   letterSpacing:1,
-   marginHorizontal:40,
+  buttonText: {
+    color: "#fff",
+    fontSize: 20,
+    // fontWeight:500,
+    letterSpacing: 1,
+    marginHorizontal: 40,
   },
-  signUpText:{
-   color:"#6f4e37",
-   fontSize:28,
-  //  padding:5,
-   paddingHorizontal:20,
+  signUpText: {
+    color: "#6f4e37",
+    fontSize: 28,
+    //  padding:5,
+    paddingHorizontal: 20,
   },
-  signUpButton:{
-   borderWidth:3,
-   borderRadius:35,
-   borderColor:"#6f4e37",
-   backgroundColor:"#FEFF75",
-  }
+  signUpButton: {
+    borderWidth: 3,
+    borderRadius: 35,
+    borderColor: "#6f4e37",
+    backgroundColor: "#FEFF75",
+  },
 });
