@@ -17,6 +17,7 @@ import {
   passwordValidator,
   numberValidator,
 } from "../utils/Validators";
+import { app } from "../firebase/FirebaseConfig";
 
 const SignUpScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -26,22 +27,21 @@ const SignUpScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const submitHandler = () => {
-    if(nameVaildator(name) !== undefined){
-      return alert(nameVaildator(name).name)
-    };
-    if(emailValidator(email) !== undefined){
-      return alert(emailValidator(email).email)
-    };
-    if(numberValidator(number) !== undefined){
-      return alert(numberValidator(number).number)
-    };
-    if(passwordValidator(password) !== undefined){
-      return alert(passwordValidator(password).password)
-    };
-
+    if (nameVaildator(name) !== undefined) {
+      return alert(nameVaildator(name).name);
+    }
+    if (emailValidator(email) !== undefined) {
+      return alert(emailValidator(email).email);
+    }
+    if (numberValidator(number) !== undefined) {
+      return alert(numberValidator(number).number);
+    }
+    if (passwordValidator(password) !== undefined) {
+      return alert(passwordValidator(password).password);
+    }
 
     alert("SignUp Successfully,Please sign in to continue");
-    setName("")
+    setName("");
     setEmail("");
     setNumber("");
     setPassword("");
@@ -101,7 +101,7 @@ const SignUpScreen = ({ navigation }) => {
               value={number}
               onChangeText={(e) =>
                 e.length > 10
-                  ? alert("Number must be 10 digits ") 
+                  ? alert("Number must be 10 digits ")
                   : setNumber(e)
               }
               keyboardType="numeric"
@@ -150,6 +150,7 @@ const SignUpScreen = ({ navigation }) => {
               ...styles.signUpText,
               fontSize: 19,
               marginVertical: 20,
+              padding: 20,
               alignSelf: "center",
             }}
           >
@@ -159,7 +160,16 @@ const SignUpScreen = ({ navigation }) => {
             style={styles.signUpButton}
             onPress={() => navigation.navigate("SignInScreen")}
           >
-            <Text style={styles.signUpText}>Sign In</Text>
+            <Text
+              style={{
+                ...styles.signUpText,
+                borderWidth: 3,
+                borderRadius: 35,
+                borderColor: "#6f4e37",
+              }}
+            >
+              Sign In
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </ImageBackground>
@@ -230,14 +240,10 @@ const styles = StyleSheet.create({
     color: "#6f4e37",
     fontSize: 28,
     //  padding:5,
-    paddingHorizontal: 20,
+    paddingHorizontal: 27,
     backgroundColor: "#FEFF75",
-    borderRadius: 35,
   },
   signUpButton: {
-    borderWidth: 3,
-    borderRadius: 35,
-    borderColor: "#6f4e37",
     alignSelf: "center",
     backgroundColor: "#FEFF75",
   },

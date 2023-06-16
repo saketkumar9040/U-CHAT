@@ -97,9 +97,10 @@ const SignInScreen = ({ navigation }) => {
           style={{
             ...styles.signUpText,
             fontSize: 19,
-            marginVertical: 20,
+            marginTop: 20,
             alignSelf: "center",
             backgroundColor: "#FEFF75",
+            padding: 20,
             borderRadius: 30,
           }}
         >
