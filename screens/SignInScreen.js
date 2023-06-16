@@ -10,17 +10,22 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ImageBackground } from "react-native";
 import backgroundImage from "../assets/images/authBackground.jpg";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+// import { NavigationContainer } from "@react-navigation/native";
+// import MainNavigator from "../navigations/MainNavigator";
+
+
 
 const SignInScreen = ({navigation}) => {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  // console.log(name)
-  // console.log(email)
-  // console.log(phone)
-  // console.log(address)
+  
+  const submitHandler = () => {
+     alert("Signin Successfully");
+     setEmail("");
+     setPassword("");
+      //  navigation.navigate("ChatListScreen");
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -30,7 +35,7 @@ const SignInScreen = ({navigation}) => {
       <ImageBackground
         source={backgroundImage}
         style={styles.ImageBackgroundContainer}
-        opacity={0.6}
+        // opacity={0.4}
       >
         <View style={styles.inputContainer}>
           <MaterialCommunityIcons name="email-outline" size={25} color="#fff" />
@@ -39,7 +44,8 @@ const SignInScreen = ({navigation}) => {
             placeholderTextColor="#6f4e37"
             style={styles.textInput}
             selectionColor="#6f4e37"
-            // onChangeText={(e)=>setEmail(e.target.value)}
+            value={email}
+            onChangeText={(e)=>setEmail(e)}
             keyboardType="email-address"
           />
         </View>
@@ -53,8 +59,9 @@ const SignInScreen = ({navigation}) => {
               placeholderTextColor="#6f4e37"
               style={styles.textInput}
               selectionColor="#6f4e37"
+              value={password}
               secureTextEntry={true}
-              // onChangeText={(e)=>setAddress(e.target.value)}
+              onChangeText={(e)=>setPassword(e)}
             />
           </View>
         ) : (
@@ -67,14 +74,15 @@ const SignInScreen = ({navigation}) => {
               placeholderTextColor="#6f4e37"
               style={styles.textInput}
               selectionColor="#6f4e37"
-              // onChangeText={(e)=>setAddress(e.target.value)}
+              value={password}
+              onChangeText={(e)=>setPassword(e)}
             />
           </View>
         )}
-        <TouchableOpacity style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={submitHandler}>
           <Text style={styles.buttonText}>SUBMIT</Text>
         </TouchableOpacity>
-         <Text style={{...styles.signUpText,fontSize:19,marginVertical:20,alignSelf:"center",letterSpacing:3,backgroundColor:"transparent",}} >new to U-CHAT ?</Text>
+         <Text style={{...styles.signUpText,fontSize:19,marginVertical:20,alignSelf:"center",backgroundColor:"#FEFF75",borderRadius:30,}} >new to U-CHAT ?</Text>
         <TouchableOpacity style={styles.signUpButton} onPress={()=>navigation.navigate("SignUpScreen")}>
           <Text style={styles.signUpText}>Sign Up</Text>
         </TouchableOpacity>
@@ -104,6 +112,7 @@ const styles = StyleSheet.create({
   },
   signInText: {
     fontSize: 35,
+    fontWeight:700,
     color: "#fff",
     alignContent: "center",
   },
@@ -150,8 +159,9 @@ const styles = StyleSheet.create({
    paddingHorizontal:20,
   },
   signUpButton:{
-   borderWidth:6,
+   borderWidth:3,
    borderRadius:35,
-   borderColor:"#6f4e37"
+   borderColor:"#6f4e37",
+   backgroundColor:"#FEFF75",
   }
 });
