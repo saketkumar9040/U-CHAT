@@ -4,32 +4,71 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ImageBackground ,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ImageBackground } from "react-native";
 import backgroundImage from "../assets/images/authBackground.jpg";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-// import { NavigationContainer } from "@react-navigation/native";
-// import MainNavigator from "../navigations/MainNavigator";
 import { emailValidator, passwordValidator } from "../utils/Validators";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/FirebaseConfig";
+import { useDispatch } from "react-redux";
+import { authenticate } from "../store/Slice";
+import { Alert } from "react-native";
 
 const SignInScreen = ({ navigation }) => {
+
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const submitHandler = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const submitHandler = async() => {
     if(emailValidator(email) !== undefined){
       return alert(emailValidator(email).email)
     };
     if(passwordValidator(password) !== undefined){
       return alert(passwordValidator(password).password)
     };
-     alert("Signin Successfully");
-     setEmail("");
-     setPassword("");
-    //  navigation.navigate("ChatListScreen");
+
+    setIsLoading(true);
+    try {
+    //  SIGN IN WITH FIREBASE ACCOUNT ================================>
+      const signIn = await signInWithEmailAndPassword(auth,email,password)
+      const { uid, stsTokenManager} =signIn.user;
+      const { accessToken, expirationTime} = stsTokenManager;
+
+      console.log(uid);
+      console.log(accessToken);
+      console.log(expirationTime);
+
+    //  GETTING USER DATA FROM FIREBASE ===============================>  
+
+      const dbRef = ref(getDatabase(app));
+      const userRef = child(dbRef,`UserData/${uid}`);
+      const snapshot = await get(userRef)
+      let userData = snapshot.val();
+
+      //  SENDING DATA TO STORE  ======================================>
+      // dispatch(authenticate({token:accessToken,userData}));
+
+      alert("Signin Successfully");
+      setEmail("");
+      setPassword("");
+
+    } catch (error) {
+      setIsLoading(false);
+      if(error.code==="auth/user-not-found"){
+        return Alert.alert("Error","No Such user Exists 🙁")
+      }
+      console.log(error)
+    }
+
   };
 
   return (
@@ -87,12 +126,18 @@ const SignInScreen = ({ navigation }) => {
             />
           </View>
         )}
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={submitHandler}
-        >
-          <Text style={styles.buttonText}>SUBMIT</Text>
-        </TouchableOpacity>
+       {isLoading ? (
+            <View style={styles.buttonContainer}>
+              <ActivityIndicator size={30} color="#fff" />
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={submitHandler}
+            >
+              <Text style={styles.buttonText}>SUBMIT</Text>
+            </TouchableOpacity>
+          )}
         <Text
           style={{
             ...styles.signUpText,
@@ -166,6 +211,8 @@ const styles = StyleSheet.create({
     //  fontFamily: "Medium",
   },
   buttonContainer: {
+    width: "50%",
+    height: 60,
     marginTop: 20,
     padding: 15,
     alignSelf: "center",
@@ -175,9 +222,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 20,
+    alignSelf: "center",
     // fontWeight:500,
     letterSpacing: 1,
-    marginHorizontal: 40,
   },
   signUpText: {
     color: "#6f4e37",
