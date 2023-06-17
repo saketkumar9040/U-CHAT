@@ -12,10 +12,6 @@ export const nameVaildator = (name) => {
     };
   }
   const nameVerify = validate({ name: name }, { name: nameConstraints });
-  // console.log(nameVerify);
-  // if (nameVerify === undefined) {
-  //   return;
-  // }
   return nameVerify;
 };
 
@@ -26,13 +22,8 @@ export const emailValidator = (email) => {
   if (email !== "") {
     emailConstraints.email = true;
   }
-  const emailVerify = validate({ "email": email },{"email" :emailConstraints});
-  // console.log(emailVerify);
-  // if (emailVerify === undefined) {
-  //   return;
-  // }
-  return emailVerify
-  
+  const emailVerify = validate({ email: email }, { email: emailConstraints });
+  return emailVerify;
 };
 
 export const numberValidator = (number) => {
@@ -40,30 +31,31 @@ export const numberValidator = (number) => {
     presence: { allowEmpty: false },
   };
   if (number !== "") {
-    numberConstraints.format= {
+    numberConstraints.format = {
       pattern: "[0-9]+",
       message: "can only be number",
-      }
-
-}
-      const numberVerify = validate({ "number": number },{"number" :numberConstraints});
-      // console.log(numberVerify);
-      return numberVerify;
-
+    };
+  }
+  const numberVerify = validate(
+    { number: number },
+    { number: numberConstraints }
+  );
+  return numberVerify;
 };
 
 export const passwordValidator = (password) => {
-    const passwordConstraints = {
-        presence: { allowEmpty: false },
-      };
-      if(password !== ""){
-        passwordConstraints.length = {
-            minimum:6,
-            message:"must be atleast 6 character"
-        }
-      }
-      const passwordVerify = validate({ "password": password },{"password" :passwordConstraints});
-      // console.log(passwordVerify);
-      return passwordVerify;
-
+  const passwordConstraints = {
+    presence: { allowEmpty: false },
+  };
+  if (password !== "") {
+    passwordConstraints.length = {
+      minimum: 6,
+      message: "must be atleast 6 character",
+    };
+  }
+  const passwordVerify = validate(
+    { password: password },
+    { password: passwordConstraints }
+  );
+  return passwordVerify;
 };

@@ -7,6 +7,8 @@ import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import "react-native-gesture-handler";
 import AppNavigator from "./navigations/AppNavigator";
+import { Provider } from "react-redux";
+import { store } from "./store/Store";
 
 
 
@@ -65,10 +67,12 @@ export default function App() {
   }
 
   return (
+    <Provider store={store}>
     <SafeAreaProvider style={styles.container} onLayout={onLayout}>
       <StatusBar style="light" backgroundColor="#6F4E37" />
         <AppNavigator/>
     </SafeAreaProvider>
+    </Provider>
   );
 }
 

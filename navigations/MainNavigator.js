@@ -24,6 +24,7 @@ const TabNavigator = () => {
         },
         headerStyle: { backgroundColor: "#6F4E37" },
       }}
+      initialRouteName="ChatlistScreen"
     >
       <Tab.Screen
         name="ChatList"
@@ -69,10 +70,6 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        // tabBarStyle: {
-        //   backgroundColor: "#6F4E37",
-
-        // },
         contentStyle: {
           backgroundColor: "#6F4E37",
         },
@@ -102,22 +99,6 @@ const MainNavigator = () => {
       <Stack.Screen
         name="ChatSettingScreen"
         component={ChatSettingScreen}
-        options={{
-          gestureEnabled: true,
-          headerTitle: "Settings",
-        }}
-      />
-      <Stack.Screen
-        name="SignUpScreen"
-        component={SignUpScreen}
-        options={{
-          gestureEnabled: true,
-          headerTitle: "Settings",
-        }}
-      />
-      <Stack.Screen
-        name="SignInScreen"
-        component={SignInScreen}
         options={{
           gestureEnabled: true,
           headerTitle: "Settings",

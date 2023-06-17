@@ -5,6 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator ,
+  Alert 
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,16 +19,28 @@ import {
   passwordValidator,
   numberValidator,
 } from "../utils/Validators";
-import { app } from "../firebase/FirebaseConfig";
+import { app, auth } from "../firebase/FirebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { child, getDatabase, ref, set } from "firebase/database"
+import { useDispatch, useSelector } from "react-redux";
+import { authenticate } from "../store/Slice";
 
 const SignUpScreen = ({ navigation }) => {
+
+  const dispatch = useDispatch();
+  // const stateData = useSelector(state=>state.auth)
+  // console.log(stateData);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const submitHandler = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const submitHandler = async () => {
+    //   FORM  - VALIDATION  ===============================>
     if (nameVaildator(name) !== undefined) {
       return alert(nameVaildator(name).name);
     }
@@ -39,13 +53,56 @@ const SignUpScreen = ({ navigation }) => {
     if (passwordValidator(password) !== undefined) {
       return alert(passwordValidator(password).password);
     }
+    //   CREATING USER CREDENTIALS IN FIREBASE  ==============>
+    try {
+      setIsLoading(true);
 
-    alert("SignUp Successfully,Please sign in to continue");
-    setName("");
-    setEmail("");
-    setNumber("");
-    setPassword("");
-    navigation.navigate("SignInScreen");
+      const userSignUp = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      )
+      .then(async(userCredentials) => {
+          // console.log(userCredentials.user.uid);
+          // console.log(userCredentials.user.stsTokenManager.accessToken);
+          const userData = {
+             name,
+             email,
+             number,
+             password,
+             uid:userCredentials.user.uid,
+             signUpDate:new Date().toISOString(),
+          }
+          const dbRef = ref(getDatabase());
+          const childRef = child(dbRef,`UserData/${userCredentials.user.uid}`)
+          await set(childRef,userData);
+        
+          dispatch(authenticate({token:userCredentials.user.stsTokenManager.accessToken,userData}))
+
+          Alert.alert("SignUp Successfully 😊");
+          setName("");
+          setEmail("");
+          setNumber("");
+          setPassword("");
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.log(error.code);
+          if (error.code === "auth/email-already-in-use") {
+            return Alert.alert(
+              "Error",
+              "Email is already in use, please try with another Email"
+            );
+          }
+          return Alert.alert("Error", error.code);
+        });
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+      return alert("Firebase Server Error");
+    }
+
+    //  SETTING ALL FIELDS EMPTY ==============================>
   };
 
   return (
@@ -88,11 +145,7 @@ const SignUpScreen = ({ navigation }) => {
             />
           </View>
           <View style={styles.inputContainer}>
-            <MaterialCommunityIcons
-              name="email-outline"
-              size={25}
-              color="#fff"
-            />
+            <Feather name="phone" size={24} color="#fff" />
             <TextInput
               placeholder="Enter Number"
               placeholderTextColor="#6f4e37"
@@ -100,9 +153,9 @@ const SignUpScreen = ({ navigation }) => {
               selectionColor="#6f4e37"
               value={number}
               onChangeText={(e) =>
-                e.length > 10
-                  ? alert("Number must be 10 digits ")
-                  : setNumber(e)
+                e.length <= 10
+                  ? setNumber(e)
+                  : alert("Number must be 10 digits ")
               }
               keyboardType="numeric"
             />
@@ -139,17 +192,23 @@ const SignUpScreen = ({ navigation }) => {
               />
             </View>
           )}
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={submitHandler}
-          >
-            <Text style={styles.buttonText}>SUBMIT</Text>
-          </TouchableOpacity>
+          {isLoading ? (
+            <View style={styles.buttonContainer}>
+              <ActivityIndicator size={30} color="#fff" />
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={submitHandler}
+            >
+              <Text style={styles.buttonText}>SUBMIT</Text>
+            </TouchableOpacity>
+          )}
           <Text
             style={{
               ...styles.signUpText,
               fontSize: 19,
-              marginVertical: 20,
+              marginTop: 20,
               padding: 20,
               alignSelf: "center",
             }}
@@ -182,6 +241,7 @@ export default SignUpScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:"#6f4e37"
   },
   ImageBackgroundContainer: {
     flex: 1,
@@ -223,6 +283,8 @@ const styles = StyleSheet.create({
     //  fontFamily: "Medium",
   },
   buttonContainer: {
+    width: "50%",
+    height: 60,
     marginTop: 20,
     padding: 15,
     alignSelf: "center",
@@ -232,9 +294,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 20,
+    alignSelf: "center",
     // fontWeight:500,
     letterSpacing: 1,
-    marginHorizontal: 40,
   },
   signUpText: {
     color: "#6f4e37",
