@@ -5,8 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator ,
-  Alert 
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,13 +21,12 @@ import {
 } from "../utils/Validators";
 import { app, auth } from "../firebase/FirebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { child, getDatabase, ref, set } from "firebase/database"
+import { child, getDatabase, ref, set } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
-import { authenticate } from "../store/Slice";
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import { authenticate, autoLogout } from "../store/Slice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignUpScreen = ({ navigation }) => {
-
   const dispatch = useDispatch();
   // const stateData = useSelector(state=>state.auth)
   // console.log(stateData);
@@ -63,33 +62,45 @@ const SignUpScreen = ({ navigation }) => {
         email,
         password
       )
-      .then(async(userCredentials) => {
-           const {uid, stsTokenManager} = userCredentials.user;
-           const {accessToken , expirationTime} = stsTokenManager;
+        .then(async (userCredentials) => {
+          const { uid, stsTokenManager } = userCredentials.user;
+          const { accessToken, expirationTime } = stsTokenManager;
 
           const userData = {
-             name,
-             email,
-             number,
-             password,
-             uid:userCredentials.user.uid,
-             signUpDate:new Date().toISOString(),
-          }
+            name,
+            email,
+            number,
+            password,
+            uid: userCredentials.user.uid,
+            signUpDate: new Date().toISOString(),
+          };
 
           //  CREATE USER IN FIRESTOR REALTIME - DATABASE =====================>
           const dbRef = ref(getDatabase());
-          const childRef = child(dbRef,`UserData/${uid}`)
-          await set(childRef,userData);
-          
+          const childRef = child(dbRef, `UserData/${uid}`);
+          await set(childRef, userData);
+
           //  STORING THE USER STATE AND TOKEN IN STORE ========================>
-          dispatch(authenticate({token:accessToken,userData}))
+          dispatch(authenticate({ token: accessToken, userData }));
 
           //  STORING USER DATA TO LOCAL STORAGE ================================>
-          AsyncStorage.setItem("userData",JSON.stringify({
-            accessToken,
-            uid,
-            expiryDate:new Date(expirationTime).toISOString()
-          }))
+          AsyncStorage.setItem(
+            "userData",
+            JSON.stringify({
+              accessToken,
+              uid,
+              expiryDate: new Date(expirationTime).toISOString(),
+            })
+          );
+
+          //  AUTO LOG OUT IF TOKEN EXPIRES =======================================>
+          let expiryDate = new Date(expirationTime);
+          let milisecondsToExpiry = expiryDate - new Date();
+          setTimeout( () => {
+             AsyncStorage.clear();
+             dispatch(autoLogout());
+             Alert.alert("session Expired 😐","please sign in again")
+          }, milisecondsToExpiry);
 
           Alert.alert("SignUp Successfully 😊");
           setName("");
@@ -108,7 +119,6 @@ const SignUpScreen = ({ navigation }) => {
           }
           return Alert.alert("Error", error.code);
         });
-
     } catch (error) {
       setIsLoading(false);
       console.log(error);
@@ -254,7 +264,7 @@ export default SignUpScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:"#6f4e37"
+    backgroundColor: "#6f4e37",
   },
   ImageBackgroundContainer: {
     flex: 1,

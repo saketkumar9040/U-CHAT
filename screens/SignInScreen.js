@@ -4,7 +4,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ImageBackground ,
+  ImageBackground,
   ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
@@ -15,12 +15,14 @@ import { emailValidator, passwordValidator } from "../utils/Validators";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { app, auth } from "../firebase/FirebaseConfig";
 import { useDispatch } from "react-redux";
-import { authenticate } from "../store/Slice";
+import { authenticate, autoLogout } from "../store/Slice";
 import { Alert } from "react-native";
 import { child, get, getDatabase, ref } from "firebase/database";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+let timer;
 
 const SignInScreen = ({ navigation }) => {
-
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
@@ -29,47 +31,65 @@ const SignInScreen = ({ navigation }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async() => {
-    if(emailValidator(email) !== undefined){
-      return alert(emailValidator(email).email)
-    };
-    if(passwordValidator(password) !== undefined){
-      return alert(passwordValidator(password).password)
-    };
+  const submitHandler = async () => {
+    if (emailValidator(email) !== undefined) {
+      return alert(emailValidator(email).email);
+    }
+    if (passwordValidator(password) !== undefined) {
+      return alert(passwordValidator(password).password);
+    }
 
     setIsLoading(true);
     try {
-    //  SIGN IN WITH FIREBASE ACCOUNT ================================>
-      const signIn = await signInWithEmailAndPassword(auth,email,password)
-      const { uid, stsTokenManager} =signIn.user;
-      const { accessToken, expirationTime} = stsTokenManager;
+      //  SIGN IN WITH FIREBASE ACCOUNT ================================>
+      const signIn = await signInWithEmailAndPassword(auth, email, password);
+      const { uid, stsTokenManager } = signIn.user;
+      const { accessToken, expirationTime } = stsTokenManager;
 
-    //  GETTING USER DATA FROM FIREBASE ===============================>  
+      //  GETTING USER DATA FROM FIREBASE ===============================>
 
       const dbRef = ref(getDatabase(app));
-      const userRef = child(dbRef,`UserData/${uid}`);
-      const snapshot = await get(userRef)
+      const userRef = child(dbRef, `UserData/${uid}`);
+      const snapshot = await get(userRef);
       let userData = snapshot.val();
 
       //  SENDING DATA TO STORE  ======================================>
-      dispatch(authenticate({token:accessToken,userData}));
+      dispatch(authenticate({ token: accessToken, userData }));
+
+      //  STORING USER DATA TO LOCAL STORAGE ================================>
+      AsyncStorage.setItem(
+        "userData",
+        JSON.stringify({
+          accessToken,
+          uid,
+          expiryDate: new Date(expirationTime).toISOString(),
+        })
+      );
+
+      //  AUTO LOG OUT IF TOKEN EXPIRES =======================================>
+      let expiryDate = new Date(expirationTime);
+      let milisecondsToExpiry = expiryDate - new Date();
+       setTimeout(() => {
+         AsyncStorage.clear();
+         clearTimeout(timer);
+         dispatch(autoLogout());
+         Alert.alert("session Expired 😐","please sign in again")
+      }, milisecondsToExpiry);
 
       Alert.alert("Signin Successfully 🙂");
       setEmail("");
       setPassword("");
-
     } catch (error) {
       setIsLoading(false);
-      console.log(error.code)
-      if(error.code==="auth/user-not-found"){
-        return Alert.alert("Error","No Such user Exists 🙁")
+      if (error.code === "auth/user-not-found") {
+        return Alert.alert("Error", "No Such user Exists 🙁");
       }
-      if(error.code==="auth/wrong-password"){
-        return Alert.alert("Error","Password Incorrect,please try again 🙁")
+      if (error.code === "auth/wrong-password") {
+        return Alert.alert("Error", "Password Incorrect,please try again 🙁");
       }
-      console.log(error)
+      console.log(error);
+      console.log(error.code);
     }
-
   };
 
   return (
@@ -127,18 +147,18 @@ const SignInScreen = ({ navigation }) => {
             />
           </View>
         )}
-       {isLoading ? (
-            <View style={styles.buttonContainer}>
-              <ActivityIndicator size={30} color="#fff" />
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={styles.buttonContainer}
-              onPress={submitHandler}
-            >
-              <Text style={styles.buttonText}>SUBMIT</Text>
-            </TouchableOpacity>
-          )}
+        {isLoading ? (
+          <View style={styles.buttonContainer}>
+            <ActivityIndicator size={30} color="#fff" />
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={submitHandler}
+          >
+            <Text style={styles.buttonText}>SUBMIT</Text>
+          </TouchableOpacity>
+        )}
         <Text
           style={{
             ...styles.signUpText,
@@ -168,7 +188,7 @@ export default SignInScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:"#6f4e37",
+    backgroundColor: "#6f4e37",
   },
   ImageBackgroundContainer: {
     flex: 1,
