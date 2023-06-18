@@ -8,6 +8,7 @@ const firebaseConfig = {
   storageBucket: "u-chat-db090.appspot.com",
   messagingSenderId: "925228372711",
   appId: "1:925228372711:web:95fa170bd27eca1d838842",
+  // DATABASE-URL ADDED TO MANAGE LOCATION ERROR  ====================================>
   databaseURL:"https://u-chat-db090-default-rtdb.asia-southeast1.firebasedatabase.app",
   measurementId: "G-1VJZB6DC45"
 };

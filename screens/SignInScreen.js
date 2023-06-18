@@ -13,10 +13,11 @@ import backgroundImage from "../assets/images/authBackground.jpg";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { emailValidator, passwordValidator } from "../utils/Validators";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/FirebaseConfig";
+import { app, auth } from "../firebase/FirebaseConfig";
 import { useDispatch } from "react-redux";
 import { authenticate } from "../store/Slice";
 import { Alert } from "react-native";
+import { child, get, getDatabase, ref } from "firebase/database";
 
 const SignInScreen = ({ navigation }) => {
 
@@ -43,10 +44,6 @@ const SignInScreen = ({ navigation }) => {
       const { uid, stsTokenManager} =signIn.user;
       const { accessToken, expirationTime} = stsTokenManager;
 
-      console.log(uid);
-      console.log(accessToken);
-      console.log(expirationTime);
-
     //  GETTING USER DATA FROM FIREBASE ===============================>  
 
       const dbRef = ref(getDatabase(app));
@@ -55,16 +52,20 @@ const SignInScreen = ({ navigation }) => {
       let userData = snapshot.val();
 
       //  SENDING DATA TO STORE  ======================================>
-      // dispatch(authenticate({token:accessToken,userData}));
+      dispatch(authenticate({token:accessToken,userData}));
 
-      alert("Signin Successfully");
+      Alert.alert("Signin Successfully 🙂");
       setEmail("");
       setPassword("");
 
     } catch (error) {
       setIsLoading(false);
+      console.log(error.code)
       if(error.code==="auth/user-not-found"){
         return Alert.alert("Error","No Such user Exists 🙁")
+      }
+      if(error.code==="auth/wrong-password"){
+        return Alert.alert("Error","Password Incorrect,please try again 🙁")
       }
       console.log(error)
     }

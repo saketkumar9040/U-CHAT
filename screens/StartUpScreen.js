@@ -9,7 +9,7 @@ import { app } from "../firebase/FirebaseConfig"
 
 const StartUpScreen = () => {
   const dispatch = useDispatch();
-    //  AsyncStorage.clear();
+  // AsyncStorage.clear();
 
   useEffect(() => {
     const storedAuthInfo = async () => {
@@ -39,7 +39,7 @@ const StartUpScreen = () => {
         const snapshot = await get(userRef)
         let userData = snapshot.val();
 
-        //  SENDING DATA TO STORE  ============================================>
+        //  SENDING DATA TO LOCAL STORE  ============================================>
         dispatch(authenticate({token:accessToken,userData}));
 
     } catch (error) {

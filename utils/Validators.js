@@ -6,7 +6,7 @@ export const nameVaildator = (name) => {
   };
   if (name !== "") {
     nameConstraints.format = {
-      pattern: "[a-z]+",
+      pattern: "^[a-zA-Z ]*$",  // includes alphabets with spaces
       flags: "i",
       message: "can only be in letters",
     };
