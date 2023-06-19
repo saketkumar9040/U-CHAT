@@ -14,6 +14,7 @@ const StartUpScreen = () => {
   useEffect(() => {
     const storedAuthInfo = async () => {
       const getStoredAuthInfo = await AsyncStorage.getItem("userData");
+      // console.log(getStoredAuthInfo);
 
       //  IF  NO  DATA IN THE LOCAL STORAGE  ==============================>
       if (!getStoredAuthInfo) {

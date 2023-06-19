@@ -78,7 +78,7 @@ const SignUpScreen = ({ navigation }) => {
           //  CREATE USER IN FIRESTOR REALTIME - DATABASE =====================>
           const dbRef = ref(getDatabase());
           const childRef = child(dbRef, `UserData/${uid}`);
-          await set(childRef, userData);
+          await set(childRef, userData)
 
           //  STORING THE USER STATE AND TOKEN IN STORE ========================>
           dispatch(authenticate({ token: accessToken, userData }));
