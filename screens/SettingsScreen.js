@@ -148,7 +148,8 @@ const SettingsScreen = () => {
             }}
           />
         </View>
-        {isLoading ? (
+       <View style={styles.mainButtonContainer}>
+       {isLoading ? (
           <View style={styles.buttonContainer}>
             <ActivityIndicator size={30} color="#fff" />
           </View>
@@ -167,6 +168,7 @@ const SettingsScreen = () => {
         >
           <Text style={styles.buttonText}>LOGOUT</Text>
         </TouchableOpacity>
+       </View>
       </ScrollView>
     </View>
   );
@@ -225,5 +227,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontWeight: 900,
     letterSpacing: 3,
+  },
+  mainButtonContainer:{
+     flexDirection:"row",
+     alignItems:'center',
+     justifyContent:"space-evenly",
+     paddingHorizontal:30,
   },
 });
