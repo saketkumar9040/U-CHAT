@@ -4,7 +4,7 @@ import React from 'react'
 const ChatSettingScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={{fontSize:20 ,color:"black"}}>ChatListScreen</Text>
+      <Text style={{fontSize:20 ,color:"black"}}>ChatSettingScreen</Text>
     </View>
   )
 }

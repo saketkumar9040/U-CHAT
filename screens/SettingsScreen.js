@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { child, getDatabase, ref, update } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { autoLogout, updateUserData } from "../store/Slice";
+import ProfileImage from "../components/ProfileImage";
 
 const SettingsScreen = () => {
   const dispatch = useDispatch();
@@ -62,6 +63,7 @@ const SettingsScreen = () => {
       await update(childRef, updatedUserDate);
       Alert.alert("Profile Updated Successfully 😊");
       setIsLoading(false);
+      setHasChanges(false);
       dispatch(updateUserData({updatedUserDate}))
     } catch (error) {
       console.log(error);
@@ -82,6 +84,7 @@ const SettingsScreen = () => {
         Settings
       </Text>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <ProfileImage/>
         <View style={styles.inputContainer}>
           <Feather name="user" size={25} color="#fff" />
           <TextInput
@@ -91,26 +94,31 @@ const SettingsScreen = () => {
             style={styles.textInput}
             selectionColor="#6f4e37"
             value={name}
-            onChangeText={(e) => setName(e)}
+            onChangeText={(e) => {
+              setHasChanges(true)
+              setName(e)}}
           />
         </View>
         <View style={styles.inputContainer}>
           <MaterialCommunityIcons name="email-outline" size={25} color="#fff" />
-          <TextInput
+          {/* <TextInput
             placeholder="Enter E-mail"
             placeholderTextColor="#6f4e37"
             autoCapitalize="none"
             style={styles.textInput}
             selectionColor="#6f4e37"
             value={email}
-            onChangeText={(e) => setEmail(e)}
+            onChangeText={(e) => {
+              setHasChanges(true)
+              setEmail(e)}}
             keyboardType="email-address"
-          />
+          /> */}
+          <Text style={{...styles.textInput,color:"#fff",backgroundColor:"#6f4e37"}}>{email}</Text>
         </View>
 
         <View style={styles.inputContainer}>
           <Feather name="phone" size={24} color="#fff"/>
-          <TextInput
+          {/* <TextInput
             placeholder="Enter Number"
             placeholderTextColor="#000"
             style={styles.textInput}
@@ -120,7 +128,8 @@ const SettingsScreen = () => {
               e.length <= 10 ? setNumber(e) : alert("Number must be 10 digits ")
             }
             keyboardType="numeric"
-          />
+          /> */}
+          <Text style={{...styles.textInput,color:"#fff",backgroundColor:"#6f4e37"}}>{number}</Text>
         </View>
         <View style={{ ...styles.inputContainer, flex: 1 }}>
           <Octicons name="info" size={24} color="#fff" />
@@ -131,11 +140,12 @@ const SettingsScreen = () => {
             style={{ ...styles.textInput }}
             selectionColor="#6f4e37"
             value={about}
-            onChangeText={(e) =>
+            onChangeText={(e) =>{
+              setHasChanges(true)
               e.length <= 150
                 ? setAbout(e)
                 : alert("Description must be less than 150 characters ")
-            }
+            }}
           />
         </View>
         {isLoading ? (
@@ -144,8 +154,9 @@ const SettingsScreen = () => {
           </View>
         ) : (
           <TouchableOpacity
-            style={styles.buttonContainer}
+            style={hasChanges?styles.buttonContainer:{...styles.buttonContainer,backgroundColor:"grey"}}
             onPress={submitHandler}
+            disabled={!hasChanges}
           >
             <Text style={styles.buttonText}>SAVE</Text>
           </TouchableOpacity>
@@ -191,6 +202,7 @@ const styles = StyleSheet.create({
     color: "#000",
     borderRadius: 4,
     paddingHorizontal: 20,
+    paddingVertical:5,
     marginVertical: 10,
     fontSize: 20,
     backgroundColor: "#fff",

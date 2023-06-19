@@ -136,7 +136,6 @@ const SignUpScreen = ({ navigation }) => {
         source={backgroundImage}
         style={styles.ImageBackgroundContainer}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.inputContainer}>
             <Feather name="user" size={25} color="#fff" />
             <TextInput
@@ -250,7 +249,6 @@ const SignUpScreen = ({ navigation }) => {
               Sign In
             </Text>
           </TouchableOpacity>
-        </ScrollView>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -276,9 +274,10 @@ const styles = StyleSheet.create({
   },
   signInText: {
     fontSize: 35,
-    fontWeight: 700,
     color: "#fff",
     alignContent: "center",
+    fontFamily:"ExtraBoldItalic",
+    letterSpacing:3,
   },
   inputContainer: {
     flexDirection: "row",
@@ -331,8 +330,6 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     borderColor: "#6f4e37",
     backgroundColor: "#FEFF75",
-    elevation:5,
-    margin:5,
-    alignSelf:"center",
+    elevation:10,
   },
 });

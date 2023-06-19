@@ -205,9 +205,10 @@ const styles = StyleSheet.create({
   },
   signInText: {
     fontSize: 35,
-    fontWeight: 700,
     color: "#fff",
     alignContent: "center",
+    fontFamily:"ExtraBoldItalic",
+    letterSpacing:3,
   },
   inputContainer: {
     flexDirection: "row",
