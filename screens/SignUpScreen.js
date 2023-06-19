@@ -78,7 +78,7 @@ const SignUpScreen = ({ navigation }) => {
           //  CREATE USER IN FIRESTOR REALTIME - DATABASE =====================>
           const dbRef = ref(getDatabase());
           const childRef = child(dbRef, `UserData/${uid}`);
-          await set(childRef, userData)
+          await set(childRef, userData);
 
           //  STORING THE USER STATE AND TOKEN IN STORE ========================>
           dispatch(authenticate({ token: accessToken, userData }));
@@ -103,6 +103,7 @@ const SignUpScreen = ({ navigation }) => {
           }, milisecondsToExpiry);
 
           Alert.alert("SignUp Successfully 😊");
+          //  SETTING ALL FIELDS EMPTY ==============================>
           setName("");
           setEmail("");
           setNumber("");
@@ -124,8 +125,6 @@ const SignUpScreen = ({ navigation }) => {
       console.log(error);
       return alert("Firebase Server Error");
     }
-
-    //  SETTING ALL FIELDS EMPTY ==============================>
   };
 
   return (
@@ -142,7 +141,7 @@ const SignUpScreen = ({ navigation }) => {
             <Feather name="user" size={25} color="#fff" />
             <TextInput
               placeholder="Enter Name"
-              placeholderTextColor="#6f4e37"
+              placeholderTextColor="#000"
               autoCapitalize="none"
               style={styles.textInput}
               selectionColor="#6f4e37"
@@ -158,7 +157,7 @@ const SignUpScreen = ({ navigation }) => {
             />
             <TextInput
               placeholder="Enter E-mail"
-              placeholderTextColor="#6f4e37"
+              placeholderTextColor="#000"
               autoCapitalize="none"
               style={styles.textInput}
               selectionColor="#6f4e37"
@@ -171,7 +170,7 @@ const SignUpScreen = ({ navigation }) => {
             <Feather name="phone" size={24} color="#fff" />
             <TextInput
               placeholder="Enter Number"
-              placeholderTextColor="#6f4e37"
+              placeholderTextColor="#000"
               style={styles.textInput}
               selectionColor="#6f4e37"
               value={number}
@@ -190,7 +189,7 @@ const SignUpScreen = ({ navigation }) => {
               </TouchableOpacity>
               <TextInput
                 placeholder="Enter Password"
-                placeholderTextColor="#6f4e37"
+                placeholderTextColor="#000"
                 autoCapitalize="none"
                 style={styles.textInput}
                 selectionColor="#6f4e37"
@@ -206,7 +205,7 @@ const SignUpScreen = ({ navigation }) => {
               </TouchableOpacity>
               <TextInput
                 placeholder="Enter Password"
-                placeholderTextColor="#6f4e37"
+                placeholderTextColor="#000"
                 autoCapitalize="none"
                 style={styles.textInput}
                 selectionColor="#6f4e37"
@@ -232,8 +231,10 @@ const SignUpScreen = ({ navigation }) => {
               ...styles.signUpText,
               fontSize: 19,
               marginTop: 20,
-              padding: 20,
               alignSelf: "center",
+              backgroundColor: "#FEFF75",
+              padding: 20,
+              borderRadius: 30,
             }}
           >
             Already have an account ?
@@ -243,12 +244,8 @@ const SignUpScreen = ({ navigation }) => {
             onPress={() => navigation.navigate("SignInScreen")}
           >
             <Text
-              style={{
-                ...styles.signUpText,
-                borderWidth: 3,
-                borderRadius: 35,
-                borderColor: "#6f4e37",
-              }}
+              style={styles.signUpText
+                }
             >
               Sign In
             </Text>
@@ -295,15 +292,15 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: "90%",
-    color: "#6f4e37",
+    color: "#000",
     borderRadius: 25,
     paddingHorizontal: 20,
     marginVertical: 10,
-    fontSize: 18,
+    fontSize: 20,
     backgroundColor: "#fff",
     height: 40,
     marginLeft: 10,
-    //  fontFamily: "Medium",
+    fontFamily: "BoldItalic",
   },
   buttonContainer: {
     width: "50%",
@@ -313,23 +310,29 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#6f4e37",
     borderRadius: 40,
+    elevation:10,
   },
   buttonText: {
     color: "#fff",
     fontSize: 20,
     alignSelf: "center",
-    // fontWeight:500,
-    letterSpacing: 1,
+    fontWeight:800,
+    letterSpacing: 3,
   },
   signUpText: {
     color: "#6f4e37",
-    fontSize: 28,
-    //  padding:5,
-    paddingHorizontal: 27,
-    backgroundColor: "#FEFF75",
+    fontSize: 25,
+     padding:5,
+    paddingHorizontal: 20,
+    fontWeight:700,
   },
   signUpButton: {
-    alignSelf: "center",
+    borderWidth: 3,
+    borderRadius: 35,
+    borderColor: "#6f4e37",
     backgroundColor: "#FEFF75",
+    elevation:5,
+    margin:5,
+    alignSelf:"center",
   },
 });

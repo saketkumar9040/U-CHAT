@@ -20,19 +20,23 @@ import {
   emailValidator,
   numberValidator,
 } from "../utils/Validators";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { child, getDatabase, ref, update } from "firebase/database";
-import { auth } from "../firebase/FirebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { autoLogout, updateUserData } from "../store/Slice";
 
 const SettingsScreen = () => {
+  const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.userData);
   // console.log(userData)
+
   const [name, setName] = useState(userData?.name ? userData.name : "");
   const [email, setEmail] = useState(userData?.email ? userData.email : "");
   const [number, setNumber] = useState(userData.number ? userData.number : "");
   const [about, setAbout] = useState(userData.about ? userData.about : "");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [hasChanges,setHasChanges] = useState(false);
 
   const submitHandler = async () => {
     if (nameVaildator(name) !== undefined) {
@@ -44,26 +48,32 @@ const SettingsScreen = () => {
     if (numberValidator(number) !== undefined) {
       return alert(numberValidator(number).number);
     }
-    updatedUserDate = {
-      name:name,
-      email:email,
-      number:number,
-      about:about
-    }
-   try {
-    setIsLoading(true);
-    //  UPDATE USER IN FIRESTOR REALTIME - DATABASE =====================>
-    const dbRef = ref(getDatabase());
-    const childRef = child(dbRef, `UserData/${userData.uid}`);
-    await update(childRef, updatedUserDate)
-    
-    Alert.alert("Profile Updated Successfully 😊");
-    setIsLoading(false);
-   } catch (error) {
+    let updatedUserDate = {
+      name: name,
+      email: email,
+      number: number,
+      about: about,
+    };
+    try {
+      setIsLoading(true);
+      //  UPDATE USER IN FIRESTOR REALTIME - DATABASE =====================>
+      const dbRef = ref(getDatabase());
+      const childRef = child(dbRef, `UserData/${userData.uid}`);
+      await update(childRef, updatedUserDate);
+      Alert.alert("Profile Updated Successfully 😊");
+      setIsLoading(false);
+      dispatch(updateUserData({updatedUserDate}))
+    } catch (error) {
       console.log(error);
-      setIsLoading(false)
-   }
+      setIsLoading(false);
+    }
   };
+
+  const logoutHandler = () => {
+       AsyncStorage.clear();
+       dispatch(autoLogout());
+       Alert.alert("Logout Successfully 😏");
+  }
 
   return (
     <View style={styles.container}>
@@ -99,12 +109,12 @@ const SettingsScreen = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Feather name="phone" size={24} color="#fff" />
+          <Feather name="phone" size={24} color="#fff"/>
           <TextInput
             placeholder="Enter Number"
-            placeholderTextColor="#6f4e37"
+            placeholderTextColor="#000"
             style={styles.textInput}
-            selectionColor="#6f4e37"
+            selectionColor="#000"
             value={number}
             onChangeText={(e) =>
               e.length <= 10 ? setNumber(e) : alert("Number must be 10 digits ")
@@ -140,6 +150,12 @@ const SettingsScreen = () => {
             <Text style={styles.buttonText}>SAVE</Text>
           </TouchableOpacity>
         )}
+        <TouchableOpacity
+          style={{...styles.buttonContainer,backgroundColor:"red"}}
+          onPress={logoutHandler}
+        >
+          <Text style={styles.buttonText}>LOGOUT</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -151,9 +167,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffbf00",
-    padding: 10,
+    padding: 5,
   },
   heading: {
+    paddingLeft: 5,
     fontSize: 35,
     letterSpacing: 3,
     fontFamily: "BoldItalic",
@@ -171,30 +188,30 @@ const styles = StyleSheet.create({
   textInput: {
     width: "90%",
     height: 40,
-    color: "#6f4e37",
+    color: "#000",
     borderRadius: 4,
     paddingHorizontal: 20,
     marginVertical: 10,
-    fontSize: 18,
+    fontSize: 20,
     backgroundColor: "#fff",
     height: 40,
     marginLeft: 10,
-    //  fontFamily: "Medium",
+    fontFamily: "BoldItalic",
   },
   buttonContainer: {
-    width: "50%",
+    width: "40%",
     height: 50,
     marginTop: 20,
     padding: 10,
     alignSelf: "center",
-    backgroundColor: "#6f4e37",
+    backgroundColor: "green",
     borderRadius: 10,
   },
   buttonText: {
     color: "#fff",
     fontSize: 20,
     alignSelf: "center",
-    // fontWeight:500,
-    letterSpacing: 1,
+    fontWeight: 900,
+    letterSpacing: 3,
   },
 });

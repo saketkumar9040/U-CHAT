@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import {authenticate, autoLogin ,autoLogout} from "../store/Slice"
 import { child, get, getDatabase, ref } from "firebase/database";
-import { app } from "../firebase/FirebaseConfig"
+import { app } from "../firebase/FirebaseConfig";
 
 
 const StartUpScreen = () => {
@@ -39,7 +39,7 @@ const StartUpScreen = () => {
         const snapshot = await get(userRef)
         let userData = snapshot.val();
 
-        //  SENDING DATA TO LOCAL STORE  ============================================>
+      //  SENDING DATA TO LOCAL STORE  ============================================>
         dispatch(authenticate({token:accessToken,userData}));
 
     } catch (error) {

@@ -69,10 +69,10 @@ const SignInScreen = ({ navigation }) => {
       //  AUTO LOG OUT IF TOKEN EXPIRES =======================================>
       let expiryDate = new Date(expirationTime);
       let milisecondsToExpiry = expiryDate - new Date();
-       setTimeout(() => {
+       setTimeout(async() => {
          AsyncStorage.clear();
          clearTimeout(timer);
-         dispatch(autoLogout());
+         await dispatch(autoLogout());
          Alert.alert("session Expired 😐","please sign in again")
       }, milisecondsToExpiry);
 
@@ -221,15 +221,15 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: "90%",
-    color: "#6f4e37",
+    color: "#000",
     borderRadius: 25,
     paddingHorizontal: 20,
     marginVertical: 10,
-    fontSize: 18,
+    fontSize: 20,
     backgroundColor: "#fff",
     height: 40,
     marginLeft: 10,
-    //  fontFamily: "Medium",
+    fontFamily: "BoldItalic",
   },
   buttonContainer: {
     width: "50%",
@@ -239,24 +239,27 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#6f4e37",
     borderRadius: 40,
+    elevation:10,
   },
   buttonText: {
     color: "#fff",
     fontSize: 20,
     alignSelf: "center",
-    // fontWeight:500,
-    letterSpacing: 1,
+    fontWeight:800,
+    letterSpacing: 3,
   },
   signUpText: {
     color: "#6f4e37",
-    fontSize: 28,
-    //  padding:5,
+    fontSize: 25,
+     padding:5,
     paddingHorizontal: 20,
+    fontWeight:700,
   },
   signUpButton: {
     borderWidth: 3,
     borderRadius: 35,
     borderColor: "#6f4e37",
     backgroundColor: "#FEFF75",
+    elevation:10,
   },
 });
