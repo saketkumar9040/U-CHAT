@@ -26,6 +26,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { autoLogout, updateUserData } from "../store/Slice";
 import ProfileImage from "../components/ProfileImage";
 
+
 const SettingsScreen = () => {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.userData);
@@ -37,7 +38,7 @@ const SettingsScreen = () => {
   const [about, setAbout] = useState(userData.about ? userData.about : "");
 
   const [isLoading, setIsLoading] = useState(false);
-  const [hasChanges,setHasChanges] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const submitHandler = async () => {
     if (nameVaildator(name) !== undefined) {
@@ -64,7 +65,7 @@ const SettingsScreen = () => {
       Alert.alert("Profile Updated Successfully 😊");
       setIsLoading(false);
       setHasChanges(false);
-      dispatch(updateUserData({updatedUserDate}))
+      dispatch(updateUserData({ updatedUserDate }));
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -72,10 +73,10 @@ const SettingsScreen = () => {
   };
 
   const logoutHandler = () => {
-       AsyncStorage.clear();
-       dispatch(autoLogout());
-       Alert.alert("Logout Successfully 😏");
-  }
+    AsyncStorage.clear();
+    dispatch(autoLogout());
+    Alert.alert("Logout Successfully 😏");
+  };
 
   return (
     <View style={styles.container}>
@@ -83,8 +84,8 @@ const SettingsScreen = () => {
         <Ionicons name="settings" size={39} color="black" />
         Settings
       </Text>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <ProfileImage/>
+      <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom:50,}}>
+        <ProfileImage userData={userData}/>
         <View style={styles.inputContainer}>
           <Feather name="user" size={25} color="#fff" />
           <TextInput
@@ -95,8 +96,9 @@ const SettingsScreen = () => {
             selectionColor="#6f4e37"
             value={name}
             onChangeText={(e) => {
-              setHasChanges(true)
-              setName(e)}}
+              setHasChanges(true);
+              setName(e);
+            }}
           />
         </View>
         <View style={styles.inputContainer}>
@@ -113,11 +115,19 @@ const SettingsScreen = () => {
               setEmail(e)}}
             keyboardType="email-address"
           /> */}
-          <Text style={{...styles.textInput,color:"#fff",backgroundColor:"#6f4e37"}}>{email}</Text>
+          <Text
+            style={{
+              ...styles.textInput,
+              color: "#fff",
+              backgroundColor: "#6f4e37",
+            }}
+          >
+            {email}
+          </Text>
         </View>
 
         <View style={styles.inputContainer}>
-          <Feather name="phone" size={24} color="#fff"/>
+          <Feather name="phone" size={24} color="#fff" />
           {/* <TextInput
             placeholder="Enter Number"
             placeholderTextColor="#000"
@@ -129,7 +139,15 @@ const SettingsScreen = () => {
             }
             keyboardType="numeric"
           /> */}
-          <Text style={{...styles.textInput,color:"#fff",backgroundColor:"#6f4e37"}}>{number}</Text>
+          <Text
+            style={{
+              ...styles.textInput,
+              color: "#fff",
+              backgroundColor: "#6f4e37",
+            }}
+          >
+            {number}
+          </Text>
         </View>
         <View style={{ ...styles.inputContainer, flex: 1 }}>
           <Octicons name="info" size={24} color="#fff" />
@@ -137,25 +155,31 @@ const SettingsScreen = () => {
             placeholder="Describe yourself"
             placeholderTextColor="#6f4e37"
             autoCapitalize="none"
-            style={{ ...styles.textInput }}
+            style={{ ...styles.textInput, flex: 1 }}
             selectionColor="#6f4e37"
             value={about}
-            onChangeText={(e) =>{
-              setHasChanges(true)
+            onChangeText={(e) => {
+              setHasChanges(true);
               e.length <= 150
                 ? setAbout(e)
-                : alert("Description must be less than 150 characters ")
+                : alert("Description must be less than 150 characters ");
             }}
+            multiline={true}
           />
         </View>
-       <View style={styles.mainButtonContainer}>
-       {isLoading ? (
+      </ScrollView>
+      <View style={styles.mainButtonContainer}>
+        {isLoading ? (
           <View style={styles.buttonContainer}>
             <ActivityIndicator size={30} color="#fff" />
           </View>
         ) : (
           <TouchableOpacity
-            style={hasChanges?styles.buttonContainer:{...styles.buttonContainer,backgroundColor:"grey"}}
+            style={
+              hasChanges
+                ? styles.buttonContainer
+                : { ...styles.buttonContainer, backgroundColor: "grey" }
+            }
             onPress={submitHandler}
             disabled={!hasChanges}
           >
@@ -163,13 +187,12 @@ const SettingsScreen = () => {
           </TouchableOpacity>
         )}
         <TouchableOpacity
-          style={{...styles.buttonContainer,backgroundColor:"red"}}
+          style={{ ...styles.buttonContainer, backgroundColor: "red" }}
           onPress={logoutHandler}
         >
           <Text style={styles.buttonText}>LOGOUT</Text>
         </TouchableOpacity>
-       </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -181,14 +204,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffbf00",
     padding: 5,
+    alignItems: "center",
   },
   heading: {
+    alignSelf: "flex-start",
     paddingLeft: 5,
     fontSize: 35,
     letterSpacing: 3,
     fontFamily: "BoldItalic",
   },
   inputContainer: {
+    flex:1,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#6f4e37",
@@ -200,22 +226,20 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: "90%",
-    height: 40,
     color: "#000",
     borderRadius: 4,
     paddingHorizontal: 20,
-    paddingVertical:5,
+    paddingVertical: 5,
     marginVertical: 10,
     fontSize: 20,
     backgroundColor: "#fff",
-    height: 40,
     marginLeft: 10,
     fontFamily: "BoldItalic",
   },
   buttonContainer: {
-    width: "40%",
-    height: 50,
-    marginTop: 20,
+    width: "45%",
+    // height: 50,
+    // marginTop: 20,
     padding: 10,
     alignSelf: "center",
     backgroundColor: "green",
@@ -226,12 +250,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     alignSelf: "center",
     fontWeight: 900,
-    letterSpacing: 3,
+    letterSpacing: 2,
   },
-  mainButtonContainer:{
-     flexDirection:"row",
-     alignItems:'center',
-     justifyContent:"space-evenly",
-     paddingHorizontal:30,
+  mainButtonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    position: "absolute",
+    bottom: 5,
+
   },
 });

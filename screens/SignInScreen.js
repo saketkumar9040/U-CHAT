@@ -100,16 +100,15 @@ const SignInScreen = ({ navigation }) => {
       <ImageBackground
         source={backgroundImage}
         style={styles.ImageBackgroundContainer}
-        // opacity={0.4}
       >
         <View style={styles.inputContainer}>
           <MaterialCommunityIcons name="email-outline" size={25} color="#fff" />
           <TextInput
             placeholder="Enter E-mail"
-            placeholderTextColor="#6f4e37"
+            placeholderTextColor="#000"
             autoCapitalize="none"
             style={styles.textInput}
-            selectionColor="#6f4e37"
+            selectionColor="#000"
             value={email}
             onChangeText={(e) => setEmail(e)}
             keyboardType="email-address"
@@ -122,10 +121,10 @@ const SignInScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TextInput
               placeholder="Enter Password"
-              placeholderTextColor="#6f4e37"
+              placeholderTextColor="#000"
               autoCapitalize="none"
               style={styles.textInput}
-              selectionColor="#6f4e37"
+              selectionColor="#000"
               value={password}
               secureTextEntry={true}
               onChangeText={(e) => setPassword(e)}
@@ -138,10 +137,10 @@ const SignInScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TextInput
               placeholder="Enter Password"
-              placeholderTextColor="#6f4e37"
+              placeholderTextColor="#000"
               autoCapitalize="none"
               style={styles.textInput}
-              selectionColor="#6f4e37"
+              selectionColor="#000"
               value={password}
               onChangeText={(e) => setPassword(e)}
             />
