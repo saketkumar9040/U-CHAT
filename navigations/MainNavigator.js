@@ -9,6 +9,7 @@ import { Ionicons, Fontisto } from "@expo/vector-icons";
 import ChatScreen from "../screens/ChatScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import SignInScreen from "../screens/SignInScreen";
+import NewChatScreen from "../screens/NewChatScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,7 +21,7 @@ const TabNavigator = () => {
         headerTitle: "",
         tabBarStyle: {
           backgroundColor: "#6F4E37",
-          height:60,
+          height: 60,
         },
         headerStyle: { backgroundColor: "#6F4E37" },
       }}
@@ -38,7 +39,7 @@ const TabNavigator = () => {
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name="chatbubble-ellipses"
-              size={focused === true ? 35:size}
+              size={focused === true ? 35 : size}
               color={focused === true ? "white" : "#b8b8ba"}
             />
           ),
@@ -56,8 +57,8 @@ const TabNavigator = () => {
           tabBarIcon: ({ color, size, focused }) => (
             <Fontisto
               name="player-settings"
-              size={focused === true ? 35:size}
-              color={focused ===true ? "white" : "#b8b8ba"}
+              size={focused === true ? 35 : size}
+              color={focused === true ? "white" : "#b8b8ba"}
             />
           ),
         }}
@@ -76,37 +77,51 @@ const MainNavigator = () => {
       }}
       initialRouteName="Home"
     >
+      <Stack.Group>
+        <Stack.Screen
+          name="Home"
+          component={TabNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ChatScreen"
+          component={ChatScreen}
+          options={{
+            gestureEnabled: true,
+            //   headerShown: false,
+            headerTitle: "",
+            headerBackTitle: "back",
+            headerStyle: {
+              backgroundColor: "#6F4E37",
+            },
+            headerTintColor: "#ffffff",
+          }}
+        />
+        <Stack.Screen
+          name="ChatSettingScreen"
+          component={ChatSettingScreen}
+          options={{
+            gestureEnabled: true,
+            headerTitle: "Settings",
+          }}
+        />
+      </Stack.Group>
+      <Stack.Group screenOptions={{presentation:'modal'}}>
       <Stack.Screen
-        name="Home"
-        component={TabNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ChatScreen"
-        component={ChatScreen}
-        options={{
-          gestureEnabled: true,
-        //   headerShown: false,
-          headerTitle:"",
-          headerBackTitle:"back",
-          headerStyle:{
-            backgroundColor:"#6F4E37",
-            
-          },
-          headerTintColor: '#ffffff'
-        }}
-      />
-      <Stack.Screen
-        name="ChatSettingScreen"
-        component={ChatSettingScreen}
-        options={{
-          gestureEnabled: true,
-          headerTitle: "Settings",
-        }}
-      />
+          name="NewChatScreen"
+          component={NewChatScreen}
+          options={{
+            gestureEnabled: true,
+            headerStyle: {
+              backgroundColor: "#6F4E37",
+            },
+            // headerBackTitle: "back",
+            headerTintColor: "#ffffff",
+          }}
+        />
+      </Stack.Group>
     </Stack.Navigator>
   );
 };
 
 export default MainNavigator;
-

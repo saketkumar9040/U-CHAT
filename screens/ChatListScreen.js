@@ -1,9 +1,26 @@
 import { StyleSheet, Text, View, Button, ImageBackground } from 'react-native'
-import React from 'react'
-import backgroundImage from "../assets/images/navigatorBackground2.jpg"
+import React,{ useEffect } from 'react'
+import backgroundImage from "../assets/images/navigatorBackground2.jpg";
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import CustomHeaderButton from '../components/customHeaderButton';
 
 
 const ChatListScreen = ({navigation}) => {
+
+  useEffect(()=>{
+    navigation.setOptions({
+      headerRight : () => {
+        return <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+          <Item
+             title='newChat'
+             iconName='create-outline'
+             onPress={()=>{navigation.navigate("NewChatScreen")}}
+          />
+        </HeaderButtons>
+      }
+    })
+  },[]);
+
   return (
     <ImageBackground 
      source={backgroundImage}

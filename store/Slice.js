@@ -23,7 +23,6 @@ const authSlice = createSlice({
     },
     updateUserData : (state,action) => {
       state.userData={...state.userData,...action.payload.updatedUserData}
-      // console.log(action.payload)
     }
   },
 });

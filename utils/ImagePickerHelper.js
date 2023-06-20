@@ -1,10 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 import { Platform } from "react-native";
-import { db, storage } from "../firebase/FirebaseConfig";
+import { storage } from "../firebase/FirebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable,deleteObject } from "firebase/storage";
-import { child, getDatabase, update } from "firebase/database";
-import { useDispatch, useSelector } from "react-redux";
-import { updateUserData } from "../store/Slice";
 
 export const launchImagePicker = async () => {
   await checkMediaPermission();
