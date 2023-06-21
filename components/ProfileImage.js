@@ -16,7 +16,7 @@ const ProfileImage = ({userData}) => {
   const [isLoading, setIsLoading] = useState("");
 
   const previousImage = userData.imageName;
-  // console.log(previousImage)
+  console.log(previousImage)
 
   const pickImage = async () => {
     try {
@@ -49,7 +49,9 @@ const ProfileImage = ({userData}) => {
       Alert.alert("Profile pic updated successfully 😎");
       
       // REMOVE PREVIOUS SAVED PROFILE PIC ====================================>
-       await deletePreviousProfilePic(previousImage);
+      if(previousImage){
+        await deletePreviousProfilePic(previousImage);
+      }
 
        await dispatch(updateUserData({updatedUserData}));
 

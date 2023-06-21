@@ -7,7 +7,16 @@ import { SafeAreaView } from "react-native";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SearchBar } from "react-native-screens";
-import { child, endAt, get, getDatabase, orderByChild, query, ref, startAt } from "firebase/database";
+import {
+  child,
+  endAt,
+  get,
+  getDatabase,
+  orderByChild,
+  query,
+  ref,
+  startAt,
+} from "firebase/database";
 import { db } from "../firebase/FirebaseConfig.js";
 import { ActivityIndicator } from "react-native";
 import { FlatList } from "react-native";
@@ -17,7 +26,7 @@ const NewChatScreen = ({ navigation }) => {
   const [users, setUsers] = useState();
   const [searchText, setSearchText] = useState("");
   const [noUserFound, setNoUserFound] = useState(false);
-  console.log(users)
+  // console.log(users);
 
   useEffect(() => {
     navigation.setOptions({
@@ -65,12 +74,12 @@ const NewChatScreen = ({ navigation }) => {
           setUsers(snapshot.val());
           setNoUserFound(false);
           return;
-        }else{
+        } else {
           setUsers({});
-          setNoUserFound(true)
+          setNoUserFound(true);
         }
       } catch (error) {
-        setIsLoading(false)
+        setIsLoading(false);
         console.log(error);
       }
       setIsLoading(false);
@@ -92,43 +101,50 @@ const NewChatScreen = ({ navigation }) => {
           }}
         />
       </View>
-      {  //  WHILE SEARCHING USER
-        isLoading && (<View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
-            <ActivityIndicator
-               size={100}
-               color="#6f4e37"
-            />
-        </View>)
+      {
+        //  WHILE SEARCHING USER
+        isLoading && (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ActivityIndicator size={100} color="#6f4e37" />
+          </View>
+        )
       }
       {
         // SHOWING USER FLATLIST
-        !isLoading && !noUserFound && users &&
-        <FlatList
-        style={{flex:1,}}
-         data={Object.keys(users)}
-         renderItem={(itemData)=>{
-          <View style={styles.userContainer}>
-            <Text style={styles.noUserText}>hello</Text>
-          </View>
-              console.log(itemData.item)
-         }}
-        />
+        !isLoading && !noUserFound && users && (
+          <FlatList
+            data={Object.keys(users)}
+            renderItem={(itemData) => {
+              // console.log(itemData.item)
+              return (
+                <View style={styles.searchResultContainer}>
+                  <Text>{itemData.item}</Text>
+                </View>
+              );
+            }}
+          />
+        )
       }
       {
         //  NO USER FOUND
-      !isLoading && noUserFound && (
-        <View style={styles.userContainer}>
-          <Entypo name="emoji-sad" size={130} color="#6f4e37" />
-          <Text style={styles.noUserText}>No user found</Text>
-        </View>
-      )}
-      { //  WHEN SEARCH QUERY IS EMPTY
-      !isLoading && !users && (
-        <View style={styles.userContainer}>
-          <FontAwesome name="users" size={150} color="#6f4e37" />
-          <Text style={styles.noUserText}>Enter a name to search user</Text>
-        </View>
-      )}
+        !isLoading && noUserFound && (
+          <View style={styles.userContainer}>
+            <Entypo name="emoji-sad" size={130} color="#6f4e37" />
+            <Text style={styles.noUserText}>No user found</Text>
+          </View>
+        )
+      }
+      {
+        //  WHEN SEARCH QUERY IS EMPTY
+        !isLoading && !users && (
+          <View style={styles.userContainer}>
+            <FontAwesome name="users" size={150} color="#6f4e37" />
+            <Text style={styles.noUserText}>Enter a name to search user</Text>
+          </View>
+        )
+      }
     </SafeAreaView>
   );
 };
@@ -161,7 +177,7 @@ const styles = StyleSheet.create({
     fontFamily: "BoldItalic",
   },
   userContainer: {
-    flex:1,
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -170,5 +186,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     color: "#6f4e37",
     fontFamily: "Bold",
+  },
+  searchResultContainer:{
+
   },
 });

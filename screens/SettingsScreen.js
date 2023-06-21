@@ -63,6 +63,7 @@ const SettingsScreen = () => {
       const childRef = child(dbRef, `UserData/${userData.uid}`);
       await update(childRef, updatedUserDate);
       Alert.alert("Profile Updated Successfully 😊");
+      
       setIsLoading(false);
       setHasChanges(false);
       dispatch(updateUserData({ updatedUserDate }));
@@ -75,6 +76,7 @@ const SettingsScreen = () => {
   const logoutHandler = () => {
     AsyncStorage.clear();
     dispatch(autoLogout());
+    console.log("logOut successfully 😏")
     Alert.alert("Logout Successfully 😏");
   };
 
