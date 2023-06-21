@@ -21,6 +21,7 @@ import { db } from "../firebase/FirebaseConfig.js";
 import { ActivityIndicator } from "react-native";
 import { FlatList } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
+import { TouchableWithoutFeedback } from "react-native";
 
 const NewChatScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -122,11 +123,14 @@ const NewChatScreen = ({ navigation }) => {
               const userId = itemData.item;
               const userData = users[userId];
               return (
-                <View style={styles.searchResultContainer}>
+                <TouchableOpacity style={styles.searchResultContainer}>
                   <Image source={{uri:userData.ProfilePicURL}} style={styles.searchUserImage} resizeMode="contain"/>
-                  <Text style={styles.searchUserName}>{userData.name.toUpperCase()}</Text>
-                  <AntDesign name="forward" size={24} color="#6f4e37" style={styles.searchUserArrow}/>
-                </View>
+                 <View style={styles.searchUserTextContainer}>
+                 <Text style={styles.searchUserName}>{userData.name.toUpperCase()}</Text>
+                  <Text style={styles.searchUserTapToChat}>Tap to chat</Text>
+                 </View>
+                  <AntDesign name="forward" size={20} color="#6f4e37" style={styles.searchUserArrow}/>
+                </TouchableOpacity>
               );
             }}
           />
@@ -195,7 +199,7 @@ const styles = StyleSheet.create({
   searchResultContainer:{
     flexDirection: "row",
     alignItems: "center",
-    height:85,
+    height:80,
     // backgroundColor: "#6f4e37",
     borderWidth:3,
     borderColor:"#6f4e37",
@@ -205,16 +209,26 @@ const styles = StyleSheet.create({
     marginHorizontal:20,
   },
   searchUserImage:{
-     width:65,
-     height:65,
+     width:60,
+     height:60,
      borderRadius:40,
      borderWidth:3,
      borderColor:"#6f4e37",
      backgroundColor:"#6f4e37",
-     marginRight:25,
+     marginRight:5,
+  },
+  searchUserTextContainer:{
+    flexDirection:"column",
+    marginLeft:10,
+  
+  },
+  searchUserTapToChat:{
+    fontSize:13,
+    color: "#6f4e37",
+    fontFamily: "Bold",
   },
   searchUserName:{
-    fontSize: 22,
+    fontSize: 20,
     color: "#6f4e37",
     fontFamily: "BoldItalic",
   },
