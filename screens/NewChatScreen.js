@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View,Image } from "react-native";
 import React, { useState } from "react";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton.js";
@@ -20,6 +20,7 @@ import {
 import { db } from "../firebase/FirebaseConfig.js";
 import { ActivityIndicator } from "react-native";
 import { FlatList } from "react-native";
+import { AntDesign } from '@expo/vector-icons';
 
 const NewChatScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -99,6 +100,7 @@ const NewChatScreen = ({ navigation }) => {
           onChangeText={(e) => {
             setSearchText(e);
           }}
+          autoCapitalize="none"
         />
       </View>
       {
@@ -117,10 +119,13 @@ const NewChatScreen = ({ navigation }) => {
           <FlatList
             data={Object.keys(users)}
             renderItem={(itemData) => {
-              // console.log(itemData.item)
+              const userId = itemData.item;
+              const userData = users[userId];
               return (
                 <View style={styles.searchResultContainer}>
-                  <Text>{itemData.item}</Text>
+                  <Image source={{uri:userData.ProfilePicURL}} style={styles.searchUserImage} resizeMode="contain"/>
+                  <Text style={styles.searchUserName}>{userData.name.toUpperCase()}</Text>
+                  <AntDesign name="forward" size={24} color="#6f4e37" style={styles.searchUserArrow}/>
                 </View>
               );
             }}
@@ -188,6 +193,33 @@ const styles = StyleSheet.create({
     fontFamily: "Bold",
   },
   searchResultContainer:{
-
+    flexDirection: "row",
+    alignItems: "center",
+    height:85,
+    // backgroundColor: "#6f4e37",
+    borderWidth:3,
+    borderColor:"#6f4e37",
+    borderRadius: 50,
+    paddingHorizontal: 10,
+    margin: 5,
+    marginHorizontal:20,
+  },
+  searchUserImage:{
+     width:65,
+     height:65,
+     borderRadius:40,
+     borderWidth:3,
+     borderColor:"#6f4e37",
+     backgroundColor:"#6f4e37",
+     marginRight:25,
+  },
+  searchUserName:{
+    fontSize: 22,
+    color: "#6f4e37",
+    fontFamily: "BoldItalic",
+  },
+  searchUserArrow:{
+    position:"absolute",
+    right:20,
   },
 });
