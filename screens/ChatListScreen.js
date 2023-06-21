@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Button, ImageBackground } from 'react-native'
 import React,{ useEffect } from 'react'
 import backgroundImage from "../assets/images/navigatorBackground2.jpg";
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import CustomHeaderButton from '../components/customHeaderButton';
+import CustomHeaderButton from '../components/CustomHeaderButton';
 
 
 const ChatListScreen = ({navigation}) => {
@@ -14,6 +14,7 @@ const ChatListScreen = ({navigation}) => {
           <Item
              title='newChat'
              iconName='create-outline'
+             color="#fff"
              onPress={()=>{navigation.navigate("NewChatScreen")}}
           />
         </HeaderButtons>

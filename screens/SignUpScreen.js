@@ -73,6 +73,7 @@ const SignUpScreen = ({ navigation }) => {
             password,
             uid: userCredentials.user.uid,
             signUpDate: new Date().toISOString(),
+            searchName:name.toLowerCase(),
           };
 
           //  CREATE USER IN FIRESTOR REALTIME - DATABASE =====================>
