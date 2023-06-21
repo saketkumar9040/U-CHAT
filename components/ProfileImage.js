@@ -16,7 +16,7 @@ const ProfileImage = ({userData}) => {
   const [isLoading, setIsLoading] = useState("");
 
   const previousImage = userData.imageName;
-  console.log(previousImage)
+  // console.log(previousImage)
 
   const pickImage = async () => {
     try {
