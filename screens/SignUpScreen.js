@@ -23,7 +23,7 @@ import { app, auth } from "../firebase/FirebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { child, getDatabase, ref, set } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
-import { authenticate, autoLogout } from "../store/Slice";
+import { authenticate, autoLogout } from "../store/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignUpScreen = ({ navigation }) => {

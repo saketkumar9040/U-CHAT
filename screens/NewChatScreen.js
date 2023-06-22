@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View,Image } from "react-native";
+import { StyleSheet, Text, TextInput, View, Image } from "react-native";
 import React, { useState } from "react";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton.js";
@@ -20,8 +20,9 @@ import {
 import { db } from "../firebase/FirebaseConfig.js";
 import { ActivityIndicator } from "react-native";
 import { FlatList } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
-import { TouchableWithoutFeedback } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { setStoredUsers } from "../store/userSlice.js";
 
 const NewChatScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +30,11 @@ const NewChatScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
   const [noUserFound, setNoUserFound] = useState(false);
   // console.log(users);
+
+  let loginUserData = useSelector((state) => state.auth.userData);
+  // console.log(loginUserData.uid);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     navigation.setOptions({
@@ -73,8 +79,13 @@ const NewChatScreen = ({ navigation }) => {
         const snapshot = await get(queryRef);
         setIsLoading(false);
         if (snapshot.exists()) {
-          setUsers(snapshot.val());
+          const searchResult = snapshot.val();
+          // console.log(searchResult);
+          await delete searchResult[loginUserData.uid]; //  DELETE LOGIN USER FROM SEARCH RESUTL  //
+          await setUsers(searchResult);
+
           setNoUserFound(false);
+          dispatch(setStoredUsers({newUsers : searchResult}))
           return;
         } else {
           setUsers({});
@@ -123,13 +134,24 @@ const NewChatScreen = ({ navigation }) => {
               const userId = itemData.item;
               const userData = users[userId];
               return (
-                <TouchableOpacity style={styles.searchResultContainer}>
-                  <Image source={{uri:userData.ProfilePicURL}} style={styles.searchUserImage} resizeMode="contain"/>
-                 <View style={styles.searchUserTextContainer}>
-                 <Text style={styles.searchUserName}>{userData.name.toUpperCase()}</Text>
-                  <Text style={styles.searchUserTapToChat}>Tap to chat</Text>
-                 </View>
-                  <AntDesign name="forward" size={20} color="#6f4e37" style={styles.searchUserArrow}/>
+                <TouchableOpacity style={styles.searchResultContainer} onPress={()=>navigation.navigate("ChatScreen",{userData})}>
+                  <Image
+                    source={{ uri: userData.ProfilePicURL }}
+                    style={styles.searchUserImage}
+                    resizeMode="contain"
+                  />
+                  <View style={styles.searchUserTextContainer}>
+                    <Text style={styles.searchUserName}>
+                      {userData.name.toUpperCase()}
+                    </Text>
+                    <Text style={styles.searchUserTapToChat}>Tap to chat</Text>
+                  </View>
+                  <AntDesign
+                    name="forward"
+                    size={20}
+                    color="#6f4e37"
+                    style={styles.searchUserArrow}
+                  />
                 </TouchableOpacity>
               );
             }}
@@ -171,7 +193,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     backgroundColor: "#6f4e37",
     borderRadius: 40,
-    // paddingHorizontal: 5,
     margin: 5,
   },
   textInput: {
@@ -196,44 +217,43 @@ const styles = StyleSheet.create({
     color: "#6f4e37",
     fontFamily: "Bold",
   },
-  searchResultContainer:{
+  searchResultContainer: {
     flexDirection: "row",
     alignItems: "center",
-    height:80,
+    height: 80,
     // backgroundColor: "#6f4e37",
-    borderWidth:3,
-    borderColor:"#6f4e37",
+    borderWidth: 3,
+    borderColor: "#6f4e37",
     borderRadius: 50,
     paddingHorizontal: 10,
     margin: 5,
-    marginHorizontal:20,
+    marginHorizontal: 20,
   },
-  searchUserImage:{
-     width:60,
-     height:60,
-     borderRadius:40,
-     borderWidth:3,
-     borderColor:"#6f4e37",
-     backgroundColor:"#6f4e37",
-     marginRight:5,
+  searchUserImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: "#6f4e37",
+    backgroundColor: "#6f4e37",
+    marginRight: 5,
   },
-  searchUserTextContainer:{
-    flexDirection:"column",
-    marginLeft:10,
-  
+  searchUserTextContainer: {
+    flexDirection: "column",
+    marginLeft: 10,
   },
-  searchUserTapToChat:{
-    fontSize:13,
+  searchUserTapToChat: {
+    fontSize: 13,
     color: "#6f4e37",
     fontFamily: "Bold",
   },
-  searchUserName:{
-    fontSize: 20,
+  searchUserName: {
+    fontSize: 22,
     color: "#6f4e37",
     fontFamily: "BoldItalic",
   },
-  searchUserArrow:{
-    position:"absolute",
-    right:20,
+  searchUserArrow: {
+    position: "absolute",
+    right: 20,
   },
 });

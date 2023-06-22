@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { deletePreviousProfilePic, launchImagePicker, uploadImage } from "../utils/ImagePickerHelper";
 import { child, getDatabase, ref, update } from "firebase/database";
 import { useDispatch } from "react-redux";
-import { updateUserData } from "../store/Slice";
+import { updateUserData } from "../store/authSlice";
 import { ActivityIndicator } from "react-native";
 
 const ProfileImage = ({userData}) => {

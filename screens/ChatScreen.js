@@ -5,26 +5,51 @@ import {
   ImageBackground,
   Button,
   TouchableOpacity,
+  Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BackgroundImage from "../assets/images/chatScreenBackground.png";
 import { TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons, Feather,FontAwesome  } from "@expo/vector-icons";
+import { Ionicons, Feather, FontAwesome, AntDesign } from "@expo/vector-icons";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import CustomHeaderButton from "../components/CustomHeaderButton";
+import userProfilePic from "../assets/images/userProfile.png"
 
-const ChatScreen = () => {
+const ChatScreen = ({ navigation, route }) => {
+  // console.log(route?.params)
+  let userData = route?.params?.userData;
 
-    const [messageText, setMessageText] = useState("");
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => {
+        return (
+          <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={()=>navigation.navigate("ChatList")}>
+              <AntDesign name="arrowleft" size={25} color="#fff" />
+            </TouchableOpacity>
+            <Image
+              source={userData?.ProfilePicURL?{ uri: userData?.ProfilePicURL }:userProfilePic}
+              style={styles.userImage}
+              resizeMode="contain"
+            />
+            <Text style={styles.userName}>{userData?.name}</Text>
+          </View>
+        );
+      },
+    });
+  }, []);
 
-    const SendMessageHandler = ()=> {
-        console.log(messageText);
-        setMessageText("");
-    }
+  const [messageText, setMessageText] = useState("");
 
-    const CameraHandler = () => {
-        console.log("Camera opening ...📸")
-    }
-    
+  const SendMessageHandler = () => {
+    console.log(messageText);
+    setMessageText("");
+  };
+
+  const CameraHandler = () => {
+    console.log("Camera opening ...📸");
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
@@ -36,21 +61,26 @@ const ChatScreen = () => {
         <TouchableOpacity>
           <Ionicons name="add-circle-outline" size={35} color="#FFF" />
         </TouchableOpacity>
-        <TextInput style={styles.textBox} selectionColor={"#6f4e37"} value={messageText} onChangeText={(text)=>setMessageText(text)} onSubmitEditing={()=>SendMessageHandler()}/>
+        <TextInput
+          style={styles.textBox}
+          selectionColor={"#6f4e37"}
+          value={messageText}
+          onChangeText={(text) => setMessageText(text)}
+          onSubmitEditing={() => SendMessageHandler()}
+        />
 
         {
-         //////////   CHANGING TO ICON WHEN SOMETHING IS TYPED IN INPUT BOX  ////////////////////////
+          //////////   CHANGING TO ICON WHEN SOMETHING IS TYPED IN INPUT BOX  ////////////////////////
           messageText ? (
-            <TouchableOpacity onPress={()=>SendMessageHandler()}>
-           <FontAwesome name="send-o" size={32} color="#FFF" />
-          </TouchableOpacity>
-          ):(
-            <TouchableOpacity onPress={()=>CameraHandler()}>
-            <Feather name="camera" size={32} color="#FFF" />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => SendMessageHandler()}>
+              <FontAwesome name="send-o" size={32} color="#FFF" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => CameraHandler()}>
+              <Feather name="camera" size={32} color="#FFF" />
+            </TouchableOpacity>
           )
         }
-
       </View>
     </SafeAreaView>
   );
@@ -65,6 +95,28 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 5,
+  },
+  userImage: {
+    width: 40,
+    height: 40,
+    marginLeft: 5,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    backgroundColor: "#6f4e37",
+  },
+  userName: {
+    fontSize: 20,
+    marginLeft: 10,
+    color: "#fff",
+    fontFamily: "Bold",
+    letterSpacing: 1,
+    alignSelf: "flex-start",
   },
   inputContainer: {
     flexDirection: "row",
@@ -86,7 +138,6 @@ const styles = StyleSheet.create({
     width: "70%",
     color: "#6f4e37",
     fontSize: 16,
-    fontWeight:"bold",
-    
+    fontWeight: "bold",
   },
 });

@@ -2,7 +2,7 @@ import { StyleSheet, View, ActivityIndicator } from "react-native";
 import React, { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
-import {authenticate, autoLogin ,autoLogout} from "../store/Slice"
+import {authenticate, autoLogin ,autoLogout} from "../store/authSlice"
 import { child, get, getDatabase, ref } from "firebase/database";
 import { app } from "../firebase/FirebaseConfig";
 

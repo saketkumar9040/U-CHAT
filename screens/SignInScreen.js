@@ -15,7 +15,7 @@ import { emailValidator, passwordValidator } from "../utils/Validators";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { app, auth } from "../firebase/FirebaseConfig";
 import { useDispatch } from "react-redux";
-import { authenticate, autoLogout } from "../store/Slice";
+import { authenticate, autoLogout } from "../store/authSlice";
 import { Alert } from "react-native";
 import { child, get, getDatabase, ref } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";

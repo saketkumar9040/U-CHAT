@@ -23,7 +23,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { child, getDatabase, ref, update } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { autoLogout, updateUserData } from "../store/Slice";
+import { autoLogout, updateUserData } from "../store/authSlice";
 import ProfileImage from "../components/ProfileImage";
 
 
