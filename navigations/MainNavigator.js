@@ -67,60 +67,66 @@ const TabNavigator = () => {
   );
 };
 
-const MainNavigator = () => {
+const StackNavigator = () => {
   return (
     <Stack.Navigator
-      screenOptions={{
-        contentStyle: {
-          backgroundColor: "#6F4E37",
-        },
-      }}
-      initialRouteName="Home"
-    >
-      <Stack.Group>
-        <Stack.Screen
-          name="Home"
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ChatScreen"
-          component={ChatScreen}
-          options={{
-            gestureEnabled: true,
-            //   headerShown: false,
-            headerTitle: "",
-            headerBackTitle: "back",
-            headerStyle: {
-              backgroundColor: "#6F4E37",
-            },
-            headerTintColor: "#ffffff",
-          }}
-        />
-        <Stack.Screen
-          name="ChatSettingScreen"
-          component={ChatSettingScreen}
-          options={{
-            gestureEnabled: true,
-            headerTitle: "Settings",
-          }}
-        />
-      </Stack.Group>
-      <Stack.Group screenOptions={{presentation:'modal'}}>
+    screenOptions={{
+      contentStyle: {
+        backgroundColor: "#6F4E37",
+      },
+    }}
+    initialRouteName="Home"
+  >
+    <Stack.Group>
       <Stack.Screen
-          name="NewChatScreen"
-          component={NewChatScreen}
-          options={{
-            gestureEnabled: true,
-            headerStyle: {
-              backgroundColor: "#6F4E37",
-            },
-            // headerBackTitle: "back",
-            headerTintColor: "#ffffff",
-          }}
-        />
-      </Stack.Group>
-    </Stack.Navigator>
+        name="Home"
+        component={TabNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ChatScreen"
+        component={ChatScreen}
+        options={{
+          gestureEnabled: true,
+          //   headerShown: false,
+          headerTitle: "",
+          headerBackTitle: "back",
+          headerStyle: {
+            backgroundColor: "#6F4E37",
+          },
+          headerTintColor: "#ffffff",
+        }}
+      />
+      <Stack.Screen
+        name="ChatSettingScreen"
+        component={ChatSettingScreen}
+        options={{
+          gestureEnabled: true,
+          headerTitle: "Settings",
+        }}
+      />
+    </Stack.Group>
+    <Stack.Group screenOptions={{presentation:'modal'}}>
+    <Stack.Screen
+        name="NewChatScreen"
+        component={NewChatScreen}
+        options={{
+          gestureEnabled: true,
+          headerStyle: {
+            backgroundColor: "#6F4E37",
+          },
+          // headerBackTitle: "back",
+          headerTintColor: "#ffffff",
+        }}
+      />
+    </Stack.Group>
+  </Stack.Navigator>
+  )
+};
+
+const MainNavigator = () => {
+  return (
+   <StackNavigator/>
   );
 };
 

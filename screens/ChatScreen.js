@@ -59,7 +59,7 @@ const ChatScreen = ({ navigation, route }) => {
   
 
   const SendMessageHandler = () => {
-    console.log(messageText);
+    
     setMessageText("");
   };
 
