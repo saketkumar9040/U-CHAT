@@ -81,11 +81,10 @@ const NewChatScreen = ({ navigation }) => {
         if (snapshot.exists()) {
           const searchResult = snapshot.val();
           // console.log(searchResult);
-          await delete searchResult[loginUserData.uid]; //  DELETE LOGIN USER FROM SEARCH RESUTL  //
+          await delete searchResult[loginUserData.uid]; //  DELETE LOGGED IN USER FROM SEARCH RESULT  //
           await setUsers(searchResult);
 
           setNoUserFound(false);
-          dispatch(setStoredUsers({newUsers : searchResult}))
           return;
         } else {
           setUsers({});
@@ -134,7 +133,13 @@ const NewChatScreen = ({ navigation }) => {
               const userId = itemData.item;
               const userData = users[userId];
               return (
-                <TouchableOpacity style={styles.searchResultContainer} onPress={()=>navigation.navigate("ChatScreen",{userData})}>
+                <TouchableOpacity
+                  style={styles.searchResultContainer}
+                  onPress={async () => {
+                    await dispatch(setStoredUsers({ newUsers: userData }));
+                    navigation.navigate("ChatScreen", { userData });
+                  }}
+                >
                   <Image
                     source={{ uri: userData.ProfilePicURL }}
                     style={styles.searchUserImage}

@@ -3,9 +3,13 @@ import React,{ useEffect } from 'react'
 import backgroundImage from "../assets/images/navigatorBackground2.jpg";
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../components/CustomHeaderButton';
+import { useSelector } from 'react-redux';
 
 
 const ChatListScreen = ({navigation}) => {
+
+  const searchedUser = useSelector(state=>state.users);
+  // console.log(searchedUser);
 
   useEffect(()=>{
     navigation.setOptions({

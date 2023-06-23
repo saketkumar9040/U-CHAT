@@ -15,10 +15,17 @@ import { Ionicons, Feather, FontAwesome, AntDesign } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import userProfilePic from "../assets/images/userProfile.png"
+import { useSelector } from "react-redux";
+import Bubble from "../components/Bubble";
 
 const ChatScreen = ({ navigation, route }) => {
+
+  const[hasChat,setHasChat] = useState(false);
+  const [messageText, setMessageText] = useState("");
+
   // console.log(route?.params)
   let userData = route?.params?.userData;
+  const storedUser = useSelector(state=>state.users.storedUser);
 
   useEffect(() => {
     navigation.setOptions({
@@ -40,7 +47,16 @@ const ChatScreen = ({ navigation, route }) => {
     });
   }, []);
 
-  const [messageText, setMessageText] = useState("");
+  useEffect(()=>{
+    // if(storedUser[userData.uid]){
+    //   console.log("already has a conversation with the user.🤗")
+    //   setHasChat(true)
+    // }else{
+    //   console.log("new user,I have to chat🙄");
+    // }
+  },[storedUser])
+
+  
 
   const SendMessageHandler = () => {
     console.log(messageText);
@@ -56,7 +72,13 @@ const ChatScreen = ({ navigation, route }) => {
       <ImageBackground
         source={BackgroundImage}
         style={styles.image}
-      ></ImageBackground>
+      >
+      {
+        !hasChat &&(
+           <Bubble text="No messages yet😶. say HI👋"/>
+           )
+      }
+      </ImageBackground>
       <View style={styles.inputContainer}>
         <TouchableOpacity>
           <Ionicons name="add-circle-outline" size={35} color="#FFF" />
