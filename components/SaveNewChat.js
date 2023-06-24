@@ -3,6 +3,7 @@ import { db } from "../firebase/FirebaseConfig"
 
 
 export const SaveNewChat = async(loggedInUserId,chatData) => {
+   console.log(chatData)
    const newChatData = {
     ...chatData,
     createdBy:loggedInUserId,
@@ -10,14 +11,14 @@ export const SaveNewChat = async(loggedInUserId,chatData) => {
     createdAt:new Date().toISOString(),
     updatedAt:new Date().toISOString(),
    }
-   const dbRef = ref(db);
-   const newChat = await push(child(dbRef,"Chats"),newChatData);
+   // const dbRef = ref(db);
+   // const newChat = await push(child(dbRef,"Chats"),newChatData);
 
-   let chatUsers = newChatData.users;
-   for (let i = 0; i < chatUsers.length; i++) {
-    const userId = chatUsers[i];
-    await push(child(dbRef,`UsersChats/${userId}`),newChat.key);
-   }
-   return newChat.key
+   // let chatUsers = newChatData.users;
+   // for (let i = 0; i < chatUsers.length; i++) {
+   //  const userId = chatUsers[i];
+   //  await push(child(dbRef,`UsersChats/${userId}`),newChat.key);
+   // }
+   // return newChat.key
 }
 

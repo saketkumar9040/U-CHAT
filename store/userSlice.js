@@ -9,9 +9,13 @@ const userSlice = createSlice({
     setStoredUsers: (state, action) => {
       const newUsers = action.payload.newUsers;
       const existingUsers = state.storedUser;
-      existingUsers[newUsers.uid] = newUsers;
+      const usersArray = Object.values(newUsers)
+      for(let i =0 ;i <usersArray.length;i++){
+        const userData= usersArray[i]
+        existingUsers[userData.uid] = userData;
+      }
       state.storedUser = existingUsers;
-      console.log(state.storedUser)
+      // console.log(state.storedUser)
     },
   },
 });

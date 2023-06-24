@@ -14,28 +14,46 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, Feather, FontAwesome, AntDesign } from "@expo/vector-icons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton";
-import userProfilePic from "../assets/images/userProfile.png"
+import userProfilePic from "../assets/images/userProfile.png";
 import { useSelector } from "react-redux";
 import Bubble from "../components/Bubble";
+import { SaveNewChat } from "../components/SaveNewChat";
 
 const ChatScreen = ({ navigation, route }) => {
 
   const [messageText, setMessageText] = useState("");
   const [userData, setUserData] = useState("");
+  const [chatId, setChatId] = useState(route?.params?.chatId);
 
-    let allChatUsers = route?.params?.chatUsers;
-    console.log(allChatUsers);
+  let loggedInUserData = useSelector(state=>state.auth.userData);
+  // console.log(loggedInUserData.uid)
+
+  let allChatUsers = route?.params?.chatUsers;
+  console.log("all chat users"+JSON.stringify(allChatUsers));
+
+  useEffect(() => {
+    setUserProfile=async()=>{
+      if (allChatUsers.length === 2) {
+        await setUserData(allChatUsers[0]);
+      }
+    },
+    setUserProfile();
+  }, [allChatUsers]);
 
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => {
         return (
           <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={()=>navigation.navigate("ChatList")}>
+            <TouchableOpacity onPress={() => navigation.navigate("ChatList")}>
               <AntDesign name="arrowleft" size={25} color="#fff" />
             </TouchableOpacity>
             <Image
-              source={userData?.ProfilePicURL?{ uri: userData?.ProfilePicURL }:userProfilePic}
+              source={
+                userData?.ProfilePicURL
+                  ? { uri: userData?.ProfilePicURL }
+                  : userProfilePic
+              }
               style={styles.userImage}
               resizeMode="contain"
             />
@@ -44,14 +62,17 @@ const ChatScreen = ({ navigation, route }) => {
         );
       },
     });
-  }, []);
+  }, [userData]);
 
-
-
-  
+  useEffect(()=>{
+     const createNewChat = async() => {
+       if(!chatId){
+        let newChatId =  await SaveNewChat()
+       }
+     }
+  },[])
 
   const SendMessageHandler = () => {
-    
     setMessageText("");
   };
 
@@ -61,15 +82,12 @@ const ChatScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
-      <ImageBackground
-        source={BackgroundImage}
-        style={styles.image}
-      >
-      {/* {
-        !hasChat &&(
+      <ImageBackground source={BackgroundImage} style={styles.image}>
+        {
+        !chatId &&(
            <Bubble text="No messages yet😶. say HI👋"/>
            )
-      } */}
+      }
       </ImageBackground>
       <View style={styles.inputContainer}>
         <TouchableOpacity>

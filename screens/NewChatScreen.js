@@ -28,6 +28,7 @@ const NewChatScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState();
   const [searchText, setSearchText] = useState("");
+  const [placeholderText, setPlaceholderText] = useState("");
   const [noUserFound, setNoUserFound] = useState(false);
   // console.log(users);
 
@@ -53,7 +54,11 @@ const NewChatScreen = ({ navigation }) => {
           </HeaderButtons>
         );
       },
-      headerTitle: "NEW CHAT",
+      headerTitle: "SEARCH ",
+      headerTitleStyle: {
+        fontSize: 25,
+        fontFamily: "BoldItalic",
+      },
     });
   }, []);
 
@@ -81,7 +86,9 @@ const NewChatScreen = ({ navigation }) => {
         if (snapshot.exists()) {
           const searchResult = snapshot.val();
           // console.log(searchResult);
-          await delete searchResult[loginUserData.uid]; //  DELETE LOGGED IN USER FROM SEARCH RESULT  //
+          if (searchResult[loginUserData?.uid]) {
+            await delete searchResult[loginUserData?.uid]; //  DELETE LOGGED-IN USER FROM SEARCH RESULT  //
+          }
           await setUsers(searchResult);
 
           setNoUserFound(false);
@@ -99,20 +106,44 @@ const NewChatScreen = ({ navigation }) => {
     return () => clearTimeout(delaySearch);
   }, [searchText]);
 
-  const userPressed = (userData) => {
-    navigation.navigate("ChatList",{
-      selectedUser :userData
-    })
-  }
+  const userPressed = async (userData) => {
+    await dispatch(setStoredUsers({ newUsers: { userData } }));
+    navigation.navigate("ChatList", {
+      selectedUser: userData,
+    });
+  };
+
+  useEffect(() => {
+    const placeHolderText = async () => {
+      let names = ["Friends😎", "Family👪", "Groups👩‍👩‍👧‍👦"];
+      let count = 0;
+
+      const cycleArray = async () => {
+        let name = names[count];
+        console.log(name);
+        setTimeout(async () => {
+          await setPlaceholderText(name);
+        }, 3000);
+        // increment our counter
+        count++;
+
+        // reset counter if we reach end of array
+        if (count === names.length) {
+          count = 0;
+        }
+      };
+      setInterval(cycleArray, 10000);
+    };
+    placeHolderText();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.searchContainer}>
         <FontAwesome name="search" size={28} color="#fff" />
         <TextInput
-          placeholder={"       >>>  Search here 🧐  <<< "}
-          placeholderTextColor="#000"
-          selectionColor="#000"
+          placeholder={placeholderText}
+          placeholderTextColor="#808080"
           style={styles.textInput}
           onChangeText={(e) => {
             setSearchText(e);
@@ -141,12 +172,9 @@ const NewChatScreen = ({ navigation }) => {
               return (
                 <TouchableOpacity
                   style={styles.searchResultContainer}
-                  onPress={async () => {
-                    userPressed(userData)
-                    // await dispatch(setStoredUsers({ newUsers: userData }));
-                    // navigation.navigate("ChatScreen", { userData });
-                  }
-                }
+                  onPress={() => {
+                    userPressed(userData);
+                  }}
                 >
                   <Image
                     source={{ uri: userData.ProfilePicURL }}
@@ -214,7 +242,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 20,
     marginVertical: 10,
-    fontSize: 20,
+    fontSize: 18,
     backgroundColor: "#fff",
     height: 40,
     fontFamily: "BoldItalic",

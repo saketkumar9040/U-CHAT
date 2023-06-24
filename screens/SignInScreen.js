@@ -25,8 +25,8 @@ let timer;
 const SignInScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("saketk89@gmail.com");// have to change
+  const [password, setPassword] = useState("saket@1992");// have to change
   const [showPassword, setShowPassword] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
