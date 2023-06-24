@@ -12,32 +12,29 @@ import BackgroundImage from "../assets/images/chatScreenBackground.png";
 import { TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, Feather, FontAwesome, AntDesign } from "@expo/vector-icons";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import CustomHeaderButton from "../components/CustomHeaderButton";
 import userProfilePic from "../assets/images/userProfile.png";
 import { useSelector } from "react-redux";
 import Bubble from "../components/Bubble";
 import { SaveNewChat } from "../components/SaveNewChat";
 
 const ChatScreen = ({ navigation, route }) => {
-
   const [messageText, setMessageText] = useState("");
   const [userData, setUserData] = useState("");
   const [chatId, setChatId] = useState(route?.params?.chatId);
 
-  let loggedInUserData = useSelector(state=>state.auth.userData);
+  let loggedInUserData = useSelector((state) => state.auth.userData);
   // console.log(loggedInUserData.uid)
 
   let allChatUsers = route?.params?.chatUsers;
-  console.log("all chat users"+JSON.stringify(allChatUsers));
+  // console.log("all chat users"+JSON.stringify(allChatUsers));
 
   useEffect(() => {
-    setUserProfile=async()=>{
+    (setUserProfile = async () => {
       if (allChatUsers.length === 2) {
         await setUserData(allChatUsers[0]);
       }
-    },
-    setUserProfile();
+    }),
+      setUserProfile();
   }, [allChatUsers]);
 
   useEffect(() => {
@@ -64,16 +61,18 @@ const ChatScreen = ({ navigation, route }) => {
     });
   }, [userData]);
 
-  useEffect(()=>{
-     const createNewChat = async() => {
-       if(!chatId){
-        let newChatId =  await SaveNewChat()
-       }
-     }
-  },[])
-
-  const SendMessageHandler = () => {
-    setMessageText("");
+  const SendMessageHandler = async () => {
+    try {
+      if (!chatId) {
+        let allchatUsersUid = allChatUsers.map((e)=>e.uid);
+        // console.log(allchatUsersUid);
+        let newChatId = await SaveNewChat(loggedInUserData.uid, allchatUsersUid);
+        setChatId(newChatId);
+        setMessageText("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const CameraHandler = () => {
@@ -83,11 +82,7 @@ const ChatScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
       <ImageBackground source={BackgroundImage} style={styles.image}>
-        {
-        !chatId &&(
-           <Bubble text="No messages yet😶. say HI👋"/>
-           )
-      }
+        {!chatId && <Bubble text="No messages yet😶. say HI👋" />}
       </ImageBackground>
       <View style={styles.inputContainer}>
         <TouchableOpacity>
@@ -105,7 +100,7 @@ const ChatScreen = ({ navigation, route }) => {
           //////////   CHANGING TO ICON WHEN SOMETHING IS TYPED IN INPUT BOX  ////////////////////////
           messageText ? (
             <TouchableOpacity onPress={() => SendMessageHandler()}>
-              <FontAwesome name="send-o" size={32} color="#FFF" />
+              <Ionicons name="send-sharp" size={28} color="#fff" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity onPress={() => CameraHandler()}>

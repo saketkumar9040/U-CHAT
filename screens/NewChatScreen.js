@@ -28,7 +28,7 @@ const NewChatScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState();
   const [searchText, setSearchText] = useState("");
-  const [placeholderText, setPlaceholderText] = useState("");
+  const [placeholderText, setPlaceholderText] = useState("Search");
   const [noUserFound, setNoUserFound] = useState(false);
   // console.log(users);
 
@@ -120,7 +120,7 @@ const NewChatScreen = ({ navigation }) => {
 
       const cycleArray = async () => {
         let name = names[count];
-        console.log(name);
+        // console.log(name);
         setTimeout(async () => {
           await setPlaceholderText(name);
         }, 3000);
@@ -132,7 +132,7 @@ const NewChatScreen = ({ navigation }) => {
           count = 0;
         }
       };
-      setInterval(cycleArray, 10000);
+      setInterval(cycleArray, 5000);
     };
     placeHolderText();
   }, []);
@@ -142,7 +142,7 @@ const NewChatScreen = ({ navigation }) => {
       <View style={styles.searchContainer}>
         <FontAwesome name="search" size={28} color="#fff" />
         <TextInput
-          placeholder={placeholderText}
+          placeholder={`         >>>    ${placeholderText}     <<<`}
           placeholderTextColor="#808080"
           style={styles.textInput}
           onChangeText={(e) => {

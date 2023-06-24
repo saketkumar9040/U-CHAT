@@ -12,11 +12,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import backgroundImage from "../assets/images/authBackground.jpg";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { emailValidator, passwordValidator } from "../utils/Validators";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { app, auth } from "../firebase/FirebaseConfig";
 import { useDispatch } from "react-redux";
 import { authenticate, autoLogout } from "../store/authSlice";
 import { Alert } from "react-native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { app, auth } from "../firebase/FirebaseConfig";
 import { child, get, getDatabase, ref } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
