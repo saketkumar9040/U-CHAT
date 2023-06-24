@@ -20,12 +20,11 @@ import Bubble from "../components/Bubble";
 
 const ChatScreen = ({ navigation, route }) => {
 
-  const[hasChat,setHasChat] = useState(false);
   const [messageText, setMessageText] = useState("");
+  const [userData, setUserData] = useState("");
 
-  // console.log(route?.params)
-  let userData = route?.params?.userData;
-  const storedUser = useSelector(state=>state.users.storedUser);
+    let allChatUsers = route?.params?.chatUsers;
+    console.log(allChatUsers);
 
   useEffect(() => {
     navigation.setOptions({
@@ -47,14 +46,7 @@ const ChatScreen = ({ navigation, route }) => {
     });
   }, []);
 
-  useEffect(()=>{
-    // if(storedUser[userData.uid]){
-    //   console.log("already has a conversation with the user.🤗")
-    //   setHasChat(true)
-    // }else{
-    //   console.log("new user,I have to chat🙄");
-    // }
-  },[storedUser])
+
 
   
 
@@ -73,11 +65,11 @@ const ChatScreen = ({ navigation, route }) => {
         source={BackgroundImage}
         style={styles.image}
       >
-      {
+      {/* {
         !hasChat &&(
            <Bubble text="No messages yet😶. say HI👋"/>
            )
-      }
+      } */}
       </ImageBackground>
       <View style={styles.inputContainer}>
         <TouchableOpacity>

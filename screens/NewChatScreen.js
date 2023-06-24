@@ -99,6 +99,12 @@ const NewChatScreen = ({ navigation }) => {
     return () => clearTimeout(delaySearch);
   }, [searchText]);
 
+  const userPressed = (userData) => {
+    navigation.navigate("ChatList",{
+      selectedUser :userData
+    })
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.searchContainer}>
@@ -136,9 +142,11 @@ const NewChatScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={styles.searchResultContainer}
                   onPress={async () => {
-                    await dispatch(setStoredUsers({ newUsers: userData }));
-                    navigation.navigate("ChatScreen", { userData });
-                  }}
+                    userPressed(userData)
+                    // await dispatch(setStoredUsers({ newUsers: userData }));
+                    // navigation.navigate("ChatScreen", { userData });
+                  }
+                }
                 >
                   <Image
                     source={{ uri: userData.ProfilePicURL }}
