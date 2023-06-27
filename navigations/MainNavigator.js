@@ -156,7 +156,7 @@ const MainNavigator = () => {
         const chatRef = child(dbRef, `Chats/${chatId}`);
         refs.push(chatRef);
 
-        onValue(chatRef, (chatSnapshot) => {
+        onValue(chatRef, async(chatSnapshot) => {
           chatsFoundCount++;
       
           const data = chatSnapshot.val();
@@ -164,15 +164,16 @@ const MainNavigator = () => {
           if(data){
             data.key = chatSnapshot.key;
 
-            data.users.forEach((userId)=>{
+            data.users.forEach(async(userId)=>{
               if(storedUsers[userId]){
                 return;
               }
               const userRef = child(dbRef,`UserData/${userId}`);
-              get(userRef).then(async(userSnapshot)=>{
-                  //  console.log(userSnapshot.val());
+              await get(userRef).then(async(userSnapshot)=>{
+                   console.log(userSnapshot.val());
                    const userSnapshotData = userSnapshot.val();
-                   await dispatch(setStoredUsers({newUsers:{userSnapshotData}}));
+                   console.log(userSnapshotData)
+                  //  await dispatch(setStoredUsers({newUsers:{userSnapshotData}}));
               })
               refs.push(userRef); 
             })

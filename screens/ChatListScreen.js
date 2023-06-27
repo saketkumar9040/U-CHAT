@@ -7,11 +7,12 @@ import {
   FlatList,
   ScrollView,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import backgroundImage from "../assets/images/navigatorBackground2.jpg";
 import { useSelector } from "react-redux";
-import { Ionicons, FontAwesome, AntDesign } from "@expo/vector-icons";
+import { Ionicons, FontAwesome, AntDesign,MaterialIcons,MaterialCommunityIcons  } from "@expo/vector-icons";
 
 const ChatListScreen = ({ navigation, route }) => {
 
@@ -30,6 +31,8 @@ const ChatListScreen = ({ navigation, route }) => {
   // console.log(Object.values(userChats));
   let chatData = Object.values(userChats);
   // console.log(chatData)
+  const dayNames = ["Sun", "Mon", "Tue","Wed","Thr","Fri","Sat"];
+  const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
   useEffect(() => {
     navigation.setOptions({
@@ -85,26 +88,22 @@ const ChatListScreen = ({ navigation, route }) => {
   }, [selectedUser]);
 
   return (
-    <ScrollView style={styles.container}>
-      {
-        storedUser =={} || storedUser == null ? (
-          <View style={styles.activityContainer}>
-          <ActivityIndicator
-               size={80}
-               color="#fff"
-          />
-        </View>
-        ):(
+          <View style={styles.container}>
           <FlatList
           style={styles.chatUserContainer}
           data={chatData}
           renderItem={(e) => {
             // console.log(e.item.createdAt);
+            let displayDate ;
             let date = new Date(e.item.createdAt);
-            let displayDate =  date.getHours() > 12
-                ? date.getHours()-12
-                : date.getHours()
-                console.log(date);
+            if(date.getHours()===0){
+               displayDate = 12
+            }else{
+              displayDate =  date.getHours() > 12
+                  ? date.getHours()-12
+                  : date.getHours()
+                  // console.log(date);
+            }
             const otherUsersId = e.item.users.find(
               (uid) => uid !== userLoggedIn.uid
             );
@@ -129,15 +128,15 @@ const ChatListScreen = ({ navigation, route }) => {
                 </View>
                 <View  style={styles.timeContainer}>
                   <Text style={styles.dateText}> {displayDate}:{date.getMinutes()} {date.getHours()>12?"PM":"AM"}</Text> 
+                  <Text style={styles.dateText}>{dayNames[date.getDay()]},{monthNames[date.getMonth()]}</Text> 
+                  
                 </View>
               </TouchableOpacity>
             );
           }}
         />
+        </View>
         )
-      }
-    </ScrollView>
-  );
 };
 
 export default ChatListScreen;
@@ -148,7 +147,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffbf00",
   },
   activityContainer:{
-    flex:1,
+    flex: 1,
+    backgroundColor: "#ffbf00",
     alignItems:"center",
     justifyContent:"center",
   },
@@ -161,6 +161,8 @@ const styles = StyleSheet.create({
     height: 80,
     paddingHorizontal: 10,
     marginHorizontal: 5,
+    // elevation:5,
+    backgroundColor:"#ffbf00"
   },
   searchUserImage: {
     width: 60,
@@ -186,13 +188,15 @@ const styles = StyleSheet.create({
     fontFamily: "BoldItalic",
   },
   timeContainer: {
+    alignItems:"center",
+    // flexDirection:"column",
      position:"absolute",
      right:20,
-     top:20,
+     top:15,
   },
   dateText:{
-    fontSize:17,
-    fontFamily:"Bold",
+    fontSize:15,
+    fontFamily:"SemiBold",
     color: "#6f4e37",
   }
 });

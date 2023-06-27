@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BackgroundImage from "../assets/images/chatScreenBackground.png";
 import { TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -61,19 +61,19 @@ const ChatScreen = ({ navigation, route }) => {
     });
   }, [userData]);
 
-  const SendMessageHandler = async () => {
-    try {
-      if (!chatId) {
-        let allchatUsersUid = allChatUsers.map((e)=>e.uid);
-        // console.log(allchatUsersUid);
-        let newChatId = await SaveNewChat(loggedInUserData.uid, allchatUsersUid);
-        setChatId(newChatId);
-        setMessageText("");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const SendMessageHandler = useCallback(async () => {
+      try {
+        if (!chatId) {
+          let allchatUsersUid = allChatUsers.map((e)=>e.uid);
+          // console.log(allchatUsersUid);
+          let newChatId = await SaveNewChat(loggedInUserData.uid, allchatUsersUid);
+          setChatId(newChatId);
+          setMessageText("");
+        }
+      } catch (error) {
+        console.log(error);
+      }  
+  },[])
 
   const CameraHandler = () => {
     console.log("Camera opening ...📸");
