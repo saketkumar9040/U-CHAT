@@ -106,13 +106,6 @@ const NewChatScreen = ({ navigation }) => {
     return () => clearTimeout(delaySearch);
   }, [searchText]);
 
-  const userPressed = async (userData) => {
-    await dispatch(setStoredUsers({ newUsers: { userData } }));
-    navigation.navigate("ChatList", {
-      selectedUser: userData,
-    });
-  };
-
   useEffect(() => {
     const placeHolderText = async () => {
       let names = ["Friends😎", "Family👪", "Groups👩‍👩‍👧‍👦"];
@@ -136,6 +129,15 @@ const NewChatScreen = ({ navigation }) => {
     };
     placeHolderText();
   }, []);
+
+  const userPressed = async (userData) => {
+    // console.log(userData)
+    await dispatch(setStoredUsers({ newUsers: { userData } }));
+    navigation.navigate("ChatList", {
+      selectedUser: userData,
+    });
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>

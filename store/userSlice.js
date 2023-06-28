@@ -8,10 +8,11 @@ const userSlice = createSlice({
   reducers: {
     setStoredUsers: (state, action) => {
       const newUsers = action.payload.newUsers;
-      // console.log(newUsers)
+      // console.log("new user data"+JSON.stringify(newUsers))
       const existingUsers = state.storedUser;
-      // console.log(existingUsers)
+      // console.log("ExistingUser"+JSON.stringify(existingUsers));
       const usersArray = Object.values(newUsers);
+      // console.log("new user array"+JSON.stringify(usersArray));
 
       for(let i =0 ;i <usersArray.length;i++){
         const userData= usersArray[i];

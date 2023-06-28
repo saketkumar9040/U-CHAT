@@ -29,8 +29,11 @@ const ChatListScreen = ({ navigation, route }) => {
 
   const userChats = useSelector((state) => state.chats.chatsData);
   // console.log(Object.values(userChats));
-  let chatData = Object.values(userChats);
+  let chatData = Object.values(userChats).sort((a,b)=>{
+    return new Date(b.updatedAt) - new Date(a.updatedAt);
+  });
   // console.log(chatData)
+  
   const dayNames = ["Sun", "Mon", "Tue","Wed","Thr","Fri","Sat"];
   const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
@@ -93,7 +96,7 @@ const ChatListScreen = ({ navigation, route }) => {
           style={styles.chatUserContainer}
           data={chatData}
           renderItem={(e) => {
-            // console.log(e.item.createdAt);
+            // console.log(e.item);
             let displayDate ;
             let date = new Date(e.item.createdAt);
             if(date.getHours()===0){
@@ -108,12 +111,17 @@ const ChatListScreen = ({ navigation, route }) => {
               (uid) => uid !== userLoggedIn.uid
             );
             const otherUser = storedUser[otherUsersId];
+            // console.log(otherUser)
+            // console.log(`otheruser : ${JSON.stringify(otherUser)}`)
             return (
               <TouchableOpacity
                 style={styles.searchResultContainer}
-                // onPress={() => {
-                //   userPressed(userData);
-                // }}
+                onPress={() => {
+                  navigation.navigate("ChatScreen",{
+                    selectedUser:otherUser,
+                    chatId:e.item.key
+                  })
+                }}
               >
                 <Image
                   source={{ uri: otherUser?.ProfilePicURL }}
@@ -128,7 +136,7 @@ const ChatListScreen = ({ navigation, route }) => {
                 </View>
                 <View  style={styles.timeContainer}>
                   <Text style={styles.dateText}> {displayDate}:{date.getMinutes()} {date.getHours()>12?"PM":"AM"}</Text> 
-                  <Text style={styles.dateText}>{dayNames[date.getDay()]},{monthNames[date.getMonth()]}</Text> 
+                  <Text style={{...styles.dateText,fontSize:11}}>{dayNames[date.getDay()]},{date.getDate()}-{monthNames[date.getMonth()]}</Text> 
                   
                 </View>
               </TouchableOpacity>
@@ -195,7 +203,7 @@ const styles = StyleSheet.create({
      top:15,
   },
   dateText:{
-    fontSize:15,
+    fontSize:16,
     fontFamily:"SemiBold",
     color: "#6f4e37",
   }

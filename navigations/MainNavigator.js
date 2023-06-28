@@ -163,17 +163,19 @@ const MainNavigator = () => {
           // console.log(data)
           if(data){
             data.key = chatSnapshot.key;
-
             data.users.forEach(async(userId)=>{
               if(storedUsers[userId]){
                 return;
               }
               const userRef = child(dbRef,`UserData/${userId}`);
               await get(userRef).then(async(userSnapshot)=>{
-                   console.log(userSnapshot.val());
+                  //  console.log(userSnapshot.val());
+                   if(userSnapshot.val().uid === userData.uid){
+                    return;
+                   }
                    const userSnapshotData = userSnapshot.val();
-                   console.log(userSnapshotData)
-                  //  await dispatch(setStoredUsers({newUsers:{userSnapshotData}}));
+                  //  console.log(userSnapshotData)
+                   await dispatch(setStoredUsers({newUsers:{userSnapshotData}}));
               })
               refs.push(userRef); 
             })

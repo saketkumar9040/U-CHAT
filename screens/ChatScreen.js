@@ -18,8 +18,9 @@ import Bubble from "../components/Bubble";
 import { SaveNewChat } from "../components/SaveNewChat";
 
 const ChatScreen = ({ navigation, route }) => {
+  console.log(route.params.selectedUser)
   const [messageText, setMessageText] = useState("");
-  const [userData, setUserData] = useState("");
+  const [userData, setUserData] = useState(route.params.selectedUser);
   const [chatId, setChatId] = useState(route?.params?.chatId);
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
@@ -28,14 +29,6 @@ const ChatScreen = ({ navigation, route }) => {
   let allChatUsers = route?.params?.chatUsers;
   // console.log("all chat users"+JSON.stringify(allChatUsers));
 
-  useEffect(() => {
-    (setUserProfile = async () => {
-      if (allChatUsers.length === 2) {
-        await setUserData(allChatUsers[0]);
-      }
-    }),
-      setUserProfile();
-  }, [allChatUsers]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -64,9 +57,9 @@ const ChatScreen = ({ navigation, route }) => {
   const SendMessageHandler = useCallback(async () => {
       try {
         if (!chatId) {
-          let allchatUsersUid = allChatUsers.map((e)=>e.uid);
+          let allChatUsersUid = allChatUsers.map((e)=>e.uid);
           // console.log(allchatUsersUid);
-          let newChatId = await SaveNewChat(loggedInUserData.uid, allchatUsersUid);
+          let newChatId = await SaveNewChat(loggedInUserData.uid, allChatUsersUid);
           setChatId(newChatId);
           setMessageText("");
         }
