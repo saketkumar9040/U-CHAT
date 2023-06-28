@@ -7,12 +7,13 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Feather,
   MaterialCommunityIcons,
   Octicons,
   Ionicons,
+  AntDesign,
 } from "@expo/vector-icons";
 import { TextInput } from "react-native";
 import {
@@ -26,8 +27,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { autoLogout, updateUserData } from "../store/authSlice";
 import ProfileImage from "../components/ProfileImage";
 
-
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.userData);
   // console.log(userData)
@@ -63,7 +63,7 @@ const SettingsScreen = () => {
       const childRef = child(dbRef, `UserData/${userData.uid}`);
       await update(childRef, updatedUserDate);
       Alert.alert("Profile Updated Successfully 😊");
-      
+
       setIsLoading(false);
       setHasChanges(false);
       dispatch(updateUserData({ updatedUserDate }));
@@ -76,18 +76,35 @@ const SettingsScreen = () => {
   const logoutHandler = () => {
     AsyncStorage.clear();
     dispatch(autoLogout());
-    console.log("logOut successfully 😏")
+    console.log("logOut successfully 😏");
     Alert.alert("Logout Successfully 😏");
   };
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => {
+        return (
+          <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate("ChatList")}>
+              <AntDesign name="arrowleft" size={25} color="#fff" />
+            </TouchableOpacity>
+              <Ionicons name="settings" size={30} style={{marginLeft:20,color:"#fff"}} />
+            <Text style={{marginLeft:5,fontSize:32,fontFamily:"Bold",color:"#fff"}}>
+              Settings
+            </Text>
+          </View>
+        );
+      },
+    });
+  }, [userData]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>
-        <Ionicons name="settings" size={39} color="black" />
-        Settings
-      </Text>
-      <ScrollView showsVerticalScrollIndicator={false} style={{marginBottom:50,}}>
-        <ProfileImage userData={userData}/>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginBottom: 50 }}
+      >
+        <ProfileImage userData={userData} />
         <View style={styles.inputContainer}>
           <Feather name="user" size={25} color="#fff" />
           <TextInput
@@ -208,15 +225,17 @@ const styles = StyleSheet.create({
     padding: 5,
     alignItems: "center",
   },
-  heading: {
-    alignSelf: "flex-start",
-    paddingLeft: 5,
+  headerContainer: {
+    flexDirection:"row",
+    alignItems:"center",
+    paddingLeft: 8,
     fontSize: 35,
     letterSpacing: 3,
     fontFamily: "BoldItalic",
+    color: "#6f4e37",
   },
   inputContainer: {
-    flex:1,
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#6f4e37",
@@ -260,6 +279,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     position: "absolute",
     bottom: 5,
-
   },
 });

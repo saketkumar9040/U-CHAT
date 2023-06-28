@@ -130,13 +130,13 @@ const NewChatScreen = ({ navigation }) => {
     placeHolderText();
   }, []);
 
-  const userPressed = async (userData) => {
-    // console.log(userData)
-    await dispatch(setStoredUsers({ newUsers: { userData } }));
-    navigation.navigate("ChatList", {
-      selectedUser: userData,
-    });
-  };
+  // const userPressed = async (userData) => {
+  //   // console.log(userData)
+  //   await dispatch(setStoredUsers({ newUsers: { userData } }));
+  //   navigation.navigate("ChatList", {
+  //     selectedUser: userData,
+  //   });
+  // };
 
 
   return (
@@ -174,8 +174,12 @@ const NewChatScreen = ({ navigation }) => {
               return (
                 <TouchableOpacity
                   style={styles.searchResultContainer}
-                  onPress={() => {
-                    userPressed(userData);
+                  onPress={async() => {
+                    navigation.navigate("ChatScreen",{
+                      selectedUser:userData,
+                      chatUsers:[userData,loginUserData]
+                    });
+                    await dispatch(setStoredUsers({ newUsers: { userData } }));
                   }}
                 >
                   <Image

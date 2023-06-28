@@ -18,9 +18,10 @@ import Bubble from "../components/Bubble";
 import { SaveNewChat } from "../components/SaveNewChat";
 
 const ChatScreen = ({ navigation, route }) => {
-  console.log(route.params.selectedUser)
+  //  console.log(route.params.selectedUser)
+  const userData = route.params.selectedUser;
+
   const [messageText, setMessageText] = useState("");
-  const [userData, setUserData] = useState(route.params.selectedUser);
   const [chatId, setChatId] = useState(route?.params?.chatId);
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
@@ -57,12 +58,12 @@ const ChatScreen = ({ navigation, route }) => {
   const SendMessageHandler = useCallback(async () => {
       try {
         if (!chatId) {
-          let allChatUsersUid = allChatUsers.map((e)=>e.uid);
+          let allChatUsersUid = allChatUsers?.map((e)=>e.uid);
           // console.log(allchatUsersUid);
           let newChatId = await SaveNewChat(loggedInUserData.uid, allChatUsersUid);
           setChatId(newChatId);
-          setMessageText("");
         }
+        setMessageText("");
       } catch (error) {
         console.log(error);
       }  
