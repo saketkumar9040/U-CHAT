@@ -25,10 +25,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../store/userSlice.js";
 
 const NewChatScreen = ({ navigation }) => {
+
   const [isLoading, setIsLoading] = useState(false);
-  const [users, setUsers] = useState();
+  const [users, setUsers] = useState("");
   const [searchText, setSearchText] = useState("");
-  const [placeholderText, setPlaceholderText] = useState("Search");
+  // const [placeholderText, setPlaceholderText] = useState("Search");
   const [noUserFound, setNoUserFound] = useState(false);
   // console.log(users);
 
@@ -71,7 +72,7 @@ const NewChatScreen = ({ navigation }) => {
       }
       setIsLoading(true);
       try {
-        const searchQuery = searchText.toLowerCase();
+        const searchQuery = searchText.toLowerCase().trim();
         const dbRef = ref(getDatabase());
         const userRef = child(dbRef, "UserData");
 
@@ -106,29 +107,29 @@ const NewChatScreen = ({ navigation }) => {
     return () => clearTimeout(delaySearch);
   }, [searchText]);
 
-  useEffect(() => {
-    const placeHolderText = async () => {
-      let names = ["Friends😎", "Family👪", "Groups👩‍👩‍👧‍👦"];
-      let count = 0;
+  // useEffect(() => {
+  //   const placeHolderText = async () => {
+  //     let names = ["Friends😎", "Family👪", "Groups👩‍👩‍👧‍👦"];
+  //     let count = 0;
 
-      const cycleArray = async () => {
-        let name = names[count];
-        // console.log(name);
-        setTimeout(async () => {
-          await setPlaceholderText(name);
-        }, 3000);
-        // increment our counter
-        count++;
+  //     const cycleArray = async () => {
+  //       let name = names[count];
+  //       // console.log(name);
+  //       setTimeout(async () => {
+  //         await setPlaceholderText(name);
+  //       }, 3000);
+  //       // increment our counter
+  //       count++;
 
-        // reset counter if we reach end of array
-        if (count === names.length) {
-          count = 0;
-        }
-      };
-      setInterval(cycleArray, 5000);
-    };
-    placeHolderText();
-  }, []);
+  //       // reset counter if we reach end of array
+  //       if (count === names.length) {
+  //         count = 0;
+  //       }
+  //     };
+  //     setInterval(cycleArray, 5000);
+  //   };
+  //   placeHolderText();
+  // }, []);
 
   // const userPressed = async (userData) => {
   //   // console.log(userData)
@@ -144,7 +145,7 @@ const NewChatScreen = ({ navigation }) => {
       <View style={styles.searchContainer}>
         <FontAwesome name="search" size={28} color="#fff" />
         <TextInput
-          placeholder={`         >>>    ${placeholderText}     <<<`}
+          placeholder="Family👪,Friends😎,Groups👩‍👩‍👧‍👦"
           placeholderTextColor="#808080"
           style={styles.textInput}
           onChangeText={(e) => {
