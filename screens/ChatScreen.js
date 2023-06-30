@@ -21,7 +21,7 @@ import { saveMessage } from "../utils/ChatHandler";
 const ChatScreen = ({ navigation, route }) => {
 
   const [messageText, setMessageText] = useState("");
-  const [chatId, setChatId] = useState(route?.params?.chatId);
+  const [chatId, setChatId] = useState(route.params.chatId?route.params.chatId:"");
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
   // console.log(loggedInUserData.uid)
@@ -58,13 +58,16 @@ const ChatScreen = ({ navigation, route }) => {
 
   const SendMessageHandler = useCallback(async () => {
       try {
+        let allChatUsersUid =await allChatUsers?.map((e)=>e.uid);
         if (!chatId) {
-          let allChatUsersUid =await allChatUsers?.map((e)=>e.uid);
           // console.log(allChatUsersUid);
-          let newChatId = await SaveNewChat(loggedInUserData.uid, allChatUsersUid);
-           setChatId(newChatId);
+          let newChatId = await SaveNewChat(loggedInUserData.uid, allChatUsersUid)
+          await setChatId(newChatId)
+          await saveMessage(newChatId,loggedInUserData.uid,messageText)
         }
-        await saveMessage(chatId,loggedInUserData.uid,messageText)
+        else{
+          await saveMessage(chatId,loggedInUserData.uid,messageText)
+        }
       } catch (error) {
         console.log(error);
       }  

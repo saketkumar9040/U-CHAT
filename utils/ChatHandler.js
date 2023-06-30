@@ -13,17 +13,20 @@ export const SaveNewChat = async (loggedInUserId, chatData) => {
   };
 
   const newChat = await push(child(dbRef, "Chats"), newChatData);
+  console.log(newChat.key)
 
   let chatUsers = newChatData.users;
   for (let i = 0; i < chatUsers.length; i++) {
     const userId = chatUsers[i];
     await push(child(dbRef, `UsersChats/${userId}`), newChat.key);
   }
-  // console.log(newChat.key)
   return newChat.key;
 };
 
 export const saveMessage = async (chatId, senderId, messageText) => {
+    console.log("save message chat id"+chatId);
+    console.log(senderId)
+    console.log(messageText)
   const messageRef = child(dbRef, `Messages/${chatId}`);
   const messageData = {
     sentBy: senderId,
