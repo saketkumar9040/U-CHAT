@@ -176,9 +176,8 @@ const NewChatScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={styles.searchResultContainer}
                   onPress={async() => {
-                    navigation.navigate("ChatScreen",{
+                    navigation.navigate("ChatList",{
                       selectedUser:userData,
-                      chatUsers:[userData,loginUserData]
                     });
                     await dispatch(setStoredUsers({ newUsers: { userData } }));
                   }}

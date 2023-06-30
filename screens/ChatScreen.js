@@ -16,10 +16,9 @@ import userProfilePic from "../assets/images/userProfile.png";
 import { useSelector } from "react-redux";
 import Bubble from "../components/Bubble";
 import { SaveNewChat } from "../components/SaveNewChat";
+import { saveMessage } from "../utils/ChatHandler";
 
 const ChatScreen = ({ navigation, route }) => {
-  //  console.log(route.params.selectedUser)
-  const userData = route.params.selectedUser;
 
   const [messageText, setMessageText] = useState("");
   const [chatId, setChatId] = useState(route?.params?.chatId);
@@ -30,6 +29,8 @@ const ChatScreen = ({ navigation, route }) => {
   let allChatUsers = route?.params?.chatUsers;
   // console.log("all chat users"+JSON.stringify(allChatUsers));
 
+  let selectedUserData = allChatUsers.find((e)=>e.uid !== loggedInUserData.uid);
+  // console.log(selectedUserData)
 
   useEffect(() => {
     navigation.setOptions({
@@ -41,33 +42,34 @@ const ChatScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             <Image
               source={
-                userData?.ProfilePicURL
-                  ? { uri: userData?.ProfilePicURL }
+                selectedUserData?.ProfilePicURL
+                  ? { uri: selectedUserData?.ProfilePicURL }
                   : userProfilePic
               }
               style={styles.userImage}
               resizeMode="contain"
             />
-            <Text style={styles.userName}>{userData?.name}</Text>
+            <Text style={styles.userName}>{selectedUserData?.name}</Text>
           </View>
         );
       },
     });
-  }, [userData]);
+  }, [selectedUserData]);
 
   const SendMessageHandler = useCallback(async () => {
       try {
         if (!chatId) {
-          let allChatUsersUid = allChatUsers?.map((e)=>e.uid);
-          // console.log(allchatUsersUid);
+          let allChatUsersUid =await allChatUsers?.map((e)=>e.uid);
+          // console.log(allChatUsersUid);
           let newChatId = await SaveNewChat(loggedInUserData.uid, allChatUsersUid);
-          setChatId(newChatId);
+           setChatId(newChatId);
         }
-        setMessageText("");
+        await saveMessage(chatId,loggedInUserData.uid,messageText)
       } catch (error) {
         console.log(error);
       }  
-  },[])
+      setMessageText("");
+  },[chatId,messageText])
 
   const CameraHandler = () => {
     console.log("Camera opening ...📸");

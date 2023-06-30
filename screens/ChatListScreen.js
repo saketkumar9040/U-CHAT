@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import backgroundImage from "../assets/images/navigatorBackground2.jpg";
 import { useSelector } from "react-redux";
-import { Ionicons, FontAwesome, AntDesign,MaterialIcons,MaterialCommunityIcons  } from "@expo/vector-icons";
+import { Ionicons, FontAwesome, AntDesign,MaterialIcons,MaterialCommunityIcons, Entypo  } from "@expo/vector-icons";
 
 const ChatListScreen = ({ navigation, route }) => {
 
@@ -33,7 +33,7 @@ const ChatListScreen = ({ navigation, route }) => {
     return new Date(b.updatedAt) - new Date(a.updatedAt);
   });
   // console.log(chatData)
-  
+
   const dayNames = ["Sun", "Mon", "Tue","Wed","Thr","Fri","Sat"];
   const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
@@ -85,64 +85,79 @@ const ChatListScreen = ({ navigation, route }) => {
     if (!selectedUser) {
       return;
     }
+    let alreadyChatWith = chatData.find((e)=>e.users[0]===selectedUser?.uid);
+    console.log(alreadyChatWith?.key);
+
     const chatUsers = [selectedUser, userLoggedIn];
 
-    navigation.navigate("ChatScreen", { chatUsers: chatUsers });
+    navigation.navigate("ChatScreen", { chatUsers: chatUsers,chatId:alreadyChatWith?.key });
   }, [selectedUser]);
-
+    
   return (
           <View style={styles.container}>
-          <FlatList
-          style={styles.chatUserContainer}
-          data={chatData}
-          renderItem={(e) => {
-            // console.log(e.item);
-            let displayDate ;
-            let date = new Date(e.item.createdAt);
-            if(date.getHours()===0){
-               displayDate = 12
-            }else{
-              displayDate =  date.getHours() > 12
-                  ? date.getHours()-12
-                  : date.getHours()
-                  // console.log(date);
-            }
-            const otherUsersId = e.item.users.find(
-              (uid) => uid !== userLoggedIn.uid
-            );
-            const otherUser = storedUser[otherUsersId];
-            // console.log(otherUser)
-            // console.log(`otheruser : ${JSON.stringify(otherUser)}`)
-            return (
-              <TouchableOpacity
-                style={styles.searchResultContainer}
-                onPress={() => {
-                  navigation.navigate("ChatScreen",{
-                    selectedUser:otherUser,
-                    chatId:e.item.key
-                  })
-                }}
-              >
-                <Image
-                  source={{ uri: otherUser?.ProfilePicURL }}
-                  style={styles.searchUserImage}
-                  resizeMode="contain"
-                />
-                <View style={styles.searchUserTextContainer}>
-                  <Text style={styles.searchUserName}>
-                    {otherUser?.name.toUpperCase()}
-                  </Text>
-                  <Text style={styles.searchUserTapToChat}>{otherUser?.about}</Text>
-                </View>
-                <View  style={styles.timeContainer}>
-                  <Text style={styles.dateText}> {displayDate}:{date.getMinutes()} {date.getHours()>12?"PM":"AM"}</Text> 
-                  <Text style={{...styles.dateText,fontSize:11}}>{dayNames[date.getDay()]},{date.getDate()}-{monthNames[date.getMonth()]}</Text> 
-                  
-                </View>
-              </TouchableOpacity>
-            );
-          }}
-        />
+          { chatData.length===0  ? (
+                <View style={styles.userContainer}>
+                <Text style={{...styles.noUserText,fontSize:40}}>No user yet !</Text>
+                <Entypo name="emoji-sad" size={180} color="#6f4e37" style={{marginVertical:30,}}/>
+                <Text style={styles.noUserText}>Search for </Text>
+                <Text style={styles.noUserText}>{`>>>      Family👪` }</Text>
+                <Text style={styles.noUserText}>{`>>>      Friends😎`}</Text>
+                <Text style={styles.noUserText}>{`>>>      Groups👩‍👩‍👧‍👦`}</Text>
+              </View>
+          ):(
+            <FlatList
+            style={styles.chatUserContainer}
+            data={chatData}
+            renderItem={(e) => {
+              // console.log(e.item);
+              let displayDate ;
+              let date = new Date(e.item.createdAt);
+              if(date.getHours()===0){
+                 displayDate = 12
+              }else{
+                displayDate =  date.getHours() > 12
+                    ? date.getHours()-12
+                    : date.getHours()
+                    // console.log(date);
+              }
+              const otherUsersId = e.item.users.find(
+                (uid) => uid !== userLoggedIn.uid
+              );
+              const otherUser = storedUser[otherUsersId];
+              // console.log(otherUser)
+              // console.log(`otheruser : ${JSON.stringify(otherUser)}`)
+              return (
+                <TouchableOpacity
+                  style={styles.searchResultContainer}
+                  onPress={() => {
+                    navigation.navigate("ChatScreen",{
+                      chatUsers:[otherUser,userLoggedIn],
+                      chatId:e.item.key
+                    })
+                  }}
+                >
+                  <Image
+                    source={{ uri: otherUser?.ProfilePicURL }}
+                    style={styles.searchUserImage}
+                    resizeMode="contain"
+                  />
+                  <View style={styles.searchUserTextContainer}>
+                    <Text style={styles.searchUserName}>
+                      {otherUser?.name.toUpperCase()}
+                    </Text>
+                    <Text style={styles.searchUserTapToChat}>{otherUser?.about}</Text>
+                  </View>
+                  <View  style={styles.timeContainer}>
+                    <Text style={styles.dateText}> {displayDate}:{date.getMinutes()} {date.getHours()>12?"PM":"AM"}</Text> 
+                    <Text style={{...styles.dateText,fontSize:11}}>{dayNames[date.getDay()]},{date.getDate()}-{monthNames[date.getMonth()]}</Text> 
+                    
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
+          )
+        }
         </View>
         )
 };
@@ -206,5 +221,16 @@ const styles = StyleSheet.create({
     fontSize:16,
     fontFamily:"SemiBold",
     color: "#6f4e37",
-  }
+  },
+  userContainer: {
+    flex: 1,
+    alignItems: "center",
+    // justifyContent: "center",
+  },
+  noUserText: {
+    fontSize: 22,
+    paddingTop: 10,
+    color: "#6f4e37",
+    fontFamily: "Bold",
+  },
 });
