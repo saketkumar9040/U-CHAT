@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const Bubble = ({ text }) => {
+const Bubble = ({ text,style }) => {
   return (
     <View style={styles.bubbleContainer}>
       <View style={styles.bubbleContainerIn}>
-        <Text style={styles.bubbleText}>{text}</Text>
+        <Text style={{...styles.bubbleText,...style}}>{text}</Text>
       </View>
     </View>
   );

@@ -34,6 +34,8 @@ const ChatListScreen = ({ navigation, route }) => {
   });
   // console.log(chatData)
 
+
+
   const dayNames = ["Sun", "Mon", "Tue","Wed","Thr","Fri","Sat"];
   const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
 
@@ -145,7 +147,7 @@ const ChatListScreen = ({ navigation, route }) => {
                     <Text style={styles.searchUserName}>
                       {otherUser?.name.toUpperCase()}
                     </Text>
-                    <Text style={styles.searchUserTapToChat}>{otherUser?.about}</Text>
+                    <Text style={styles.latestMessageText}>{e?.item?.latestMessageText}</Text>
                   </View>
                   <View  style={styles.timeContainer}>
                     <Text style={styles.dateText}> {displayDate}:{date.getMinutes()>9?date.getMinutes():`0${date.getMinutes()}`} {date.getHours()>12?"PM":"AM"}</Text> 
@@ -200,15 +202,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginLeft: 10,
   },
-  searchUserTapToChat: {
+  latestMessageText: {
     fontSize: 15,
-    color: "#fff",
+    color: "#6f4e37",
     fontFamily: "Medium",
   },
   searchUserName: {
     fontSize: 22,
     color: "#6f4e37",
-    fontFamily: "BoldItalic",
+    fontFamily: "Bold",
   },
   timeContainer: {
     alignItems:"center",

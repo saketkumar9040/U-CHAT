@@ -16,6 +16,7 @@ import { app, db } from "../firebase/FirebaseConfig";
 import { setChatData } from "../store/chatSlice";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { setStoredUsers } from "../store/userSlice";
+import { setStoredMessage } from "../store/messageSlice";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -188,6 +189,17 @@ const MainNavigator = () => {
             setIsLoading(false);
           }
         });
+
+//   RETREVING  MESSAGES FROM DATABASE =======================================>
+
+      const messageRef = child(dbRef,`Messages/${chatId}`);
+      refs.push(messageRef);  //  FOR UNSUBSCRIBING FROM FIREBASE //   
+      
+      onValue(messageRef,async(messageSnapshot)=>{
+        const messageData = messageSnapshot.val();
+        await dispatch(setStoredMessage({chatId,messageData}))
+      });
+
 //    IF NO CHATS ARE FOUND   //===============================================>
         if(chatsFoundCount===0){ 
           setIsLoading(false);
