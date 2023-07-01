@@ -111,7 +111,7 @@ const ChatListScreen = ({ navigation, route }) => {
             renderItem={(e) => {
               // console.log(e.item);
               let displayDate ;
-              let date = new Date(e.item.createdAt);
+              let date = new Date(e.item.updatedAt);
               if(date.getHours()===0){
                  displayDate = 12
               }else{
@@ -148,7 +148,7 @@ const ChatListScreen = ({ navigation, route }) => {
                     <Text style={styles.searchUserTapToChat}>{otherUser?.about}</Text>
                   </View>
                   <View  style={styles.timeContainer}>
-                    <Text style={styles.dateText}> {displayDate}:{date.getMinutes()} {date.getHours()>12?"PM":"AM"}</Text> 
+                    <Text style={styles.dateText}> {displayDate}:{date.getMinutes()>9?date.getMinutes():`0${date.getMinutes()}`} {date.getHours()>12?"PM":"AM"}</Text> 
                     <Text style={{...styles.dateText,fontSize:11}}>{dayNames[date.getDay()]},{date.getDate()}-{monthNames[date.getMonth()]}</Text> 
                     
                   </View>
