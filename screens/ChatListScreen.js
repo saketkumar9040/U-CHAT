@@ -147,7 +147,7 @@ const ChatListScreen = ({ navigation, route }) => {
                     <Text style={styles.searchUserName}>
                       {otherUser?.name.toUpperCase()}
                     </Text>
-                    <Text style={styles.latestMessageText}>{e?.item?.latestMessageText}</Text>
+                    <Text style={styles.latestMessageText}>{e?.item?.latestMessageText.substring(0,20)}</Text>
                   </View>
                   <View  style={styles.timeContainer}>
                     <Text style={styles.dateText}> {displayDate}:{date.getMinutes()>9?date.getMinutes():`0${date.getMinutes()}`} {date.getHours()>12?"PM":"AM"}</Text> 

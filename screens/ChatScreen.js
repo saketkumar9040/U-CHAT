@@ -3,7 +3,6 @@ import {
   Text,
   View,
   ImageBackground,
-  Button,
   TouchableOpacity,
   Image,
   FlatList
@@ -18,6 +17,7 @@ import { useSelector } from "react-redux";
 import Bubble from "../components/Bubble";
 import { SaveNewChat } from "../components/SaveNewChat";
 import { saveMessage } from "../utils/ChatHandler";
+import { Alert } from "react-native";
 
 
 const ChatScreen = ({ navigation, route }) => {
@@ -110,7 +110,10 @@ const ChatScreen = ({ navigation, route }) => {
       }
       setMessageText("");
     } catch (error) {
-      console.log(error);
+      if(error =="Error: PERMISSION_DENIED: Permission denied")[
+        Alert.alert("permission Denied🙁","please logout any login again")
+      ]
+      console.log("Error"+error);
       setMessageFailed("message Sending failed")
       setTimeout(()=>{setMessageFailed("")},5000)
     }
@@ -135,7 +138,7 @@ const ChatScreen = ({ navigation, route }) => {
            style={styles.chatListContainer}
            data={messageData}
            renderItem={(e)=>{
-            console.log(e.item.sentBy)
+            // console.log(e.item.sentBy)
             return (<View style={styles.sendMessageContainer}>
               { e.item.sentBy === loggedInUserData.uid ?(
                 <View  >
@@ -169,7 +172,7 @@ const ChatScreen = ({ navigation, route }) => {
         />
 
         {
-          //////////   CHANGING TO ICON WHEN SOMETHING IS TYPED IN INPUT BOX  ////////////////////////
+//////////   CHANGING TO ICON WHEN SOMETHING IS TYPED IN INPUT BOX  ////////////////////////
           messageText ? (
             <TouchableOpacity onPress={() => SendMessageHandler()}>
               <Ionicons name="send-sharp" size={28} color="#fff" />
@@ -247,19 +250,22 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     // marginTop:10,
     // height: 80,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 5,
     paddingVertical:5,
-    marginHorizontal: 5,
-    marginVertical:10,
-    marginHorizontal:20,
+    // marginHorizontal: 10,
+    marginVertical:5,
+    // marginHorizontal:20,
   },
   sentMessageText:{
-    fontSize:20,
+    fontSize:17,
     color:"#fff",
     backgroundColor:"#6f4e37",
-    borderRadius:20,
-    padding:10,
+   
+    borderTopLeftRadius:20,
+    borderBottomLeftRadius:20,
+    padding:5,
     paddingHorizontal:20,
+    marginLeft:"40%",
     fontFamily:"MediumItalic",
     letterSpacing:1,
 
@@ -269,15 +275,16 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     // paddingHorizontal: 5,
     paddingVertical:5,
-    marginVertical:10,
+    marginVertical:5,
     // marginHorizontal:5,
   },
   receivedMessageText:{
-    fontSize:20,
+    fontSize:17,
     backgroundColor:"#fff",
     color:"#6f4e37",
-    borderRadius:20,
-    padding:10,
+    borderTopRightRadius:20,
+    borderBottomRightRadius:20,
+    padding:5,
     paddingHorizontal:20,
     fontFamily:"BoldItalic"
   },
