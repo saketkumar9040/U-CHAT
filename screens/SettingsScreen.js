@@ -256,6 +256,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginLeft: 10,
     fontFamily: "BoldItalic",
+    letterSpacing:2,
   },
   buttonContainer: {
     width: "45%",

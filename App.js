@@ -9,19 +9,13 @@ import "react-native-gesture-handler";
 import AppNavigator from "./navigations/AppNavigator";
 import { Provider } from "react-redux";
 import { store } from "./store/Store";
-
-
-
+import { MenuProvider } from "react-native-popup-menu";
 
 SplashScreen.preventAutoHideAsync();
 
-
-
-
 export default function App() {
-
   NavigationBar.setBackgroundColorAsync("#6F4E37");
-  
+
   const [appLoaded, setAppLoaded] = useState(false);
 
   useEffect(() => {
@@ -68,10 +62,12 @@ export default function App() {
 
   return (
     <Provider store={store}>
-    <SafeAreaProvider style={styles.container} onLayout={onLayout}>
-      <StatusBar style="light" backgroundColor="#6F4E37" />
-        <AppNavigator/>
-    </SafeAreaProvider>
+      <SafeAreaProvider style={styles.container} onLayout={onLayout}>
+        <StatusBar style="light" backgroundColor="#6F4E37" />
+        <MenuProvider>
+          <AppNavigator />
+        </MenuProvider>
+      </SafeAreaProvider>
     </Provider>
   );
 }

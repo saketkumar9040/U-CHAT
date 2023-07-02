@@ -5,11 +5,13 @@ import {
   ImageBackground,
   TouchableOpacity,
   Image,
-  FlatList
+  FlatList,
+  TouchableWithoutFeedback,
+  Alert,
+  TextInput,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import BackgroundImage from "../assets/images/chatScreenBackground.png";
-import { TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, Feather, FontAwesome, AntDesign } from "@expo/vector-icons";
 import userProfilePic from "../assets/images/userProfile.png";
@@ -17,16 +19,19 @@ import { useSelector } from "react-redux";
 import Bubble from "../components/Bubble";
 import { SaveNewChat } from "../components/SaveNewChat";
 import { saveMessage } from "../utils/ChatHandler";
-import { Alert } from "react-native";
-
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
 
 const ChatScreen = ({ navigation, route }) => {
-
   const [messageText, setMessageText] = useState("");
   const [chatId, setChatId] = useState(
     route.params.chatId ? route.params.chatId : ""
   );
-  const [messageFailed,setMessageFailed] = useState("")
+  const [messageFailed, setMessageFailed] = useState("");
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
   // console.log(loggedInUserData.uid)
@@ -39,26 +44,26 @@ const ChatScreen = ({ navigation, route }) => {
   );
   // console.log(selectedUserData)
 
-  const messageData = useSelector((state) =>{
-    if(!chatId){
-      return[]
+  const messageData = useSelector((state) => {
+    if (!chatId) {
+      return [];
     }
-     const allMessageData = state.messages.storedMessages[chatId]
-    
-     if(!allMessageData){
-      return[]
+    const allMessageData = state.messages.storedMessages[chatId];
+
+    if (!allMessageData) {
+      return [];
     }
-     
+
     const messageList = [];
-    for(let key in allMessageData){
+    for (let key in allMessageData) {
       const message = allMessageData[key];
       messageList.push({
-           key,
-        ...message
-      })
+        key,
+        ...message,
+      });
     }
-    return messageList
-    });
+    return messageList;
+  });
   // console.log(messageData);
 
   useEffect(() => {
@@ -95,7 +100,7 @@ const ChatScreen = ({ navigation, route }) => {
   }, [selectedUserData]);
 
   const SendMessageHandler = useCallback(async () => {
-    try { 
+    try {
       let allChatUsersUid = await allChatUsers?.map((e) => e.uid);
       if (!chatId) {
         // console.log(allChatUsersUid);
@@ -110,14 +115,14 @@ const ChatScreen = ({ navigation, route }) => {
       }
       setMessageText("");
     } catch (error) {
-      if(error =="Error: PERMISSION_DENIED: Permission denied")[
-        Alert.alert("permission Denied🙁","please logout any login again")
-      ]
-      console.log("Error"+error);
-      setMessageFailed("message Sending failed")
-      setTimeout(()=>{setMessageFailed("")},5000)
+      if (error == "Error: PERMISSION_DENIED: Permission denied")
+        [Alert.alert("permission Denied🙁", "please logout any login again")];
+      console.log("Error" + error);
+      setMessageFailed("message Sending failed");
+      setTimeout(() => {
+        setMessageFailed("");
+      }, 5000);
     }
-   
   }, [chatId, messageText]);
 
   const CameraHandler = () => {
@@ -128,34 +133,60 @@ const ChatScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
       <ImageBackground source={BackgroundImage} style={styles.image}>
         <View style={styles.innerContainer}>
-        {!chatId && <Bubble text="No messages yet😶. say HI👋" />}
-        {messageFailed !=="" && <View>
-             <Bubble text="Failed to Send Message🙁" style={{color:"red"}}/>
-             <Bubble text="Please Check your Internet connectivity 📶 and try again" style={{color:"red",fontSize:13}} />
-          </View>
-        }
-        <FlatList
-           style={styles.chatListContainer}
-           data={messageData}
-           renderItem={(e)=>{
-            // console.log(e.item.sentBy)
-            return (<View style={styles.sendMessageContainer}>
-              { e.item.sentBy === loggedInUserData.uid ?(
-                <View  >
-                   <Text style={styles.sentMessageText}>{e.item.text}</Text>
-                   </View>
-              ):(
-                <View style={styles.receivedMessageContainer}>
-                <Text style={styles.receivedMessageText}>{e.item.text}</Text>
+          {!chatId && <Bubble text="No messages yet😶. say HI👋" />}
+          {messageFailed !== "" && (
+            <View>
+              <Bubble
+                text="Failed to Send Message🙁"
+                style={{ color: "red" }}
+              />
+              <Bubble
+                text="Please Check your Internet connectivity 📶 and try again"
+                style={{ color: "red", fontSize: 13 }}
+              />
+            </View>
+          )}
+          <FlatList
+            data={messageData}
+            renderItem={(e) => {
+              // console.log(e.item.sentBy)
+              return (
+                <View style={styles.sendMessageContainer}>
+                  {e.item.sentBy === loggedInUserData.uid ? (
+                    <TouchableWithoutFeedback onLongPress={()=>console.log("my message pressed")}>
+                      <Text style={styles.sentMessageText}>{e.item.text}</Text>
+                    </TouchableWithoutFeedback>
+                  ) : (
+                    <View style={styles.receivedMessageContainer}>
+                      <TouchableWithoutFeedback
+                        onLongPress={() => console.log("other message pressed")}
+                      >
+                        <Text style={styles.receivedMessageText}>
+                          {e.item.text}
+                        </Text>
+                      </TouchableWithoutFeedback>
+                    </View>
+                  )}
+                  <Menu >
+                    <MenuTrigger text="Select action" />
+                    <MenuOptions >
+                      <MenuOption onSelect={() => alert(`Save`)} text="Copy" />
+                      <MenuOption onSelect={() => alert(`Delete`)}>
+                        <Text style={{ color: "red" }}>Delete</Text>
+                      </MenuOption>
+                      <MenuOption
+                        onSelect={() => alert(`Not called`)}
+                        disabled={true}
+                        text="Disabled"
+                      />
+                    </MenuOptions>
+                  </Menu>
                 </View>
-              )
-              }
-             
-             </View>)
-           }}
-           showsVerticalScrollIndicator={false}
-        />
-          </View>
+              );
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       </ImageBackground>
       <View style={styles.inputContainer}>
         <TouchableOpacity>
@@ -172,7 +203,7 @@ const ChatScreen = ({ navigation, route }) => {
         />
 
         {
-//////////   CHANGING TO ICON WHEN SOMETHING IS TYPED IN INPUT BOX  ////////////////////////
+          //////////   CHANGING TO ICON WHEN SOMETHING IS TYPED IN INPUT BOX  ////////////////////////
           messageText ? (
             <TouchableOpacity onPress={() => SendMessageHandler()}>
               <Ionicons name="send-sharp" size={28} color="#fff" />
@@ -199,7 +230,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   innerContainer: {
-    flexDirection:"column-reverse"
+    flexDirection: "column-reverse",
   },
   headerContainer: {
     flexDirection: "row",
@@ -251,42 +282,40 @@ const styles = StyleSheet.create({
     // marginTop:10,
     // height: 80,
     // paddingHorizontal: 5,
-    paddingVertical:5,
+    // paddingVertical: 5,
     // marginHorizontal: 10,
-    marginVertical:5,
+    marginVertical: 5,
     // marginHorizontal:20,
   },
-  sentMessageText:{
-    fontSize:17,
-    color:"#fff",
-    backgroundColor:"#6f4e37",
-   
-    borderTopLeftRadius:20,
-    borderBottomLeftRadius:20,
-    padding:5,
-    paddingHorizontal:20,
-    marginLeft:"40%",
-    fontFamily:"MediumItalic",
-    letterSpacing:1,
-
+  sentMessageText: {
+    fontSize: 17,
+    color: "#fff",
+    backgroundColor: "#6f4e37",
+    alignSelf: "flex-end",
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    padding: 5,
+    paddingHorizontal: 20,
+    marginLeft: "40%",
+    fontFamily: "MediumItalic",
+    letterSpacing: 1,
   },
-  receivedMessageContainer:{
+  receivedMessageContainer: {
     flexDirection: "column",
     alignSelf: "flex-start",
     // paddingHorizontal: 5,
-    paddingVertical:5,
-    marginVertical:5,
+    // paddingVertical: 5,
+    // marginVertical: 5,
     // marginHorizontal:5,
   },
-  receivedMessageText:{
-    fontSize:17,
-    backgroundColor:"#fff",
-    color:"#6f4e37",
-    borderTopRightRadius:20,
-    borderBottomRightRadius:20,
-    padding:5,
-    paddingHorizontal:20,
-    fontFamily:"BoldItalic"
+  receivedMessageText: {
+    fontSize: 17,
+    backgroundColor: "#fff",
+    color: "#6f4e37",
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+    padding: 5,
+    paddingHorizontal: 20,
+    fontFamily: "BoldItalic",
   },
-
 });
