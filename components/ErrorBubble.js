@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const Bubble = ({ text,style }) => {
+const ErrorBubble = ({ text,style }) => {
   return (
     <View style={styles.bubbleContainer}>
       <View style={styles.bubbleContainerIn}>
@@ -11,7 +11,7 @@ const Bubble = ({ text,style }) => {
   );
 };
 
-export default Bubble;
+export default ErrorBubble;
 
 const styles = StyleSheet.create({
   bubbleContainer: {
