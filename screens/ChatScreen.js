@@ -147,7 +147,7 @@ const ChatScreen = ({ navigation, route }) => {
             data={messageData}
             renderItem={(e) => {
               return (
-               <MessageBubble data={e.item} loggedInUserUid={loggedInUserData.uid}/>
+               <MessageBubble data={e.item} loggedInUserUid={loggedInUserData.uid} chatId={chatId}/>
               );
             }}
             showsVerticalScrollIndicator={false}

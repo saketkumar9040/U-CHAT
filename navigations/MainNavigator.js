@@ -16,7 +16,7 @@ import { app, db } from "../firebase/FirebaseConfig";
 import { setChatData } from "../store/chatSlice";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { setStoredUsers } from "../store/userSlice";
-import { setStoredMessage } from "../store/messageSlice";
+import { setStarredMessages, setStoredMessage } from "../store/messageSlice";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -207,6 +207,14 @@ const MainNavigator = () => {
       }
       // console.log(chatIds);
     });
+//  RETREVING USER STARRED MESSAGES  ===========================================>
+
+    const userStarredMessageRef = child(dbRef,`StarredMessages/${userData.uid}`)
+    refs.push(userStarredMessageRef);
+    onValue(userStarredMessageRef,querySnapshot=>{
+      const starredMessages = querySnapshot.val() ?? {}
+      dispatch(setStarredMessages({starredMessages}))
+    })
     return () => {
       // console.log("unsubscribing from firebase listener");
       ref.forEach((ref) => off(ref));

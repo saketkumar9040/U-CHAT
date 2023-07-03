@@ -1,5 +1,6 @@
-import { child, getDatabase, push, ref, update } from "firebase/database";
+import { child, get, getDatabase, push, ref, remove, set, update } from "firebase/database";
 import { app } from "../firebase/FirebaseConfig";
+import { Alert } from "react-native";
 
 const dbRef = ref(getDatabase(app));
 
@@ -41,4 +42,28 @@ export const saveMessage = async (chatId, senderId, messageText) => {
     updatedAt: new Date().toISOString(),
     latestMessageText: messageText,
   });
+};
+
+export const starMessage = async (userId,chatId,messageId) => {
+   try {
+      const  starMessageRef = child(dbRef,`StarredMessages/${userId}/${chatId}/${messageId}`);
+      const snapshot = await get(starMessageRef);
+      if(snapshot.exists()){
+        // UN-STAR MESSAGE
+        await remove(starMessageRef)
+        return Alert.alert(`Un-Starred😵`);
+      }else{
+        //  STAR MESSAGE
+        const starredMessageData = {
+            messageId,
+            chatId,
+            starredAt : new Date().toISOString(),
+        };
+        await set(starMessageRef,starredMessageData);
+        return Alert.alert(`Starred🤩`);
+       
+      }
+   } catch (error) {
+      console.log(error)
+   }
 };

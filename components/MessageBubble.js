@@ -1,5 +1,11 @@
-import { StyleSheet, Text, View , TouchableWithoutFeedback, Alert  } from "react-native";
-import React,{ useState, useRef  } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  Alert,
+} from "react-native";
+import React, { useState, useRef } from "react";
 import {
   Menu,
   MenuOptions,
@@ -7,58 +13,79 @@ import {
   MenuTrigger,
 } from "react-native-popup-menu";
 import uuid from "react-native-uuid";
-import * as Clipboard from 'expo-clipboard';
+import * as Clipboard from "expo-clipboard";
+import { Entypo, AntDesign, MaterialIcons,MaterialCommunityIcons } from "@expo/vector-icons";
+import { starMessage } from "../utils/ChatHandler";
+import { useSelector } from "react-redux";
 
-const MessageBubble = ({ data, loggedInUserUid }) => {
-
-  const [copiedText,setCopiedText] = useState("");
-  console.log(copiedText);
-
+const MessageBubble = ({ data, loggedInUserUid,chatId }) => {
   const menuRef = useRef(null);
   const id = useRef(uuid.v4());
-//   console.log(id.current);
+  //   console.log(id.current);
+//   console.log(chatId,data.key)
+const starredMessages = useSelector(state=>state.messages.starredMessages[chatId]??{});
+// console.log(starredMessages)
 
-const copyToClipBoardHandler = async(text) => {
-   await Clipboard.setStringAsync(text);
-    setCopiedText(text)
-}
+ const isStarred = starredMessages[data.key] !== undefined
 
   return (
     <View style={styles.messageContainer}>
-        
-        <TouchableWithoutFeedback
-          onLongPress={() => menuRef.current.props.ctx.menuActions.openMenu(id.current)}
-        >
-          {data.sentBy === loggedInUserUid ? (
-            <Text style={styles.sentMessageText}>{data.text}</Text>
-          ) : (
-            <Text style={styles.receivedMessageText}>{data.text}</Text>
-          )}
-        </TouchableWithoutFeedback>
-        <Menu ref={menuRef} name={id.current} style={data.sentBy === loggedInUserUid ? styles.sentMessagePopUps:styles.receivedMessagePopUps}>
-          <MenuTrigger />
-          <MenuOptions>
-            <MenuOption 
-               onSelect={() =>{ 
-                copyToClipBoardHandler(data.text)
-                Alert.alert(`Copied🤗`)
-            }} 
-               text="Copy to clipboard" />
-            <MenuOption 
-               onSelect={() =>{ 
-                Alert.alert(`Starred🤩`)
-            }} 
-               text="Starred message" />
-            <MenuOption onSelect={() => alert(`Delete`)}>
-              <Text style={{ color: "red" }}>Delete</Text>
-            </MenuOption>
-            <MenuOption
-              onSelect={() => alert(`Not called`)}
-              disabled={true}
-              text="Disabled"
-            />
-          </MenuOptions>
-        </Menu>
+      <TouchableWithoutFeedback
+        onLongPress={() =>
+          menuRef.current.props.ctx.menuActions.openMenu(id.current)
+        }
+      >
+        {data.sentBy === loggedInUserUid ? (
+          <Text style={styles.sentMessageText}>{data.text}</Text>
+        ) : (
+          <Text style={styles.receivedMessageText}>{data.text}{isStarred && <AntDesign name="star" size={20} color="green" style={{position:"absolute",left:0,bottom:10}} />}</Text>
+        )}
+      </TouchableWithoutFeedback>
+   
+      <Menu
+        ref={menuRef}
+        name={id.current}
+        style={
+          data.sentBy === loggedInUserUid
+            ? styles.sentMessagePopUps
+            : styles.receivedMessagePopUps
+        }
+      >
+        <MenuTrigger />
+        <MenuOptions>
+          <MenuOption
+            onSelect={async() => {
+              await Clipboard.setStringAsync(data.text);
+              Alert.alert(`Copied🤗`);
+            }}
+            style={styles.menuOptionsContainer}
+          >
+            <Text style={{ flex:1,color: "green",fontFamily:"SemiBold",fontSize:15, }}>Copy to clipboard</Text>
+            <Entypo name="clipboard" size={20} color="green" />
+          </MenuOption>
+          <MenuOption
+            onSelect={async() => {
+             await starMessage(loggedInUserUid,chatId,data.key)
+            }}
+            style={styles.menuOptionsContainer}
+          >
+            <Text style={{ flex:1,color: "orange",fontFamily:"SemiBold",fontSize:15, }}>{isStarred?"Unstar message":"Star Message"}</Text>
+            {isStarred?(
+              <MaterialCommunityIcons name="star-off" size={20} color="orange" />
+            ):(
+
+            <AntDesign name="star" size={20} color="orange" />
+            )}
+          </MenuOption>
+          <MenuOption 
+             onSelect={() => alert(`Delete`)}
+             style={styles.menuOptionsContainer}
+             >
+            <Text style={{ flex:1,color: "red",fontFamily:"SemiBold",fontSize:15, }}>Delete</Text>
+            <MaterialIcons name="delete-forever" size={22} color="red" />
+          </MenuOption>
+        </MenuOptions>
+      </Menu>
     </View>
   );
 };
@@ -76,38 +103,52 @@ const styles = StyleSheet.create({
     color: "#fff",
     backgroundColor: "#6f4e37",
     alignSelf: "flex-end",
-    borderTopLeftRadius: 20,
-    borderBottomLeftRadius: 20,
+    borderTopLeftRadius: 40,
+    borderBottomLeftRadius: 40,
     padding: 5,
-    paddingTop:10,
+    paddingTop: 10,
+    paddingLeft:40,
     paddingHorizontal: 20,
-    marginLeft: "20%",
+    marginLeft: "10%",
     fontFamily: "MediumItalic",
     letterSpacing: 1,
-    borderWidth:2,
-    borderRightWidth:0,
-    borderColor:"#fff",
+    borderWidth: 2,
+    borderRightWidth: 0,
+    borderColor: "#fff",
   },
   receivedMessageText: {
     fontSize: 17,
     backgroundColor: "#fff",
     color: "#6f4e37",
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    borderTopRightRadius: 40,
+    borderBottomRightRadius: 40,
     padding: 5,
-    paddingTop:10,
+    paddingTop: 10,
+    paddingRight:40,
     paddingHorizontal: 20,
     fontFamily: "BoldItalic",
     alignSelf: "flex-start",
     marginRight: "20%",
-    borderWidth:4,
-    borderLeftWidth:0,
-    borderColor:"#6f4e37",
+    borderWidth: 4,
+    borderLeftWidth: 0,
+    borderColor: "#6f4e37",
   },
-  sentMessagePopUps:{
+  sentMessagePopUps: {
     alignSelf: "flex-end",
+    backgroundColor:"transparent",
   },
-  receivedMessagePopUps:{
+  receivedMessagePopUps: {
     alignSelf: "flex-start",
-  }
+    backgroundColor:"transparent",
+  },
+  menuOptionsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft:10,
+    paddingRight:10,
+    backgroundColor: "#fff",
+    borderWidth:2,
+    borderColor:"#6f4e37",
+    borderRadius:4,
+  },
 });
