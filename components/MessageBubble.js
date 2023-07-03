@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { StyleSheet, Text, View , TouchableWithoutFeedback, Alert  } from "react-native";
+import React,{ useState, useRef  } from "react";
 import {
   Menu,
   MenuOptions,
@@ -7,14 +7,21 @@ import {
   MenuTrigger,
 } from "react-native-popup-menu";
 import uuid from "react-native-uuid";
-import { TouchableWithoutFeedback } from "react-native";
-import { useRef } from "react";
-import { useSelector } from "react-redux";
+import * as Clipboard from 'expo-clipboard';
 
 const MessageBubble = ({ data, loggedInUserUid }) => {
+
+  const [copiedText,setCopiedText] = useState("");
+  console.log(copiedText);
+
   const menuRef = useRef(null);
   const id = useRef(uuid.v4());
 //   console.log(id.current);
+
+const copyToClipBoardHandler = async(text) => {
+   await Clipboard.setStringAsync(text);
+    setCopiedText(text)
+}
 
   return (
     <View style={styles.messageContainer}>
@@ -31,7 +38,17 @@ const MessageBubble = ({ data, loggedInUserUid }) => {
         <Menu ref={menuRef} name={id.current} style={data.sentBy === loggedInUserUid ? styles.sentMessagePopUps:styles.receivedMessagePopUps}>
           <MenuTrigger />
           <MenuOptions>
-            <MenuOption onSelect={() => alert(`Copied`)} text="Copy" />
+            <MenuOption 
+               onSelect={() =>{ 
+                copyToClipBoardHandler(data.text)
+                Alert.alert(`Copied🤗`)
+            }} 
+               text="Copy to clipboard" />
+            <MenuOption 
+               onSelect={() =>{ 
+                Alert.alert(`Starred🤩`)
+            }} 
+               text="Starred message" />
             <MenuOption onSelect={() => alert(`Delete`)}>
               <Text style={{ color: "red" }}>Delete</Text>
             </MenuOption>
@@ -62,10 +79,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
     padding: 5,
+    paddingTop:10,
     paddingHorizontal: 20,
     marginLeft: "20%",
     fontFamily: "MediumItalic",
     letterSpacing: 1,
+    borderWidth:2,
+    borderRightWidth:0,
+    borderColor:"#fff",
   },
   receivedMessageText: {
     fontSize: 17,
@@ -74,10 +95,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderBottomRightRadius: 20,
     padding: 5,
+    paddingTop:10,
     paddingHorizontal: 20,
     fontFamily: "BoldItalic",
     alignSelf: "flex-start",
     marginRight: "20%",
+    borderWidth:4,
+    borderLeftWidth:0,
+    borderColor:"#6f4e37",
   },
   sentMessagePopUps:{
     alignSelf: "flex-end",
