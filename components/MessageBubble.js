@@ -66,7 +66,7 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) =>
             {
               userReplied &&
               <View style={{backgroundColor:"#fff",padding:5,borderTopLeftRadius: 35,margin:3,}}>
-              <Text  style={{color:"#6f4e37",fontFamily:"Medium",padding:3,paddingLeft:10,}}>{replyingTo.text}</Text>
+              <Text  style={{color:"#6f4e37",fontFamily:"Medium",padding:3,paddingLeft:10,textAlign:"center"}}>{replyingTo.text}</Text>
               <View style={{flexDirection:"row",alignSelf:"flex-end"}}>
               <Text  style={{color:"#6f4e37",fontFamily:"Medium",padding:2,paddingLeft:10,alignSelf:"flex-end"}}>{userReplied.name}</Text>
               <Image

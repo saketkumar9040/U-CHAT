@@ -20,6 +20,8 @@ import ErrorBubble from "../components/ErrorBubble";
 import { SaveNewChat } from "../components/SaveNewChat";
 import { saveMessage } from "../utils/ChatHandler";
 import MessageBubble from "../components/MessageBubble";
+import { launchCameraAsync } from "expo-image-picker";
+import { launchImagePicker } from "../utils/ImagePickerHelper";
 
 
 const ChatScreen = ({ navigation, route }) => {
@@ -28,7 +30,8 @@ const ChatScreen = ({ navigation, route }) => {
     route.params.chatId ? route.params.chatId : ""
   );
   const [messageFailed, setMessageFailed] = useState("");
-  const [replyingTo,setReplyingTo] = useState()
+  const [replyingTo,setReplyingTo] = useState(null)
+  const [tempImageURI,setTempImageURI] = useState(null)
   // console.log(replyingTo)
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
@@ -130,6 +133,20 @@ const ChatScreen = ({ navigation, route }) => {
     console.log("Camera opening ...📸");
   };
 
+  const pickImage = useCallback(async()=>{
+     try {
+      let tempURI = await launchImagePicker();
+      if(!tempURI){
+        return;
+      }
+      setTempImageURI(tempURI)
+     } catch (error) {
+      console.log(error)
+     }
+  },[tempImageURI]) 
+
+  
+
 
   return (
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
@@ -190,7 +207,7 @@ const ChatScreen = ({ navigation, route }) => {
         }
 
       <View style={styles.inputContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={pickImage}>
           <Ionicons name="add-circle-outline" size={35} color="#FFF" />
         </TouchableOpacity>
         <TextInput
