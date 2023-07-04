@@ -22,6 +22,7 @@ import {
 } from "@expo/vector-icons";
 import { starMessage } from "../utils/ChatHandler";
 import { useSelector } from "react-redux";
+import { Image } from "react-native";
 
 const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) => {
 
@@ -30,9 +31,10 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) =>
 
   //   console.log(id.current);
   // console.log(selectedUser)
+  // console.log(replyingTo)
 
   const storedUsers = useSelector(state=>state.users.storedUser);
-  console.log(storedUsers)
+  // console.log(storedUsers)
 
   const starredMessages = useSelector(
     (state) => state.messages.starredMessages[chatId] ?? {}
@@ -65,7 +67,16 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) =>
               userReplied &&
               <View style={{backgroundColor:"#fff",padding:5,borderTopLeftRadius: 35,margin:3,}}>
               <Text  style={{color:"#6f4e37",fontFamily:"Medium",padding:3,paddingLeft:10,}}>{replyingTo.text}</Text>
+              <View style={{flexDirection:"row",alignSelf:"flex-end"}}>
               <Text  style={{color:"#6f4e37",fontFamily:"Medium",padding:2,paddingLeft:10,alignSelf:"flex-end"}}>{userReplied.name}</Text>
+              <Image
+              source={
+                { uri: storedUsers[replyingTo.sentBy]?.ProfilePicURL} 
+              }
+              style={styles.userImage}
+              resizeMode="contain"
+            />
+              </View>
               </View>
             }
             <Text style={styles.sentMessageText}>{data.text}</Text>
@@ -85,7 +96,16 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) =>
             userReplied &&
             <View style={{backgroundColor:"#6f4e37",paddingLeft:5,borderTopRightRadius: 35,margin:3,}}>
             <Text style={{color:"#fff",fontFamily:"Medium",padding:2,}}>{replyingTo.text}</Text>
+            <View style={{flexDirection:"row",alignSelf:"flex-start",paddingVertical:5,}}>
+            <Image
+              source={
+                { uri: storedUsers[replyingTo.sentBy]?.ProfilePicURL} 
+              }
+              style={styles.userImage}
+              resizeMode="contain"
+            />
             <Text style={{color:"#fff",fontFamily:"Bold",padding:2,}}>{userReplied.name}</Text>
+            </View>
             </View>
           }
             <Text style={styles.receivedMessageText}>{data.text}</Text>
@@ -283,5 +303,14 @@ const styles = StyleSheet.create({
     color: "#6f4e37",
     fontSize: 13,
     fontFamily: "Light",
+  },
+  userImage: {
+    width: 40,
+    height: 40,
+    marginLeft: 5,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#fff",
+    backgroundColor: "#6f4e37",
   },
 });
