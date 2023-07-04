@@ -23,11 +23,14 @@ import {
 import { starMessage } from "../utils/ChatHandler";
 import { useSelector } from "react-redux";
 
-const MessageBubble = ({ data, loggedInUserUid, chatId }) => {
+const MessageBubble = ({ data, loggedInUserUid, chatId, setReply}) => {
+
   const menuRef = useRef(null);
   const id = useRef(uuid.v4());
+
   //   console.log(id.current);
-  // console.log(data.sentAt)
+  // console.log(selectedUser)
+
   const starredMessages = useSelector(
     (state) => state.messages.starredMessages[chatId] ?? {}
   );
@@ -35,16 +38,15 @@ const MessageBubble = ({ data, loggedInUserUid, chatId }) => {
 
   const isStarred = starredMessages[data.key] !== undefined;
 
-  let displayDate ;
+  let displayDate;
   let date = new Date(data.sentAt);
-  if(date.getHours()===0){
-     displayDate = 12
-  }else{
-    displayDate =  date.getHours() > 12
-        ? date.getHours()-12
-        : date.getHours()
-        // console.log(date);
+  if (date.getHours() === 0) {
+    displayDate = 12;
+  } else {
+    displayDate = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
+    // console.log(date);
   }
+
 
   return (
     <View style={styles.messageContainer}>
@@ -57,12 +59,24 @@ const MessageBubble = ({ data, loggedInUserUid, chatId }) => {
           <View style={styles.sentMessageContainer}>
             {isStarred && <AntDesign name="star" size={20} color="green" />}
             <Text style={styles.sentMessageText}>{data.text}</Text>
-            <Text style={styles.sendDate}>{displayDate}:{date.getMinutes()>9?date.getMinutes():`0${date.getMinutes()}`} {date.getHours()>12?"PM":"AM"}</Text>
+            <Text style={styles.sendDate}>
+              {displayDate}:
+              {date.getMinutes() > 9
+                ? date.getMinutes()
+                : `0${date.getMinutes()}`}{" "}
+              {date.getHours() > 12 ? "PM" : "AM"}
+            </Text>
           </View>
         ) : (
           <View style={styles.receivedMessageContainer}>
             <Text style={styles.receivedMessageText}>{data.text}</Text>
-            <Text style={styles.receivedDate}>{displayDate}:{date.getMinutes()>9?date.getMinutes():`0${date.getMinutes()}`} {date.getHours()>12?"PM":"AM"}</Text>
+            <Text style={styles.receivedDate}>
+              {displayDate}:
+              {date.getMinutes() > 9
+                ? date.getMinutes()
+                : `0${date.getMinutes()}`}{" "}
+              {date.getHours() > 12 ? "PM" : "AM"}
+            </Text>
             {isStarred && <AntDesign name="star" size={20} color="green" />}
           </View>
         )}
@@ -79,6 +93,22 @@ const MessageBubble = ({ data, loggedInUserUid, chatId }) => {
       >
         <MenuTrigger />
         <MenuOptions>
+          <MenuOption
+            onSelect={ setReply }
+            style={styles.menuOptionsContainer}
+          >
+            <Text
+              style={{
+                flex: 1,
+                color: "blue",
+                fontFamily: "SemiBold",
+                fontSize: 15,
+              }}
+            >
+              Reply to
+            </Text>
+            <Entypo name="reply" size={24} color="blue" />
+          </MenuOption>
           <MenuOption
             onSelect={async () => {
               await Clipboard.setStringAsync(data.text);
@@ -176,7 +206,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRightWidth: 0,
     borderColor: "#fff",
-    paddingBottom:15,
+    paddingBottom: 15,
   },
   receivedMessageContainer: {
     flexDirection: "row",
@@ -198,7 +228,7 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderLeftWidth: 0,
     borderColor: "#6f4e37",
-    paddingBottom:10,
+    paddingBottom: 10,
   },
   sentMessagePopUps: {
     alignSelf: "flex-end",
@@ -223,15 +253,15 @@ const styles = StyleSheet.create({
     right: 5,
     bottom: 3,
     color: "#fff",
-    fontSize:12,
-    fontFamily:"Light",
+    fontSize: 12,
+    fontFamily: "Light",
   },
-  receivedDate:{
+  receivedDate: {
     position: "absolute",
-    left:5,
-    bottom:3,
-    color:"#6f4e37",
-    fontSize:13,
-    fontFamily:"Light",
-  }
+    left: 5,
+    bottom: 3,
+    color: "#6f4e37",
+    fontSize: 13,
+    fontFamily: "Light",
+  },
 });

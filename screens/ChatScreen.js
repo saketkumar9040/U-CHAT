@@ -28,9 +28,14 @@ const ChatScreen = ({ navigation, route }) => {
     route.params.chatId ? route.params.chatId : ""
   );
   const [messageFailed, setMessageFailed] = useState("");
+  const [replyingTo,setReplyingTo] = useState()
+  // console.log(replyingTo)
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
   // console.log(loggedInUserData.uid)
+
+  let storedUsers = useSelector(state=>state.users.storedUser);
+  // console.log(storedUsers)
 
   let allChatUsers = route?.params?.chatUsers;
   // console.log("all chat users"+JSON.stringify(allChatUsers));
@@ -38,7 +43,6 @@ const ChatScreen = ({ navigation, route }) => {
   let selectedUserData = allChatUsers.find(
     (e) => e.uid !== loggedInUserData.uid
   );
-  // console.log(selectedUserData)
 
   const messageData = useSelector((state) => {
     if (!chatId) {
@@ -147,13 +151,42 @@ const ChatScreen = ({ navigation, route }) => {
             data={messageData}
             renderItem={(e) => {
               return (
-               <MessageBubble data={e.item} loggedInUserUid={loggedInUserData.uid} chatId={chatId}/>
+               <MessageBubble 
+                  data={e.item} 
+                  loggedInUserUid={loggedInUserData.uid} 
+                  chatId={chatId} 
+                  setReply={()=>setReplyingTo(e.item)}
+               />
               );
             }}
             showsVerticalScrollIndicator={false}
           />
         </View>
       </ImageBackground>
+
+        {//  REPLYING CONTAINER ==============================>
+          replyingTo &&
+          <View style={styles.replyContainer}>
+            <View style={{alignSelf:"flex-start",marginRight:20,alignItems:"center"}}>
+               <Image
+              source={
+                   { uri: storedUsers[replyingTo.sentBy]?.ProfilePicURL ?? loggedInUserData?.ProfilePicURL} 
+              }
+              style={styles.userImage}
+              resizeMode="contain"
+            />
+            <Text style={styles.replyName}>{storedUsers[replyingTo.sentBy]?.name??loggedInUserData.name}</Text>
+            </View>
+            <View style={{flex:1,backgroundColor:"#fff",padding:15,borderBottomLeftRadius:20,borderTopRightRadius:20,}}>
+
+            <Text style={styles.replyText} numberOfLines={1}>{replyingTo.text}</Text>
+            </View>
+            <TouchableOpacity style={styles.replyCancelButton} onPress={()=>setReplyingTo()}>
+            <AntDesign name="closecircleo" size={24} color="#fff"/>
+            </TouchableOpacity>
+          </View>
+        }
+
       <View style={styles.inputContainer}>
         <TouchableOpacity>
           <Ionicons name="add-circle-outline" size={35} color="#FFF" />
@@ -241,5 +274,29 @@ const styles = StyleSheet.create({
     color: "#6f4e37",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  replyContainer:{
+     flexDirection:"row",
+     alignItems:"center",
+     paddingHorizontal:10,
+     padding:5,
+     backgroundColor:"#6f4e37",
+     borderLeftWidth:4,
+     borderColor:"#fff"
+  },
+  replyName:{
+      fontFamily:"Bold",
+      fontSize:16,
+      color:"#fff"
+  },
+  replyText:{
+    fontSize:15,
+     fontFamily:"BoldItalic",
+     color:"#6f4e37",
+    //  backgroundColor:"#fff"
+  },
+  replyCancelButton:{
+    alignSelf:"flex-start",
+    marginLeft:5,
   },
 });
