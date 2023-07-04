@@ -95,7 +95,7 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) =>
             {
             userReplied &&
             <View style={{backgroundColor:"#6f4e37",paddingLeft:5,borderTopRightRadius: 35,margin:3,}}>
-            <Text style={{color:"#fff",fontFamily:"Medium",padding:2,}}>{replyingTo.text}</Text>
+            <Text style={{color:"#fff",fontFamily:"Medium",padding:2,textAlign:"center"}}>{replyingTo.text}</Text>
             <View style={{flexDirection:"row",alignSelf:"flex-start",paddingVertical:5,}}>
             <Image
               source={
@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
     fontFamily: "MediumItalic",
     letterSpacing: 1,
     marginBottom:5,
+    textAlign:"center"
 
   },
   receivedMessageContainer: {
@@ -269,6 +270,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     fontFamily: "BoldItalic",
     // marginRight: "20%",
+    textAlign:"center"
   },
   sentMessagePopUps: {
     alignSelf: "flex-end",
