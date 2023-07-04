@@ -24,7 +24,7 @@ export const SaveNewChat = async (loggedInUserId, chatData) => {
   return newChat.key;
 };
 
-export const saveMessage = async (chatId, senderId, messageText) => {
+export const saveMessage = async (chatId, senderId, messageText,replyTo) => {
     // console.log("save message chat id"+chatId);
     // console.log(senderId)
     // console.log(messageText)
@@ -34,6 +34,9 @@ export const saveMessage = async (chatId, senderId, messageText) => {
     sentAt: new Date().toISOString(),
     text: messageText,
   };
+  if(replyTo){
+    messageData.replyTo=replyTo;
+  }
   await push(messageRef, messageData);
 
   const chatRef = child(dbRef, `Chats/${chatId}`);

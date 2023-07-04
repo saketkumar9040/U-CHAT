@@ -109,10 +109,11 @@ const ChatScreen = ({ navigation, route }) => {
           allChatUsersUid
         );
         await setChatId(newChatId);
-        await saveMessage(newChatId, loggedInUserData.uid, messageText);
+        await saveMessage(newChatId, loggedInUserData.uid, messageText,replyingTo && replyingTo.key);
       } else {
-        await saveMessage(chatId, loggedInUserData.uid, messageText);
+        await saveMessage(chatId, loggedInUserData.uid, messageText ,replyingTo && replyingTo.key);
       }
+      setReplyingTo(null);
       setMessageText("");
     } catch (error) {
       if (error == "Error: PERMISSION_DENIED: Permission denied")
@@ -156,6 +157,7 @@ const ChatScreen = ({ navigation, route }) => {
                   loggedInUserUid={loggedInUserData.uid} 
                   chatId={chatId} 
                   setReply={()=>setReplyingTo(e.item)}
+                  replyingTo={e.item.replyTo && messageData.find(i =>i.key === e.item.replyTo)}
                />
               );
             }}

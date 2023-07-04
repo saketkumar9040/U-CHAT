@@ -19,6 +19,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { app, auth } from "../firebase/FirebaseConfig";
 import { child, get, getDatabase, ref } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setStoredUsers } from "../store/userSlice";
 
 let timer;
 
@@ -55,6 +56,7 @@ const SignInScreen = ({ navigation }) => {
 
       //  SENDING DATA TO STORE  ======================================>
       dispatch(authenticate({ token: accessToken, userData }));
+      dispatch(setStoredUsers({ newUsers: { userData } }));
 
       //  STORING USER DATA TO LOCAL STORAGE ================================>
       AsyncStorage.setItem(

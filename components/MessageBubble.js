@@ -23,7 +23,7 @@ import {
 import { starMessage } from "../utils/ChatHandler";
 import { useSelector } from "react-redux";
 
-const MessageBubble = ({ data, loggedInUserUid, chatId, setReply}) => {
+const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) => {
 
   const menuRef = useRef(null);
   const id = useRef(uuid.v4());
@@ -31,12 +31,16 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply}) => {
   //   console.log(id.current);
   // console.log(selectedUser)
 
+  const storedUsers = useSelector(state=>state.users.storedUser);
+  console.log(storedUsers)
+
   const starredMessages = useSelector(
     (state) => state.messages.starredMessages[chatId] ?? {}
   );
   // console.log(starredMessages)
 
   const isStarred = starredMessages[data.key] !== undefined;
+  const userReplied = replyingTo && storedUsers[replyingTo.sentBy]
 
   let displayDate;
   let date = new Date(data.sentAt);
@@ -54,21 +58,36 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply}) => {
         onLongPress={() =>
           menuRef.current.props.ctx.menuActions.openMenu(id.current)
         }
-      >
+      > 
         {data.sentBy === loggedInUserUid ? (
           <View style={styles.sentMessageContainer}>
-            {isStarred && <AntDesign name="star" size={20} color="green" />}
+            {
+              userReplied &&
+              <View style={{backgroundColor:"#fff",padding:5,borderTopLeftRadius: 35,margin:3,}}>
+              <Text  style={{color:"#6f4e37",fontFamily:"Medium",padding:3,paddingLeft:10,}}>{replyingTo.text}</Text>
+              <Text  style={{color:"#6f4e37",fontFamily:"Medium",padding:2,paddingLeft:10,alignSelf:"flex-end"}}>{userReplied.name}</Text>
+              </View>
+            }
             <Text style={styles.sentMessageText}>{data.text}</Text>
             <Text style={styles.sendDate}>
+            {isStarred && <AntDesign name="star" size={20} color="yellow"/>}
               {displayDate}:
               {date.getMinutes() > 9
                 ? date.getMinutes()
                 : `0${date.getMinutes()}`}{" "}
               {date.getHours() > 12 ? "PM" : "AM"}
+              
             </Text>
           </View>
         ) : (
           <View style={styles.receivedMessageContainer}>
+            {
+            userReplied &&
+            <View style={{backgroundColor:"#6f4e37",paddingLeft:5,borderTopRightRadius: 35,margin:3,}}>
+            <Text style={{color:"#fff",fontFamily:"Medium",padding:2,}}>{replyingTo.text}</Text>
+            <Text style={{color:"#fff",fontFamily:"Bold",padding:2,}}>{userReplied.name}</Text>
+            </View>
+          }
             <Text style={styles.receivedMessageText}>{data.text}</Text>
             <Text style={styles.receivedDate}>
               {displayDate}:
@@ -76,8 +95,8 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply}) => {
                 ? date.getMinutes()
                 : `0${date.getMinutes()}`}{" "}
               {date.getHours() > 12 ? "PM" : "AM"}
+              {isStarred && <AntDesign name="star" size={20} color="green" />}
             </Text>
-            {isStarred && <AntDesign name="star" size={20} color="green" />}
           </View>
         )}
       </TouchableWithoutFeedback>
@@ -185,17 +204,20 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   sentMessageContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignSelf: "flex-end",
-    paddingLeft: "20%",
+    marginLeft: "20%",
+    backgroundColor: "#6f4e37",
+    borderTopLeftRadius: 40,
+    borderBottomLeftRadius: 40,
+    borderWidth: 2,
+    borderRightWidth: 0,
+    borderColor: "#fff",
+    paddingBottom: 15,
   },
   sentMessageText: {
     fontSize: 17,
     color: "#fff",
-    backgroundColor: "#6f4e37",
-    alignSelf: "flex-end",
-    borderTopLeftRadius: 40,
-    borderBottomLeftRadius: 40,
     padding: 5,
     paddingTop: 10,
     paddingLeft: 40,
@@ -203,32 +225,30 @@ const styles = StyleSheet.create({
     // marginLeft: "10%",
     fontFamily: "MediumItalic",
     letterSpacing: 1,
-    borderWidth: 2,
-    borderRightWidth: 0,
-    borderColor: "#fff",
-    paddingBottom: 15,
+    marginBottom:5,
+
   },
   receivedMessageContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignSelf: "flex-start",
-    paddingRight: "20%",
-  },
-  receivedMessageText: {
-    fontSize: 17,
-    backgroundColor: "#fff",
-    color: "#6f4e37",
+    marginRight: "20%",
     borderTopRightRadius: 40,
     borderBottomRightRadius: 40,
-    padding: 5,
-    paddingTop: 10,
-    paddingRight: 40,
-    paddingHorizontal: 20,
-    fontFamily: "BoldItalic",
-    // marginRight: "20%",
     borderWidth: 4,
     borderLeftWidth: 0,
     borderColor: "#6f4e37",
     paddingBottom: 10,
+    backgroundColor: "#fff",
+  },
+  receivedMessageText: {
+    fontSize: 17,
+    color: "#6f4e37",
+    padding: 5,
+    marginBottom:10,
+    paddingRight: 40,
+    paddingHorizontal: 20,
+    fontFamily: "BoldItalic",
+    // marginRight: "20%",
   },
   sentMessagePopUps: {
     alignSelf: "flex-end",

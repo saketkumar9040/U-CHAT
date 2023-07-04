@@ -25,6 +25,7 @@ import { child, getDatabase, ref, set } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticate, autoLogout } from "../store/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setStoredUsers } from "../store/userSlice";
 
 const SignUpScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -83,6 +84,7 @@ const SignUpScreen = ({ navigation }) => {
 
           //  STORING THE USER STATE AND TOKEN IN STORE ========================>
           dispatch(authenticate({ token: accessToken, userData }));
+          dispatch(setStoredUsers({ newUsers: { userData } }));
 
           //  STORING USER DATA TO LOCAL STORAGE ================================>
           AsyncStorage.setItem(
