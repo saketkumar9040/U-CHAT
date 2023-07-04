@@ -36,9 +36,15 @@ const starredMessages = useSelector(state=>state.messages.starredMessages[chatId
         }
       >
         {data.sentBy === loggedInUserUid ? (
-          <Text style={styles.sentMessageText}>{data.text}</Text>
+          <View style={styles.sentMessageContainer}>
+            {isStarred && <AntDesign name="star" size={20} color="green" />}
+            <Text style={styles.sentMessageText}>{data.text}</Text>
+          </View>
         ) : (
-          <Text style={styles.receivedMessageText}>{data.text}{isStarred && <AntDesign name="star" size={20} color="green" style={{position:"absolute",left:0,bottom:10}} />}</Text>
+          <View style={styles.receivedMessageContainer}>
+            <Text style={styles.receivedMessageText}>{data.text}</Text>
+            {isStarred && <AntDesign name="star" size={20} color="green" />}
+          </View>
         )}
       </TouchableWithoutFeedback>
    
@@ -98,6 +104,11 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     marginVertical: 5,
   },
+  sentMessageContainer:{
+    flexDirection:"row",
+    alignSelf: "flex-end",
+    paddingLeft:"20%",
+  },
   sentMessageText: {
     fontSize: 17,
     color: "#fff",
@@ -109,12 +120,17 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingLeft:40,
     paddingHorizontal: 20,
-    marginLeft: "10%",
+    // marginLeft: "10%",
     fontFamily: "MediumItalic",
     letterSpacing: 1,
     borderWidth: 2,
     borderRightWidth: 0,
     borderColor: "#fff",
+  },
+  receivedMessageContainer:{
+    flexDirection:"row",
+    alignSelf: "flex-start",
+    paddingRight:"20%",
   },
   receivedMessageText: {
     fontSize: 17,
@@ -127,8 +143,7 @@ const styles = StyleSheet.create({
     paddingRight:40,
     paddingHorizontal: 20,
     fontFamily: "BoldItalic",
-    alignSelf: "flex-start",
-    marginRight: "20%",
+    // marginRight: "20%",
     borderWidth: 4,
     borderLeftWidth: 0,
     borderColor: "#6f4e37",
