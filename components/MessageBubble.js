@@ -24,8 +24,13 @@ import { starMessage } from "../utils/ChatHandler";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
 
-const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) => {
-
+const MessageBubble = ({
+  data,
+  loggedInUserUid,
+  chatId,
+  setReply,
+  replyingTo,
+}) => {
   const menuRef = useRef(null);
   const id = useRef(uuid.v4());
 
@@ -33,7 +38,7 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) =>
   // console.log(selectedUser)
   // console.log(replyingTo)
 
-  const storedUsers = useSelector(state=>state.users.storedUser);
+  const storedUsers = useSelector((state) => state.users.storedUser);
   // console.log(storedUsers)
 
   const starredMessages = useSelector(
@@ -42,7 +47,7 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) =>
   // console.log(starredMessages)
 
   const isStarred = starredMessages[data.key] !== undefined;
-  const userReplied = replyingTo && storedUsers[replyingTo.sentBy]
+  const userReplied = replyingTo && storedUsers[replyingTo.sentBy];
 
   let displayDate;
   let date = new Date(data.sentAt);
@@ -53,61 +58,125 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) =>
     // console.log(date);
   }
 
-
   return (
     <View style={styles.messageContainer}>
       <TouchableWithoutFeedback
         onLongPress={() =>
           menuRef.current.props.ctx.menuActions.openMenu(id.current)
         }
-      > 
+      >
         {data.sentBy === loggedInUserUid ? (
           <View style={styles.sentMessageContainer}>
-            {
-              userReplied &&
-              <View style={{backgroundColor:"#fff",padding:5,borderTopLeftRadius: 35,margin:3,}}>
-              <Text  style={{color:"#6f4e37",fontFamily:"Medium",padding:3,paddingLeft:10,textAlign:"center"}}>{replyingTo.text}</Text>
-              <View style={{flexDirection:"row",alignSelf:"flex-end"}}>
-              <Text  style={{color:"#6f4e37",fontFamily:"Medium",padding:2,paddingLeft:10,alignSelf:"flex-end"}}>{userReplied.name}</Text>
+            {userReplied && (
+              <View
+                style={{
+                  backgroundColor: "#fff",
+                  padding: 5,
+                  borderTopLeftRadius: 35,
+                  margin: 3,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#6f4e37",
+                    fontFamily: "Medium",
+                    padding: 3,
+                    paddingLeft: 10,
+                    textAlign: "center",
+                  }}
+                >
+                  {replyingTo.text}
+                </Text>
+                <View style={{ flexDirection: "row", alignSelf: "flex-end" }}>
+                  <Text
+                    style={{
+                      color: "#6f4e37",
+                      fontFamily: "Medium",
+                      padding: 2,
+                      paddingLeft: 10,
+                      alignSelf: "flex-end",
+                    }}
+                  >
+                    {userReplied.name}
+                  </Text>
+                  <Image
+                    source={{
+                      uri: storedUsers[replyingTo.sentBy]?.ProfilePicURL,
+                    }}
+                    style={styles.userImage}
+                    resizeMode="contain"
+                  />
+                </View>
+              </View>
+            )}
+            {data.text == "Image" && data?.imageURL ? (
               <Image
-              source={
-                { uri: storedUsers[replyingTo.sentBy]?.ProfilePicURL} 
-              }
-              style={styles.userImage}
-              resizeMode="contain"
-            />
-              </View>
-              </View>
-            }
-            <Text style={styles.sentMessageText}>{data.text}</Text>
+                style={styles.messageImage}
+                source={{ uri: data?.imageURL }}
+              />
+            ) : (
+              <Text style={styles.sentMessageText}>{data.text}</Text>
+            )}
             <Text style={styles.sendDate}>
-            {isStarred && <AntDesign name="star" size={20} color="yellow"/>}
+              {isStarred && <AntDesign name="star" size={20} color="yellow" />}
               {displayDate}:
               {date.getMinutes() > 9
                 ? date.getMinutes()
                 : `0${date.getMinutes()}`}{" "}
               {date.getHours() > 12 ? "PM" : "AM"}
-              
             </Text>
           </View>
         ) : (
           <View style={styles.receivedMessageContainer}>
-            {
-            userReplied &&
-            <View style={{backgroundColor:"#6f4e37",paddingLeft:5,borderTopRightRadius: 35,margin:3,}}>
-            <Text style={{color:"#fff",fontFamily:"Medium",padding:2,textAlign:"center"}}>{replyingTo.text}</Text>
-            <View style={{flexDirection:"row",alignSelf:"flex-start",paddingVertical:5,}}>
-            <Image
-              source={
-                { uri: storedUsers[replyingTo.sentBy]?.ProfilePicURL} 
-              }
-              style={styles.userImage}
-              resizeMode="contain"
-            />
-            <Text style={{color:"#fff",fontFamily:"Bold",padding:2,}}>{userReplied.name}</Text>
-            </View>
-            </View>
-          }
+            {userReplied && (
+              <View
+                style={{
+                  backgroundColor: "#6f4e37",
+                  paddingLeft: 5,
+                  borderTopRightRadius: 35,
+                  margin: 3,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Medium",
+                    padding: 2,
+                    textAlign: "center",
+                  }}
+                >
+                  {replyingTo.text}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignSelf: "flex-start",
+                    paddingVertical: 5,
+                  }}
+                >
+                  <Image
+                    source={{
+                      uri: storedUsers[replyingTo.sentBy]?.ProfilePicURL,
+                    }}
+                    style={styles.userImage}
+                    resizeMode="contain"
+                  />
+                  <Text
+                    style={{ color: "#fff", fontFamily: "Bold", padding: 2 }}
+                  >
+                    {userReplied.name}
+                  </Text>
+                </View>
+              </View>
+            )}
+               {data.text == "Image" && data?.imageURL ? (
+              <Image
+                style={styles.messageImage}
+                source={{ uri: data?.imageURL }}
+              />
+            ) : (
+              <Text style={styles.receivedMessageText}>{data.text}</Text>
+            )}
             <Text style={styles.receivedMessageText}>{data.text}</Text>
             <Text style={styles.receivedDate}>
               {displayDate}:
@@ -132,10 +201,7 @@ const MessageBubble = ({ data, loggedInUserUid, chatId, setReply,replyingTo}) =>
       >
         <MenuTrigger />
         <MenuOptions>
-          <MenuOption
-            onSelect={ setReply }
-            style={styles.menuOptionsContainer}
-          >
+          <MenuOption onSelect={setReply} style={styles.menuOptionsContainer}>
             <Text
               style={{
                 flex: 1,
@@ -245,9 +311,8 @@ const styles = StyleSheet.create({
     // marginLeft: "10%",
     fontFamily: "MediumItalic",
     letterSpacing: 1,
-    marginBottom:5,
-    textAlign:"center"
-
+    marginBottom: 5,
+    textAlign: "center",
   },
   receivedMessageContainer: {
     flexDirection: "column",
@@ -265,12 +330,12 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: "#6f4e37",
     padding: 5,
-    marginBottom:10,
+    marginBottom: 10,
     paddingRight: 40,
     paddingHorizontal: 20,
     fontFamily: "BoldItalic",
     // marginRight: "20%",
-    textAlign:"center"
+    textAlign: "center",
   },
   sentMessagePopUps: {
     alignSelf: "flex-end",
@@ -314,5 +379,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#fff",
     backgroundColor: "#6f4e37",
+  },
+  messageImage: {
+    marginVertical: 20,
+    marginLeft:20,
+    marginRight:10,
+    height: 300,
+    width: 200,
+    // borderRadius:20
   },
 });

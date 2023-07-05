@@ -161,7 +161,7 @@ const ChatScreen = ({ navigation, route }) => {
        setIsLoading(false)
         console.log(error)
      }
-  },[isLoading,tempImageURI])
+  },[tempImageURI])
 
   
 
