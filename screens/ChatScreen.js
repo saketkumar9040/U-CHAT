@@ -171,6 +171,7 @@ const ChatScreen = ({ navigation, route }) => {
         replyingTo && replyingTo.key,
         uploadURL.URL
       );
+      setReplyingTo(null);
       console.log("Image uploaded successfully🤗");
     } catch (error) {
       setIsLoading(false);
@@ -222,7 +223,7 @@ const ChatScreen = ({ navigation, route }) => {
           <View style={styles.replyContainer}>
             <View
               style={{
-                alignSelf: "flex-start",
+                alignSelf: "center",
                 marginRight: 20,
                 alignItems: "center",
               }}
@@ -243,7 +244,7 @@ const ChatScreen = ({ navigation, route }) => {
             {replyingTo.text === "Image" && replyingTo.imageURL ? (
               <Image
                 source={{ uri: replyingTo.imageURL }}
-                style={{ width: 100, height: 100 }}
+                style={{ width: 220, height: 200,marginVertical:10, }}
               />
             ) : (
               <View style={styles.replyTextContainer}>

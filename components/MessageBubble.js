@@ -385,22 +385,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#6f4e37",
   },
   sentMessageImage: {
-    marginVertical: 20,
-    marginLeft:20,
+    // marginVertical: 10,
+    marginLeft:30,
     marginRight:10,
-    height: 300,
-    width: 200,
+    height: 250,
+    width: 250,
     // borderRadius:20
-    borderBottomLeftRadius:20,
-    borderTopLeftRadius:20,
+    // borderBottomLeftRadius:20,
+    // borderTopLeftRadius:20,
+    resizeMode:"contain"
   },
   receivedMessageImage:{
-    marginVertical: 20,
+    // marginVertical: 20,
     marginRight:20,
     marginLeft:10,
     height: 300,
     width: 200,
-    borderBottomRightRadius:20,
-    borderTopRightRadius:20,
+    // borderBottomRightRadius:20,
+    // borderTopRightRadius:20,
+    resizeMode:"contain"
   }
 });
