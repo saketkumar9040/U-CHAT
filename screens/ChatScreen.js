@@ -22,6 +22,7 @@ import { saveMessage } from "../utils/ChatHandler";
 import MessageBubble from "../components/MessageBubble";
 import { launchCameraAsync } from "expo-image-picker";
 import { launchImagePicker } from "../utils/ImagePickerHelper";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 
 const ChatScreen = ({ navigation, route }) => {
@@ -32,6 +33,7 @@ const ChatScreen = ({ navigation, route }) => {
   const [messageFailed, setMessageFailed] = useState("");
   const [replyingTo,setReplyingTo] = useState(null)
   const [tempImageURI,setTempImageURI] = useState(null)
+  console.log(tempImageURI)
   // console.log(replyingTo)
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
@@ -232,6 +234,23 @@ const ChatScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           )
         }
+        <AwesomeAlert
+           show={tempImageURI !== null}
+           title="send image ?🤔 "
+           closeOnTouchOutside={true}
+           closeOnHardwareBackPress={false}
+           showCancelButton={true}
+           showConfirmButton={true}
+           cancelText="cancel"
+           confirmText="send image"
+           confirmButtonColor="#6f4e37"
+           cancelButtonColor="red"
+           titleStyle={styles.popUpTitleStyle}
+           onCancelPressed={()=>setTempImageURI(null)}
+           onDismiss={()=>setTempImageURI(null)}
+           onConfirmPressed={()=>console.log("upload??")}
+           contentContainerStyle={styles.popUpContainer}
+        />
       </View>
     </SafeAreaView>
   );
@@ -317,5 +336,13 @@ const styles = StyleSheet.create({
   replyCancelButton:{
     alignSelf:"flex-start",
     marginLeft:5,
+  },
+  popUpContainer:{
+    backgroundColor:'#FFBF00'
+  },
+  popUpTitleStyle:{
+    fontFamily:"Medium",
+    letterSpacing:1,
+    color:"#6f4e37"
   },
 });
