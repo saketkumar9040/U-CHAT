@@ -34,7 +34,7 @@ const ChatScreen = ({ navigation, route }) => {
   const [replyingTo,setReplyingTo] = useState(null);
   const [tempImageURI,setTempImageURI] = useState(null);
   const [isLoading,setIsLoading]= useState(false)
-  // console.log(tempImageURI)
+  console.log(tempImageURI)
   // console.log(replyingTo)
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
@@ -152,14 +152,14 @@ const ChatScreen = ({ navigation, route }) => {
      setIsLoading(true)
      try {
       const uploadURL =await uploadImage(tempImageURI,true);
-      console.log("Image uploaded successfully🤗");
-      setIsLoading(false);
+      setTempImageURI(null);
+      await setIsLoading(false);
       // SEND IMAGE MESSAGE
       const sendImageMessage = await sendMessage(chatId, loggedInUserData.uid,"Image" ,replyingTo && replyingTo.key,uploadURL.URL);
-      setTempImageURI(null);
+      console.log("Image uploaded successfully🤗");
      } catch (error) {
        setIsLoading(false)
-        console.log(error)
+       console.log(error)
      }
   },[tempImageURI])
 
@@ -268,9 +268,9 @@ const ChatScreen = ({ navigation, route }) => {
            contentContainerStyle={styles.popUpContainer}
            customView={(
             <View style={{borderRadius:20}}>
-              {isLoading && <ActivityIndicator color="#6f4e37" size={40}/>}
+              {isLoading && tempImageURI !== null && <ActivityIndicator color="#6f4e37" size={40}/>}
               {
-                !isLoading && tempImageURI != null &&
+                !isLoading && tempImageURI !== null  &&
               <Image source={{uri:tempImageURI}} style={{width:200,height:200,}}/>
               }
             </View>

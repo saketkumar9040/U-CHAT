@@ -72,6 +72,8 @@ const MessageBubble = ({
                 style={{
                   backgroundColor: "#fff",
                   padding: 5,
+                  paddingLeft:10,
+                  margin:10,
                   borderTopLeftRadius: 35,
                   margin: 3,
                 }}
@@ -81,6 +83,7 @@ const MessageBubble = ({
                     color: "#6f4e37",
                     fontFamily: "Medium",
                     padding: 3,
+                    marginLeft:10,
                     paddingLeft: 10,
                     textAlign: "center",
                   }}
@@ -111,7 +114,7 @@ const MessageBubble = ({
             )}
             {data.text == "Image" && data?.imageURL ? (
               <Image
-                style={styles.messageImage}
+                style={styles.sentMessageImage}
                 source={{ uri: data?.imageURL }}
               />
             ) : (
@@ -142,6 +145,7 @@ const MessageBubble = ({
                     color: "#fff",
                     fontFamily: "Medium",
                     padding: 2,
+                    margin:10,
                     textAlign: "center",
                   }}
                 >
@@ -152,6 +156,7 @@ const MessageBubble = ({
                     flexDirection: "row",
                     alignSelf: "flex-start",
                     paddingVertical: 5,
+                    margin:5,
                   }}
                 >
                   <Image
@@ -171,13 +176,12 @@ const MessageBubble = ({
             )}
                {data.text == "Image" && data?.imageURL ? (
               <Image
-                style={styles.messageImage}
+                style={styles.receivedMessageImage}
                 source={{ uri: data?.imageURL }}
               />
             ) : (
               <Text style={styles.receivedMessageText}>{data.text}</Text>
             )}
-            <Text style={styles.receivedMessageText}>{data.text}</Text>
             <Text style={styles.receivedDate}>
               {displayDate}:
               {date.getMinutes() > 9
@@ -380,12 +384,23 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     backgroundColor: "#6f4e37",
   },
-  messageImage: {
+  sentMessageImage: {
     marginVertical: 20,
     marginLeft:20,
     marginRight:10,
     height: 300,
     width: 200,
     // borderRadius:20
+    borderBottomLeftRadius:20,
+    borderTopLeftRadius:20,
   },
+  receivedMessageImage:{
+    marginVertical: 20,
+    marginRight:20,
+    marginLeft:10,
+    height: 300,
+    width: 200,
+    borderBottomRightRadius:20,
+    borderTopRightRadius:20,
+  }
 });
