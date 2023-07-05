@@ -24,7 +24,7 @@ export const SaveNewChat = async (loggedInUserId, chatData) => {
   return newChat.key;
 };
 
-export const saveMessage = async (chatId, senderId, messageText,replyTo) => {
+export const sendMessage = async (chatId, senderId, messageText,replyTo=null,imageURL=null) => {
     // console.log("save message chat id"+chatId);
     // console.log(senderId)
     // console.log(messageText)
@@ -37,6 +37,10 @@ export const saveMessage = async (chatId, senderId, messageText,replyTo) => {
   if(replyTo){
     messageData.replyTo=replyTo;
   }
+  if(imageURL){
+    messageData.imageURL=imageURL
+  }
+  
   await push(messageRef, messageData);
 
   const chatRef = child(dbRef, `Chats/${chatId}`);

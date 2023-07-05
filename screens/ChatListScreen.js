@@ -88,7 +88,7 @@ const ChatListScreen = ({ navigation, route }) => {
       return;
     }
     let alreadyChatWith = chatData.find((e)=>e.users[0]===selectedUser?.uid);
-    console.log(alreadyChatWith?.key);
+    // console.log(alreadyChatWith?.key);
 
     const chatUsers = [selectedUser, userLoggedIn];
 

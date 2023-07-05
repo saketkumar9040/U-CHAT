@@ -20,7 +20,7 @@ export const launchImagePicker = async () => {
   }
 };
 
-export const uploadImage = async (uri) => {
+export const uploadImage = async (uri,isChatImage=false) => {
   const blob = await new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.onload = function () {
@@ -35,7 +35,8 @@ export const uploadImage = async (uri) => {
   });
 //   console.log(blob.data.name);
   let imageName= blob.data.name;
-  const storageRef = ref(storage, `ProfilePics/${blob.data.name}`);
+  const pathFolder = isChatImage ? "ChatImages" : "ProfilePics"
+  const storageRef = ref(storage, `${pathFolder}/${blob.data.name}`);
   await uploadBytesResumable(storageRef, blob);
   let URL= await getDownloadURL(storageRef);
   return {URL,imageName}

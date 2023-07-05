@@ -307,8 +307,8 @@ const styles = StyleSheet.create({
     fontFamily: "Light",
   },
   userImage: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     marginLeft: 5,
     borderRadius: 40,
     borderWidth: 2,

@@ -18,11 +18,11 @@ import userProfilePic from "../assets/images/userProfile.png";
 import { useSelector } from "react-redux";
 import ErrorBubble from "../components/ErrorBubble";
 import { SaveNewChat } from "../components/SaveNewChat";
-import { saveMessage } from "../utils/ChatHandler";
+import { sendMessage } from "../utils/ChatHandler";
 import MessageBubble from "../components/MessageBubble";
-import { launchCameraAsync } from "expo-image-picker";
-import { launchImagePicker } from "../utils/ImagePickerHelper";
+import { launchImagePicker,uploadImage } from "../utils/ImagePickerHelper";
 import AwesomeAlert from "react-native-awesome-alerts";
+import { ActivityIndicator } from "react-native";
 
 
 const ChatScreen = ({ navigation, route }) => {
@@ -31,9 +31,10 @@ const ChatScreen = ({ navigation, route }) => {
     route.params.chatId ? route.params.chatId : ""
   );
   const [messageFailed, setMessageFailed] = useState("");
-  const [replyingTo,setReplyingTo] = useState(null)
-  const [tempImageURI,setTempImageURI] = useState(null)
-  console.log(tempImageURI)
+  const [replyingTo,setReplyingTo] = useState(null);
+  const [tempImageURI,setTempImageURI] = useState(null);
+  const [isLoading,setIsLoading]= useState(false)
+  // console.log(tempImageURI)
   // console.log(replyingTo)
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
@@ -114,9 +115,9 @@ const ChatScreen = ({ navigation, route }) => {
           allChatUsersUid
         );
         await setChatId(newChatId);
-        await saveMessage(newChatId, loggedInUserData.uid, messageText,replyingTo && replyingTo.key);
+        await sendMessage(newChatId, loggedInUserData.uid, messageText,replyingTo && replyingTo.key);
       } else {
-        await saveMessage(chatId, loggedInUserData.uid, messageText ,replyingTo && replyingTo.key);
+        await sendMessage(chatId, loggedInUserData.uid, messageText,replyingTo && replyingTo.key);
       }
       setReplyingTo(null);
       setMessageText("");
@@ -145,7 +146,22 @@ const ChatScreen = ({ navigation, route }) => {
      } catch (error) {
       console.log(error)
      }
-  },[tempImageURI]) 
+  },[tempImageURI]);
+
+  const uploadChatImage = useCallback(async()=>{
+     setIsLoading(true)
+     try {
+      const uploadURL =await uploadImage(tempImageURI,true);
+      console.log("Image uploaded successfully🤗");
+      setIsLoading(false);
+      // SEND IMAGE MESSAGE
+      const sendImageMessage = await sendMessage(chatId, loggedInUserData.uid,"Image" ,replyingTo && replyingTo.key,uploadURL.URL);
+      setTempImageURI(null);
+     } catch (error) {
+       setIsLoading(false)
+        console.log(error)
+     }
+  },[isLoading,tempImageURI])
 
   
 
@@ -248,11 +264,15 @@ const ChatScreen = ({ navigation, route }) => {
            titleStyle={styles.popUpTitleStyle}
            onCancelPressed={()=>setTempImageURI(null)}
            onDismiss={()=>setTempImageURI(null)}
-           onConfirmPressed={()=>console.log("upload??")}
+           onConfirmPressed={()=>uploadChatImage()}
            contentContainerStyle={styles.popUpContainer}
            customView={(
             <View style={{borderRadius:20}}>
+              {isLoading && <ActivityIndicator color="#6f4e37" size={40}/>}
+              {
+                !isLoading && tempImageURI != null &&
               <Image source={{uri:tempImageURI}} style={{width:200,height:200,}}/>
+              }
             </View>
            )}
         />
