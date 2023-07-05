@@ -242,7 +242,7 @@ const ChatScreen = ({ navigation, route }) => {
            showCancelButton={true}
            showConfirmButton={true}
            cancelText="cancel"
-           confirmText="send image"
+           confirmText="send"
            confirmButtonColor="#6f4e37"
            cancelButtonColor="red"
            titleStyle={styles.popUpTitleStyle}
@@ -250,6 +250,11 @@ const ChatScreen = ({ navigation, route }) => {
            onDismiss={()=>setTempImageURI(null)}
            onConfirmPressed={()=>console.log("upload??")}
            contentContainerStyle={styles.popUpContainer}
+           customView={(
+            <View style={{borderRadius:20}}>
+              <Image source={{uri:tempImageURI}} style={{width:200,height:200,}}/>
+            </View>
+           )}
         />
       </View>
     </SafeAreaView>
@@ -338,11 +343,16 @@ const styles = StyleSheet.create({
     marginLeft:5,
   },
   popUpContainer:{
-    backgroundColor:'#FFBF00'
+    backgroundColor:'#FFBF00',
+    borderWidth:5,
+    borderColor:"#6f4e37",
+    borderRadius:10
   },
   popUpTitleStyle:{
+    
     fontFamily:"Medium",
     letterSpacing:1,
-    color:"#6f4e37"
+    color:"#6f4e37",
+    marginBottom:6,
   },
 });
