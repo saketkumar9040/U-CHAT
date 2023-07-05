@@ -20,10 +20,9 @@ import ErrorBubble from "../components/ErrorBubble";
 import { SaveNewChat } from "../components/SaveNewChat";
 import { sendMessage } from "../utils/ChatHandler";
 import MessageBubble from "../components/MessageBubble";
-import { launchImagePicker,uploadImage } from "../utils/ImagePickerHelper";
+import { launchImagePicker, uploadImage } from "../utils/ImagePickerHelper";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { ActivityIndicator } from "react-native";
-
 
 const ChatScreen = ({ navigation, route }) => {
   const [messageText, setMessageText] = useState("");
@@ -31,16 +30,16 @@ const ChatScreen = ({ navigation, route }) => {
     route.params.chatId ? route.params.chatId : ""
   );
   const [messageFailed, setMessageFailed] = useState("");
-  const [replyingTo,setReplyingTo] = useState(null);
-  const [tempImageURI,setTempImageURI] = useState(null);
-  const [isLoading,setIsLoading]= useState(false)
-  console.log(tempImageURI)
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [tempImageURI, setTempImageURI] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  console.log(tempImageURI);
   // console.log(replyingTo)
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
   // console.log(loggedInUserData.uid)
 
-  let storedUsers = useSelector(state=>state.users.storedUser);
+  let storedUsers = useSelector((state) => state.users.storedUser);
   // console.log(storedUsers)
 
   let allChatUsers = route?.params?.chatUsers;
@@ -115,9 +114,19 @@ const ChatScreen = ({ navigation, route }) => {
           allChatUsersUid
         );
         await setChatId(newChatId);
-        await sendMessage(newChatId, loggedInUserData.uid, messageText,replyingTo && replyingTo.key);
+        await sendMessage(
+          newChatId,
+          loggedInUserData.uid,
+          messageText,
+          replyingTo && replyingTo.key
+        );
       } else {
-        await sendMessage(chatId, loggedInUserData.uid, messageText,replyingTo && replyingTo.key);
+        await sendMessage(
+          chatId,
+          loggedInUserData.uid,
+          messageText,
+          replyingTo && replyingTo.key
+        );
       }
       setReplyingTo(null);
       setMessageText("");
@@ -136,35 +145,38 @@ const ChatScreen = ({ navigation, route }) => {
     console.log("Camera opening ...📸");
   };
 
-  const pickImage = useCallback(async()=>{
-     try {
+  const pickImage = useCallback(async () => {
+    try {
       let tempURI = await launchImagePicker();
-      if(!tempURI){
+      if (!tempURI) {
         return;
       }
-      setTempImageURI(tempURI)
-     } catch (error) {
-      console.log(error)
-     }
-  },[tempImageURI]);
+      setTempImageURI(tempURI);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [tempImageURI]);
 
-  const uploadChatImage = useCallback(async()=>{
-     setIsLoading(true)
-     try {
-      const uploadURL =await uploadImage(tempImageURI,true);
+  const uploadChatImage = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const uploadURL = await uploadImage(tempImageURI, true);
       setTempImageURI(null);
       await setIsLoading(false);
       // SEND IMAGE MESSAGE
-      const sendImageMessage = await sendMessage(chatId, loggedInUserData.uid,"Image" ,replyingTo && replyingTo.key,uploadURL.URL);
+      const sendImageMessage = await sendMessage(
+        chatId,
+        loggedInUserData.uid,
+        "Image",
+        replyingTo && replyingTo.key,
+        uploadURL.URL
+      );
       console.log("Image uploaded successfully🤗");
-     } catch (error) {
-       setIsLoading(false)
-       console.log(error)
-     }
-  },[tempImageURI])
-
-  
-
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+    }
+  }, [tempImageURI]);
 
   return (
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
@@ -187,13 +199,16 @@ const ChatScreen = ({ navigation, route }) => {
             data={messageData}
             renderItem={(e) => {
               return (
-               <MessageBubble 
-                  data={e.item} 
-                  loggedInUserUid={loggedInUserData.uid} 
-                  chatId={chatId} 
-                  setReply={()=>setReplyingTo(e.item)}
-                  replyingTo={e.item.replyTo && messageData.find(i =>i.key === e.item.replyTo)}
-               />
+                <MessageBubble
+                  data={e.item}
+                  loggedInUserUid={loggedInUserData.uid}
+                  chatId={chatId}
+                  setReply={() => setReplyingTo(e.item)}
+                  replyingTo={
+                    e.item.replyTo &&
+                    messageData.find((i) => i.key === e.item.replyTo)
+                  }
+                />
               );
             }}
             showsVerticalScrollIndicator={false}
@@ -201,28 +216,51 @@ const ChatScreen = ({ navigation, route }) => {
         </View>
       </ImageBackground>
 
-        {//  REPLYING CONTAINER ==============================>
-          replyingTo &&
+      {
+        //  REPLYING CONTAINER ==============================>
+        replyingTo && (
           <View style={styles.replyContainer}>
-            <View style={{alignSelf:"flex-start",marginRight:20,alignItems:"center"}}>
-               <Image
-              source={
-                   { uri: storedUsers[replyingTo.sentBy]?.ProfilePicURL ?? loggedInUserData?.ProfilePicURL} 
-              }
-              style={styles.userImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.replyName}>{storedUsers[replyingTo.sentBy]?.name??loggedInUserData.name}</Text>
+            <View
+              style={{
+                alignSelf: "flex-start",
+                marginRight: 20,
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={{
+                  uri:
+                    storedUsers[replyingTo.sentBy]?.ProfilePicURL ??
+                    loggedInUserData?.ProfilePicURL,
+                }}
+                style={styles.userImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.replyName}>
+                {storedUsers[replyingTo.sentBy]?.name ?? loggedInUserData.name}
+              </Text>
             </View>
-            <View style={{flex:1,backgroundColor:"#fff",padding:15,borderBottomLeftRadius:20,borderTopRightRadius:20,}}>
-
-            <Text style={styles.replyText} numberOfLines={1}>{replyingTo.text}</Text>
-            </View>
-            <TouchableOpacity style={styles.replyCancelButton} onPress={()=>setReplyingTo()}>
-            <AntDesign name="closecircleo" size={24} color="#fff"/>
+            {replyingTo.text === "Image" && replyingTo.imageURL ? (
+              <Image
+                source={{ uri: replyingTo.imageURL }}
+                style={{ width: 100, height: 100 }}
+              />
+            ) : (
+              <View style={styles.replyTextContainer}>
+                <Text style={styles.replyText} numberOfLines={1}>
+                  {replyingTo.text}
+                </Text>
+              </View>
+            )}
+            <TouchableOpacity
+              style={styles.replyCancelButton}
+              onPress={() => setReplyingTo()}
+            >
+              <AntDesign name="closecircleo" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
-        }
+        )
+      }
 
       <View style={styles.inputContainer}>
         <TouchableOpacity onPress={pickImage}>
@@ -251,30 +289,34 @@ const ChatScreen = ({ navigation, route }) => {
           )
         }
         <AwesomeAlert
-           show={tempImageURI !== null}
-           title="send image ?🤔 "
-           closeOnTouchOutside={true}
-           closeOnHardwareBackPress={false}
-           showCancelButton={true}
-           showConfirmButton={true}
-           cancelText="cancel"
-           confirmText="send"
-           confirmButtonColor="#6f4e37"
-           cancelButtonColor="red"
-           titleStyle={styles.popUpTitleStyle}
-           onCancelPressed={()=>setTempImageURI(null)}
-           onDismiss={()=>setTempImageURI(null)}
-           onConfirmPressed={()=>uploadChatImage()}
-           contentContainerStyle={styles.popUpContainer}
-           customView={(
-            <View style={{borderRadius:20}}>
-              {isLoading && tempImageURI !== null && <ActivityIndicator color="#6f4e37" size={40}/>}
-              {
-                !isLoading && tempImageURI !== null  &&
-              <Image source={{uri:tempImageURI}} style={{width:200,height:200,}}/>
-              }
+          show={tempImageURI !== null}
+          title="send image ?🤔 "
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="cancel"
+          confirmText="send"
+          confirmButtonColor="#6f4e37"
+          cancelButtonColor="red"
+          titleStyle={styles.popUpTitleStyle}
+          onCancelPressed={() => setTempImageURI(null)}
+          onDismiss={() => setTempImageURI(null)}
+          onConfirmPressed={() => uploadChatImage()}
+          contentContainerStyle={styles.popUpContainer}
+          customView={
+            <View style={{ borderRadius: 20 }}>
+              {isLoading && tempImageURI !== null && (
+                <ActivityIndicator color="#6f4e37" size={40} />
+              )}
+              {!isLoading && tempImageURI !== null && (
+                <Image
+                  source={{ uri: tempImageURI }}
+                  style={{ width: 200, height: 200 }}
+                />
+              )}
             </View>
-           )}
+          }
         />
       </View>
     </SafeAreaView>
@@ -338,41 +380,50 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  replyContainer:{
-     flexDirection:"row",
-     alignItems:"center",
-     paddingHorizontal:10,
-     padding:5,
-     backgroundColor:"#6f4e37",
-     borderLeftWidth:4,
-     borderColor:"#fff"
+  replyContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    padding: 5,
+    backgroundColor: "#6f4e37",
+    borderLeftWidth: 4,
+    borderColor: "#fff",
   },
-  replyName:{
-      fontFamily:"Bold",
-      fontSize:16,
-      color:"#fff"
+  replyName: {
+    fontFamily: "Bold",
+    fontSize: 16,
+    color: "#fff",
   },
-  replyText:{
-    fontSize:15,
-     fontFamily:"BoldItalic",
-     color:"#6f4e37",
-    //  backgroundColor:"#fff"
+  replyTextContainer: {
+    width:"60%",
+    backgroundColor: "#fff",
+    padding: 15,
+    borderBottomLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
-  replyCancelButton:{
-    alignSelf:"flex-start",
-    marginLeft:5,
+  replyText: {
+    fontSize: 15,
+    fontFamily: "BoldItalic",
+    color: "#6f4e37",
+    //  backgroundColor:"#fff",
   },
-  popUpContainer:{
-    backgroundColor:'#FFBF00',
-    borderWidth:5,
-    borderColor:"#6f4e37",
-    borderRadius:10
+  replyCancelButton: {
+    position: "absolute",
+    alignSelf: "flex-start",
+    right: 5,
+    top: 5,
+    // marginLeft:5,
   },
-  popUpTitleStyle:{
-    
-    fontFamily:"Medium",
-    letterSpacing:1,
-    color:"#6f4e37",
-    marginBottom:6,
+  popUpContainer: {
+    backgroundColor: "#FFBF00",
+    borderWidth: 5,
+    borderColor: "#6f4e37",
+    borderRadius: 10,
+  },
+  popUpTitleStyle: {
+    fontFamily: "Medium",
+    letterSpacing: 1,
+    color: "#6f4e37",
+    marginBottom: 6,
   },
 });
