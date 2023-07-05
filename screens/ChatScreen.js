@@ -20,7 +20,7 @@ import ErrorBubble from "../components/ErrorBubble";
 import { SaveNewChat } from "../components/SaveNewChat";
 import { sendMessage } from "../utils/ChatHandler";
 import MessageBubble from "../components/MessageBubble";
-import { launchImagePicker, uploadImage } from "../utils/ImagePickerHelper";
+import { launchCamera, launchImagePicker, uploadImage } from "../utils/ImagePickerHelper";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { ActivityIndicator } from "react-native";
 
@@ -33,8 +33,9 @@ const ChatScreen = ({ navigation, route }) => {
   const [replyingTo, setReplyingTo] = useState(null);
   const [tempImageURI, setTempImageURI] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  console.log(tempImageURI);
+  // console.log(tempImageURI);
   // console.log(replyingTo)
+  const flatlist = useRef();
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
   // console.log(loggedInUserData.uid)
@@ -157,9 +158,30 @@ const ChatScreen = ({ navigation, route }) => {
     }
   }, [tempImageURI]);
 
+  const takePhoto = useCallback(async () => {
+    try {
+      let tempURI = await launchCamera();
+      if (!tempURI) {
+        return;
+      }
+      setTempImageURI(tempURI);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [tempImageURI]);
+
   const uploadChatImage = useCallback(async () => {
     setIsLoading(true);
     try {
+      let allChatUsersUid = await allChatUsers?.map((e) => e.uid);
+      if (!chatId) {
+        // console.log(allChatUsersUid);
+        let newChatId = await SaveNewChat(
+          loggedInUserData.uid,
+          allChatUsersUid
+        );
+        await setChatId(newChatId);
+      }
       const uploadURL = await uploadImage(tempImageURI, true);
       setTempImageURI(null);
       await setIsLoading(false);
@@ -177,7 +199,7 @@ const ChatScreen = ({ navigation, route }) => {
       setIsLoading(false);
       console.log(error);
     }
-  }, [tempImageURI]);
+  }, [isLoading,tempImageURI,chatId]);
 
   return (
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
@@ -197,6 +219,10 @@ const ChatScreen = ({ navigation, route }) => {
             </View>
           )}
           <FlatList
+            ref ={(ref)=>flatlist.current=ref}
+            onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
+            on
+            onLayout={()=>flatlist.current.scrollToEnd({animated:false})}
             data={messageData}
             renderItem={(e) => {
               return (
@@ -284,7 +310,7 @@ const ChatScreen = ({ navigation, route }) => {
               <Ionicons name="send-sharp" size={28} color="#fff" />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={() => CameraHandler()}>
+            <TouchableOpacity onPress={() => takePhoto()}>
               <Feather name="camera" size={32} color="#FFF" />
             </TouchableOpacity>
           )

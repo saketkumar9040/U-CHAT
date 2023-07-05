@@ -2,6 +2,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Platform } from "react-native";
 import { storage } from "../firebase/FirebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable,deleteObject } from "firebase/storage";
+import { Alert } from "react-native";
 
 export const launchImagePicker = async () => {
   await checkMediaPermission();
@@ -57,3 +58,27 @@ export const deletePreviousProfilePic = async (ImageName) => {
     return await deleteObject(storageRef);
 };
 
+export const launchCamera = async () => {
+  try {
+    
+  const permissionResult = await ImagePicker.getCameraPermissionsAsync();
+  console.log(permissionResult)
+  if(permissionResult.granted===false){
+      // Alert.alert("No permission granted to access the camera📸");
+      return;
+  }
+  let result = await ImagePicker.launchCameraAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+  if (result.assets[0].uri) {
+    //    console.log(result.assets[0].uri);
+    return result.assets[0].uri;
+  }
+  } catch (error) {
+     console.log(error);
+     Alert.alert("permission denied to access the camera📸");
+  }
+}
