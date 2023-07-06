@@ -4,7 +4,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton.js";
 import { useEffect } from "react";
 import { SafeAreaView } from "react-native";
-import { FontAwesome, Entypo } from "@expo/vector-icons";
+import { FontAwesome, Entypo, Ionicons, Feather, MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SearchBar } from "react-native-screens";
 import {
@@ -24,7 +24,9 @@ import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../store/userSlice.js";
 
-const NewChatScreen = ({ navigation }) => {
+const NewChatScreen = ({ navigation, route }) => {
+  const isGroupChat = route?.params?.isGroupChat;
+  // console.log(isGroupChat)
 
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState("");
@@ -32,6 +34,10 @@ const NewChatScreen = ({ navigation }) => {
   // const [placeholderText, setPlaceholderText] = useState("Search");
   const [noUserFound, setNoUserFound] = useState(false);
   // console.log(users);
+  const [groupName, setGroupName] = useState("");
+  // console.log(groupName)
+  const [ selectedUser,setSelectedUser] = useState([]);
+  console.log(selectedUser);
 
   let loginUserData = useSelector((state) => state.auth.userData);
   // console.log(loginUserData.uid);
@@ -52,16 +58,50 @@ const NewChatScreen = ({ navigation }) => {
               }}
               style={{ paddingHorizontal: 10 }}
             />
+            <Text
+              style={{ fontSize: 20, fontFamily: "BoldItalic", color: "#fff" }}
+            >
+              {isGroupChat ? "ADD PARTICIPANTS" : "SEARCH "}
+            </Text>
           </HeaderButtons>
         );
       },
-      headerTitle: "SEARCH ",
-      headerTitleStyle: {
-        fontSize: 25,
-        fontFamily: "BoldItalic",
+      headerTitle: "",
+      headerRight: () => {
+        return (
+          <View>
+            {isGroupChat && (
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingRight: 15,
+                }}
+                onPress={() => {}}
+              >
+                {groupName !== "" && selectedUser.length !==0 && (
+                  <>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontFamily: "Medium",
+                        color: "#fff",
+                        marginRight: 2,
+                      }}
+                    >
+                      Create
+                    </Text>
+                    <Ionicons name="save" size={24} color="#fff" />
+                  </>
+                )}
+              </TouchableOpacity>
+            )}
+          </View>
+        );
       },
     });
-  }, []);
+  }, [groupName,selectedUser.length]);
 
   useEffect(() => {
     const delaySearch = setTimeout(async () => {
@@ -139,13 +179,31 @@ const NewChatScreen = ({ navigation }) => {
   //   });
   // };
 
-
   return (
     <SafeAreaView style={styles.container}>
+      {isGroupChat && (
+        <View style={styles.groupNameContainer}>
+          <Text style={styles.groupText}>GROUP NAME</Text>
+          <TextInput
+            placeholder="Enter group name"
+            placeholderTextColor="#808080"
+            style={styles.groupTextInput}
+            value={groupName}
+            onChangeText={(e) =>
+              setGroupName(e)
+            }
+            autoCapitalize="none"
+          />
+        </View>
+      )}
       <View style={styles.searchContainer}>
         <FontAwesome name="search" size={28} color="#fff" />
         <TextInput
-          placeholder="Family👪,Friends😎,Groups👩‍👩‍👧‍👦"
+          placeholder={
+            isGroupChat
+              ? "Search Participants👩‍👩‍👧‍👦"
+              : "Family👪,Friends😎,Groups👩‍👩‍👧‍👦"
+          }
           placeholderTextColor="#808080"
           style={styles.textInput}
           onChangeText={(e) => {
@@ -172,15 +230,27 @@ const NewChatScreen = ({ navigation }) => {
             renderItem={(itemData) => {
               const userId = itemData.item;
               const userData = users[userId];
+              // console.log(userData.uid)
               return (
                 <TouchableOpacity
                   style={styles.searchResultContainer}
-                  onPress={async() => {
-                    navigation.navigate("ChatList",{
-                      selectedUser:userData,
-                    });
-                    await dispatch(setStoredUsers({ newUsers: { userData } }));
-                  }}
+                  onPress={isGroupChat ? (()=>{
+                    const newSelectedUser = selectedUser.includes(userData.uid) ?
+                    selectedUser.filter(id=>id!=userData.uid):
+                    selectedUser.concat(userData.uid)
+                    setSelectedUser(newSelectedUser)
+                    //  setUserPressed(!userPressed)
+                    //  console.log("user Selected")
+                  }
+                  ):(
+                    async () => {
+                      navigation.navigate("ChatList", {
+                        selectedUser: userData,
+                      });
+                      await dispatch(setStoredUsers({ newUsers: { userData } }));
+                    }
+                  )
+                }
                 >
                   <Image
                     source={{ uri: userData.ProfilePicURL }}
@@ -191,14 +261,20 @@ const NewChatScreen = ({ navigation }) => {
                     <Text style={styles.searchUserName}>
                       {userData.name.toUpperCase()}
                     </Text>
-                    <Text style={styles.searchUserTapToChat}>Tap to chat</Text>
+                    <Text style={styles.searchUserTapToChat}>{isGroupChat?"Press to select/unselect":"Tap to chat"}</Text>
                   </View>
-                  <AntDesign
-                    name="forward"
-                    size={20}
-                    color="#6f4e37"
-                    style={styles.searchUserArrow}
-                  />
+              {   
+                 isGroupChat ? (
+                  <MaterialIcons name={selectedUser.includes(userData.uid)?"check-box":"check-box-outline-blank"} size={35} color="#6f4e37"  style={styles.searchUserArrow} />
+                 ):(
+                   <AntDesign
+                      name="forward"
+                      size={20}
+                      color="#6f4e37"
+                      style={styles.searchUserArrow}
+                    />
+                 )
+                }
                 </TouchableOpacity>
               );
             }}
@@ -302,5 +378,30 @@ const styles = StyleSheet.create({
   searchUserArrow: {
     position: "absolute",
     right: 20,
+  },
+  groupNameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    // justifyContent: "space-evenly",
+    backgroundColor: "#6f4e37",
+    // borderRadius: 40,
+    marginVertical: 1,
+    paddingHorizontal: 15,
+  },
+  groupText: {
+    fontSize: 17,
+    fontFamily: "Medium",
+    color: "#fff",
+    marginRight: 10,
+  },
+  groupTextInput: {
+    flex: 1,
+    color: "#000",
+    paddingHorizontal: 20,
+    marginVertical: 10,
+    fontSize: 18,
+    backgroundColor: "#fff",
+    height: 40,
+    fontFamily: "MediumItalic",
   },
 });
