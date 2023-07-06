@@ -221,7 +221,6 @@ const ChatScreen = ({ navigation, route }) => {
           <FlatList
             ref ={(ref)=>flatlist.current=ref}
             onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
-            on
             onLayout={()=>flatlist.current.scrollToEnd({animated:false})}
             data={messageData}
             renderItem={(e) => {
@@ -257,14 +256,13 @@ const ChatScreen = ({ navigation, route }) => {
               <Image
                 source={{
                   uri:
-                    storedUsers[replyingTo.sentBy]?.ProfilePicURL ??
-                    loggedInUserData?.ProfilePicURL,
+                    storedUsers[replyingTo.sentBy]?.ProfilePicURL 
                 }}
                 style={styles.userImage}
                 resizeMode="contain"
               />
               <Text style={styles.replyName}>
-                {storedUsers[replyingTo.sentBy]?.name ?? loggedInUserData.name}
+                {storedUsers[replyingTo.sentBy]?.name}
               </Text>
             </View>
             {replyingTo.text === "Image" && replyingTo.imageURL ? (

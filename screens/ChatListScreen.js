@@ -97,6 +97,13 @@ const ChatListScreen = ({ navigation, route }) => {
     
   return (
           <View style={styles.container}>
+            <TouchableOpacity 
+                style={styles.newGroupContainer} 
+                onPress={()=>navigation.navigate("NewChatScreen",{isGroupChat :true})}
+            >
+             <MaterialIcons name="group-add" size={45} color="#6f4e37" />
+              <Text style={styles.newGroupText}>Create group</Text>
+            </TouchableOpacity>
           { chatData.length===0  ? (
                 <View style={styles.userContainer}>
                 <Text style={{...styles.noUserText,fontSize:40}}>No user yet !</Text>
@@ -232,6 +239,18 @@ const styles = StyleSheet.create({
   noUserText: {
     fontSize: 22,
     paddingTop: 10,
+    color: "#6f4e37",
+    fontFamily: "Bold",
+  },
+  newGroupContainer:{
+    flexDirection:"row",
+    alignItems:"center",
+     paddingHorizontal:20,
+     paddingVertical:5,
+  },
+  newGroupText:{
+    marginLeft:20,
+    fontSize: 22,
     color: "#6f4e37",
     fontFamily: "Bold",
   },
