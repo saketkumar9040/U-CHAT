@@ -23,6 +23,7 @@ import { FlatList } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../store/userSlice.js";
+import { KeyboardAvoidingView } from "react-native";
 
 const NewChatScreen = ({ navigation, route }) => {
   const isGroupChat = route?.params?.isGroupChat;
@@ -196,6 +197,28 @@ const NewChatScreen = ({ navigation, route }) => {
           />
         </View>
       )}
+      {
+      isGroupChat && selectedUser.length > 0 &&
+      <View>
+      <FlatList
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={{width:"100%",paddingHorizontal:20,paddingVertical:5,}}
+         data={selectedUser}
+         renderItem={(user)=>{
+          //  console.log(user.item)
+           return(
+             <KeyboardAvoidingView style={{paddingHorizontal:5,}}>
+              <Image 
+                style={{borderRadius:50,borderWidth:2,borderColor:"#6f4e37",width:40,height:40}}
+                source={{uri:user.item.ProfilePicURL}}
+                />
+             </KeyboardAvoidingView>
+           )
+         }}
+      />
+      </View>
+      }
       <View style={styles.searchContainer}>
         <FontAwesome name="search" size={28} color="#fff" />
         <TextInput
@@ -235,9 +258,9 @@ const NewChatScreen = ({ navigation, route }) => {
                 <TouchableOpacity
                   style={styles.searchResultContainer}
                   onPress={isGroupChat ? (()=>{
-                    const newSelectedUser = selectedUser.includes(userData.uid) ?
-                    selectedUser.filter(id=>id!=userData.uid):
-                    selectedUser.concat(userData.uid)
+                    const newSelectedUser = selectedUser.map((e)=>e.uid).includes(userData.uid) ?
+                    selectedUser.filter(user=>user.uid!=userData.uid):
+                    selectedUser.concat(userData)
                     setSelectedUser(newSelectedUser)
                     //  setUserPressed(!userPressed)
                     //  console.log("user Selected")
@@ -265,7 +288,7 @@ const NewChatScreen = ({ navigation, route }) => {
                   </View>
               {   
                  isGroupChat ? (
-                  <MaterialIcons name={selectedUser.includes(userData.uid)?"check-box":"check-box-outline-blank"} size={35} color="#6f4e37"  style={styles.searchUserArrow} />
+                  <MaterialIcons name={selectedUser.map((e)=>e.uid).includes(userData.uid)?"check-box":"check-box-outline-blank"} size={35} color="#6f4e37"  style={styles.searchUserArrow} />
                  ):(
                    <AntDesign
                       name="forward"
