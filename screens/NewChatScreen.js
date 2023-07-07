@@ -24,6 +24,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../store/userSlice.js";
 import { Alert } from "react-native";
+import { useRef } from "react";
 
 const NewChatScreen = ({ navigation, route }) => {
   const isGroupChat = route?.params?.isGroupChat;
@@ -40,11 +41,14 @@ const NewChatScreen = ({ navigation, route }) => {
   const [ selectedUser,setSelectedUser] = useState([]);
   // console.log(selectedUser);
 
-
   let loginUserData = useSelector((state) => state.auth.userData);
   // console.log(loginUserData.uid);
-
+ 
+  let storedUser = useSelector(state=>state.users.storedUser);
+  // console.log(storedUser)
   const dispatch = useDispatch();
+
+  const flatlistRef = useRef();
 
   useEffect(() => {
     navigation.setOptions({
@@ -181,7 +185,7 @@ const NewChatScreen = ({ navigation, route }) => {
   //   });
   // };
 
-  const saveGroupHandler = () => {
+  const saveGroupHandler = async() => {
     if(selectedUser.length < 1 && groupName ===""){
       Alert.alert("Please Enter a Group Name and select group members")
       return;
@@ -194,8 +198,13 @@ const NewChatScreen = ({ navigation, route }) => {
       Alert.alert("Please Enter a group name");
       return;
     }
-    Alert.alert("saving...💾")
+    navigation.navigate("ChatList", {
+      selectedUser: selectedUser,
+      groupName
+    });
+    await dispatch(setStoredUsers({ newUsers: { ...selectedUser } }));
   }
+
   return (
     <SafeAreaView style={styles.container}>
       {isGroupChat && (
@@ -217,13 +226,13 @@ const NewChatScreen = ({ navigation, route }) => {
       isGroupChat && selectedUser.length > 0 &&
       <View>
       <FlatList
+      ref={(ref)=>flatlistRef.current = ref}
+      onContentSizeChange={()=>flatlistRef.current.scrollToEnd({animated:false})}
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={{width:"100%",paddingHorizontal:10,paddingVertical:5,}}
          data={selectedUser}
          renderItem={(user)=>{
           //  console.log(user.item.uid)
-          console.log(selectedUser.filter(u=>u.uid == user.item.uid));
            return(
              <TouchableOpacity 
                 style={{padding:5,flexDirection:"row"}}
@@ -277,7 +286,7 @@ const NewChatScreen = ({ navigation, route }) => {
             renderItem={(itemData) => {
               const userId = itemData.item;
               const userData = users[userId];
-              // console.log(userData.uid)
+              // console.log(userData)
               return (
                 <TouchableOpacity
                   style={styles.searchResultContainer}

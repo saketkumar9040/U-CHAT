@@ -20,11 +20,17 @@ import ErrorBubble from "../components/ErrorBubble";
 import { SaveNewChat } from "../components/SaveNewChat";
 import { sendMessage } from "../utils/ChatHandler";
 import MessageBubble from "../components/MessageBubble";
-import { launchCamera, launchImagePicker, uploadImage } from "../utils/ImagePickerHelper";
+import {
+  launchCamera,
+  launchImagePicker,
+  uploadImage,
+} from "../utils/ImagePickerHelper";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { ActivityIndicator } from "react-native";
 
 const ChatScreen = ({ navigation, route }) => {
+  console.log(route.params.groupName);
+
   const [messageText, setMessageText] = useState("");
   const [chatId, setChatId] = useState(
     route.params.chatId ? route.params.chatId : ""
@@ -80,16 +86,33 @@ const ChatScreen = ({ navigation, route }) => {
             <TouchableOpacity onPress={() => navigation.navigate("ChatList")}>
               <AntDesign name="arrowleft" size={25} color="#fff" />
             </TouchableOpacity>
-            <Image
-              source={
-                selectedUserData?.ProfilePicURL
-                  ? { uri: selectedUserData?.ProfilePicURL }
-                  : userProfilePic
-              }
-              style={styles.userImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.userName}>{selectedUserData?.name}</Text>
+            {route.params.groupName ? (
+              <>
+                <Image
+                  source={
+                    selectedUserData?.ProfilePicURL
+                      ? { uri: selectedUserData?.ProfilePicURL }
+                      : userProfilePic
+                  }
+                  style={styles.userImage}
+                  resizeMode="contain"
+                />
+                <Text style={styles.userName}>{route.params.groupName}</Text>
+              </>
+            ) : (
+              <>
+                <Image
+                  source={
+                    selectedUserData?.ProfilePicURL
+                      ? { uri: selectedUserData?.ProfilePicURL }
+                      : userProfilePic
+                  }
+                  style={styles.userImage}
+                  resizeMode="contain"
+                />
+                <Text style={styles.userName}>{selectedUserData?.name}</Text>
+              </>
+            )}
           </View>
         );
       },
@@ -199,7 +222,7 @@ const ChatScreen = ({ navigation, route }) => {
       setIsLoading(false);
       console.log(error);
     }
-  }, [isLoading,tempImageURI,chatId]);
+  }, [isLoading, tempImageURI, chatId]);
 
   return (
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
@@ -219,9 +242,9 @@ const ChatScreen = ({ navigation, route }) => {
             </View>
           )}
           <FlatList
-            ref ={(ref)=>flatlist.current=ref}
-            onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
-            onLayout={()=>flatlist.current.scrollToEnd({animated:false})}
+            // ref ={(ref)=>flatlist.current=ref}
+            // onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
+            // onLayout={()=>flatlist.current.scrollToEnd({animated:false})}
             data={messageData}
             renderItem={(e) => {
               return (
@@ -255,8 +278,7 @@ const ChatScreen = ({ navigation, route }) => {
             >
               <Image
                 source={{
-                  uri:
-                    storedUsers[replyingTo.sentBy]?.ProfilePicURL 
+                  uri: storedUsers[replyingTo.sentBy]?.ProfilePicURL,
                 }}
                 style={styles.userImage}
                 resizeMode="contain"
@@ -268,7 +290,7 @@ const ChatScreen = ({ navigation, route }) => {
             {replyingTo.text === "Image" && replyingTo.imageURL ? (
               <Image
                 source={{ uri: replyingTo.imageURL }}
-                style={{ width: 220, height: 200,marginVertical:10, }}
+                style={{ width: 220, height: 200, marginVertical: 10 }}
               />
             ) : (
               <View style={styles.replyTextContainer}>
@@ -420,7 +442,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   replyTextContainer: {
-    width:"60%",
+    width: "60%",
     backgroundColor: "#fff",
     padding: 15,
     borderBottomLeftRadius: 20,

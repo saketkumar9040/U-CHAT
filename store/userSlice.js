@@ -12,7 +12,7 @@ const userSlice = createSlice({
       const existingUsers = state.storedUser;
       // console.log("ExistingUser"+JSON.stringify(existingUsers));
       const usersArray = Object.values(newUsers);
-      // console.log("new user array"+JSON.stringify(usersArray));
+      console.log("new user array"+JSON.stringify(usersArray));
 
       for(let i =0 ;i <usersArray.length;i++){
         const userData= usersArray[i];
