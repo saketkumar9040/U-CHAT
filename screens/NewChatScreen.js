@@ -24,6 +24,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../store/userSlice.js";
 import { KeyboardAvoidingView } from "react-native";
+import { Alert } from "react-native";
 
 const NewChatScreen = ({ navigation, route }) => {
   const isGroupChat = route?.params?.isGroupChat;
@@ -38,7 +39,7 @@ const NewChatScreen = ({ navigation, route }) => {
   const [groupName, setGroupName] = useState("");
   // console.log(groupName)
   const [ selectedUser,setSelectedUser] = useState([]);
-  console.log(selectedUser);
+  // console.log(selectedUser);
 
   let loginUserData = useSelector((state) => state.auth.userData);
   // console.log(loginUserData.uid);
@@ -79,10 +80,10 @@ const NewChatScreen = ({ navigation, route }) => {
                   justifyContent: "center",
                   paddingRight: 15,
                 }}
-                onPress={() => {}}
+                onPress={() => saveGroupHandler()}
               >
-                {groupName !== "" && selectedUser.length !==0 && (
-                  <>
+                {/* {groupName !== "" && selectedUser.length !==0 && (
+                  <> */}
                     <Text
                       style={{
                         fontSize: 18,
@@ -94,8 +95,8 @@ const NewChatScreen = ({ navigation, route }) => {
                       Create
                     </Text>
                     <Ionicons name="save" size={24} color="#fff" />
-                  </>
-                )}
+                  {/* </>
+                )} */}
               </TouchableOpacity>
             )}
           </View>
@@ -180,6 +181,21 @@ const NewChatScreen = ({ navigation, route }) => {
   //   });
   // };
 
+  const saveGroupHandler = () => {
+    if(selectedUser.length < 1 && groupName ===""){
+      Alert.alert("Please Enter a Group Name and select group members")
+      return;
+    }
+    if(selectedUser.length<1){
+      Alert.alert("Please select Group memebers");
+      return;
+    }
+    if(groupName ===""){
+      Alert.alert("Please Enter a group name");
+      return;
+    }
+    Alert.alert("saving...💾")
+  }
   return (
     <SafeAreaView style={styles.container}>
       {isGroupChat && (
@@ -203,7 +219,7 @@ const NewChatScreen = ({ navigation, route }) => {
       <FlatList
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={{width:"100%",paddingHorizontal:20,paddingVertical:5,}}
+      style={{width:"100%",paddingHorizontal:10,paddingVertical:5,}}
          data={selectedUser}
          renderItem={(user)=>{
           //  console.log(user.item)
