@@ -29,7 +29,8 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import { ActivityIndicator } from "react-native";
 
 const ChatScreen = ({ navigation, route }) => {
-  console.log(route.params.groupName);
+  const groupName = route?.params?.groupName;
+  // console.log(groupName);
 
   const [messageText, setMessageText] = useState("");
   const [chatId, setChatId] = useState(
@@ -241,10 +242,12 @@ const ChatScreen = ({ navigation, route }) => {
               />
             </View>
           )}
-          <FlatList
-            // ref ={(ref)=>flatlist.current=ref}
-            // onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
-            // onLayout={()=>flatlist.current.scrollToEnd({animated:false})}
+           {
+            messageData.length > 1 &&
+            <FlatList
+            ref ={(ref)=>flatlist.current=ref}
+            onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
+            onLayout={()=>flatlist.current.scrollToEnd({animated:false})}
             data={messageData}
             renderItem={(e) => {
               return (
@@ -262,6 +265,7 @@ const ChatScreen = ({ navigation, route }) => {
             }}
             showsVerticalScrollIndicator={false}
           />
+           }
         </View>
       </ImageBackground>
 

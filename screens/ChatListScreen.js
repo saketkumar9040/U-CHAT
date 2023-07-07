@@ -19,6 +19,7 @@ const ChatListScreen = ({ navigation, route }) => {
   const [isLoading,setIsLoading]=useState(true);
 
   const selectedUser = route?.params?.selectedUser;
+  const groupName= route?.params?.groupName;
   // console.log(JSON.stringify(selectedUser))
 
   const userLoggedIn = useSelector((state) => state.auth.userData);
@@ -87,12 +88,16 @@ const ChatListScreen = ({ navigation, route }) => {
     if (!selectedUser) {
       return;
     }
-    let alreadyChatWith = chatData.find((e)=>e.users[0]===selectedUser?.uid);
-    // console.log(alreadyChatWith?.key);
-
-    const chatUsers = [selectedUser, userLoggedIn];
-
-    navigation.navigate("ChatScreen", { chatUsers: chatUsers,chatId:alreadyChatWith?.key });
+    if(groupName){
+      const chatUsers = [...selectedUser, userLoggedIn];
+      navigation.navigate("ChatScreen", { chatUsers: chatUsers,groupName});
+    }else{
+      let alreadyChatWith = chatData.find((e)=>e.users[0]===selectedUser?.uid);
+      // console.log(alreadyChatWith?.key);
+      const chatUsers = [selectedUser, userLoggedIn];
+      // console.log(chatUsers)
+      navigation.navigate("ChatScreen", { chatUsers: chatUsers,chatId:alreadyChatWith?.key });
+    }
   }, [selectedUser]);
     
   return (
