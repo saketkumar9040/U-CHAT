@@ -23,7 +23,6 @@ import { FlatList } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../store/userSlice.js";
-import { KeyboardAvoidingView } from "react-native";
 import { Alert } from "react-native";
 
 const NewChatScreen = ({ navigation, route }) => {
@@ -40,6 +39,7 @@ const NewChatScreen = ({ navigation, route }) => {
   // console.log(groupName)
   const [ selectedUser,setSelectedUser] = useState([]);
   // console.log(selectedUser);
+
 
   let loginUserData = useSelector((state) => state.auth.userData);
   // console.log(loginUserData.uid);
@@ -222,14 +222,22 @@ const NewChatScreen = ({ navigation, route }) => {
       style={{width:"100%",paddingHorizontal:10,paddingVertical:5,}}
          data={selectedUser}
          renderItem={(user)=>{
-          //  console.log(user.item)
+          //  console.log(user.item.uid)
+          console.log(selectedUser.filter(u=>u.uid == user.item.uid));
            return(
-             <KeyboardAvoidingView style={{paddingHorizontal:5,}}>
-              <Image 
+             <TouchableOpacity 
+                style={{padding:5,flexDirection:"row"}}
+                onPress={()=>{
+                 const newSelectedUsers= selectedUser.filter(u=>u.uid != user.item.uid);
+                 setSelectedUser(newSelectedUsers);
+                }}
+             >
+              <Entypo name="cross" size={20} color="#fff" style={{position:"absolute",right:0,backgroundColor:"#6f4e37",zIndex:1,borderRadius:50,}} />
+              <Image
                 style={{borderRadius:50,borderWidth:2,borderColor:"#6f4e37",width:40,height:40}}
                 source={{uri:user.item.ProfilePicURL}}
                 />
-             </KeyboardAvoidingView>
+             </TouchableOpacity>
            )
          }}
       />
