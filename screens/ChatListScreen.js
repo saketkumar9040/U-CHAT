@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import backgroundImage from "../assets/images/navigatorBackground2.jpg";
+import userProfilePic from "../assets/images/group.png"
 import { useSelector } from "react-redux";
 import { Ionicons, FontAwesome, AntDesign,MaterialIcons,MaterialCommunityIcons, Entypo  } from "@expo/vector-icons";
 
@@ -20,6 +20,7 @@ const ChatListScreen = ({ navigation, route }) => {
 
   const selectedUser = route?.params?.selectedUser;
   const groupName= route?.params?.groupName;
+  // console.log(groupName)
   // console.log(JSON.stringify(selectedUser))
 
   const userLoggedIn = useSelector((state) => state.auth.userData);
@@ -34,8 +35,6 @@ const ChatListScreen = ({ navigation, route }) => {
     return new Date(b.updatedAt) - new Date(a.updatedAt);
   });
   // console.log(chatData)
-
-
 
   const dayNames = ["Sun", "Mon", "Tue","Wed","Thr","Fri","Sat"];
   const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
@@ -85,20 +84,22 @@ const ChatListScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     //  console.log(selectedUser);
+    // console.log(groupName)
     if (!selectedUser) {
       return;
     }
     if(groupName){
       const chatUsers = [...selectedUser, userLoggedIn];
-      navigation.navigate("ChatScreen", { chatUsers: chatUsers,groupName});
+      // console.log(chatUsers)
+      navigation.navigate("ChatScreen", { chatUsers,groupName});
     }else{
-      let alreadyChatWith = chatData.find((e)=>e.users[0]===selectedUser?.uid);
-      // console.log(alreadyChatWith?.key);
+      let alreadyChatWith = chatData.find((e)=>!e.groupName && e.users[0]===selectedUser?.uid);
+      // console.log(alreadyChatWith);
       const chatUsers = [selectedUser, userLoggedIn];
       // console.log(chatUsers)
       navigation.navigate("ChatScreen", { chatUsers: chatUsers,chatId:alreadyChatWith?.key });
     }
-  }, [selectedUser]);
+  }, [selectedUser,groupName]);
     
   return (
           <View style={styles.container}>
@@ -146,18 +147,30 @@ const ChatListScreen = ({ navigation, route }) => {
                   onPress={() => {
                     navigation.navigate("ChatScreen",{
                       chatUsers:[otherUser,userLoggedIn],
-                      chatId:e.item.key
+                      chatId:e.item.key,
+                      groupName:e?.item?.groupName,
+                      groupProfilePic:e?.item?.groupProfilePic
                     })
                   }}
                 >
-                  <Image
+                 {
+                  e.item.groupName?(
+                    <Image
+                    source={e.item.groupProfilePic?{ uri:e?.item?.groupProfilePic }:userProfilePic}
+                    style={styles.searchUserImage}
+                    resizeMode="contain"
+                  />
+                  ):(
+                    <Image
                     source={{ uri: otherUser?.ProfilePicURL }}
                     style={styles.searchUserImage}
                     resizeMode="contain"
                   />
+                  )
+                 }
                   <View style={styles.searchUserTextContainer}>
                     <Text style={styles.searchUserName}>
-                      {otherUser?.name.toUpperCase()}
+                      {e.item?.groupName??otherUser?.name.toUpperCase()}
                     </Text>
                     <Text style={styles.latestMessageText}>{e?.item?.latestMessageText?e?.item?.latestMessageText.substring(0,20):""}</Text>
                   </View>

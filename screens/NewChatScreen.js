@@ -4,7 +4,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton.js";
 import { useEffect } from "react";
 import { SafeAreaView } from "react-native";
-import { FontAwesome, Entypo, Ionicons, Feather, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, Entypo, Ionicons, Feather, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SearchBar } from "react-native-screens";
 import {
@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../store/userSlice.js";
 import { Alert } from "react-native";
 import { useRef } from "react";
+import userPic from "../assets/images/userProfile.png";
 
 const NewChatScreen = ({ navigation, route }) => {
   const isGroupChat = route?.params?.isGroupChat;
@@ -208,6 +209,20 @@ const NewChatScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       {isGroupChat && (
+        <>
+        <TouchableOpacity style={styles.imageContainer} >
+      {/* { isLoading ?(
+        <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+          <ActivityIndicator size={70} color="#fff"/>
+        </View>
+      ):( */}
+        <Image source={ userPic} style={styles.image} resizeMode="contain"/>
+      {/* )
+    } */}
+      <View style={styles.editIconContainer}>
+        <MaterialCommunityIcons name="pencil" size={24} color="black" />
+      </View>
+    </TouchableOpacity>
         <View style={styles.groupNameContainer}>
           <Text style={styles.groupText}>GROUP NAME</Text>
           <TextInput
@@ -221,10 +236,11 @@ const NewChatScreen = ({ navigation, route }) => {
             autoCapitalize="none"
           />
         </View>
+        </>
       )}
       {
       isGroupChat && selectedUser.length > 0 &&
-      <View>
+      <View style={{paddingTop:5,}}>
       <FlatList
       ref={(ref)=>flatlistRef.current = ref}
       onContentSizeChange={()=>flatlistRef.current.scrollToEnd({animated:false})}
@@ -340,7 +356,7 @@ const NewChatScreen = ({ navigation, route }) => {
       {
         //  NO USER FOUND
         !isLoading && noUserFound && (
-          <View style={styles.userContainer}>
+          <View style={styles.noUserContainer}>
             <Entypo name="emoji-sad" size={130} color="#6f4e37" />
             <Text style={styles.noUserText}>No user found</Text>
           </View>
@@ -348,8 +364,8 @@ const NewChatScreen = ({ navigation, route }) => {
       }
       {
         //  WHEN SEARCH QUERY IS EMPTY
-        !isLoading && !users && (
-          <View style={styles.userContainer}>
+        !isLoading && !users && selectedUser.length===0 && (
+          <View style={styles.noUserContainer}>
             <FontAwesome name="users" size={150} color="#6f4e37" />
             <Text style={styles.noUserText}>Enter a name to search user</Text>
           </View>
@@ -385,8 +401,8 @@ const styles = StyleSheet.create({
     height: 40,
     fontFamily: "BoldItalic",
   },
-  userContainer: {
-    flex: 1,
+  noUserContainer: {
+    marginTop:80,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -440,9 +456,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // justifyContent: "space-evenly",
     backgroundColor: "#6f4e37",
-    // borderRadius: 40,
+    marginHorizontal:5,
+    borderRadius: 40,
     marginVertical: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
   },
   groupText: {
     fontSize: 17,
@@ -459,5 +476,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     height: 40,
     fontFamily: "MediumItalic",
+    borderRadius: 40,
+  },
+  editIconContainer: {
+    position: "absolute",
+    bottom: 10,
+    right: 0,
+    padding: 5,
+    backgroundColor: "white",
+    borderRadius: 40,
+  },
+  imageContainer: {
+    alignSelf: "center",
+    marginTop: 15,
+    padding:5,
+    backgroundColor:"#6f4e37",
+    width: 110,
+    height: 110,
+    borderRadius: 80,
+    // paddingBottom:10,
+    marginBottom:5,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 80,
   },
 });

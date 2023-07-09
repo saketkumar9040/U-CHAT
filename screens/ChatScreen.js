@@ -17,8 +17,7 @@ import { Ionicons, Feather, FontAwesome, AntDesign } from "@expo/vector-icons";
 import userProfilePic from "../assets/images/userProfile.png";
 import { useSelector } from "react-redux";
 import ErrorBubble from "../components/ErrorBubble";
-import { SaveNewChat } from "../components/SaveNewChat";
-import { sendMessage } from "../utils/ChatHandler";
+import { sendMessage, SaveNewChat } from "../utils/ChatHandler";
 import MessageBubble from "../components/MessageBubble";
 import {
   launchCamera,
@@ -29,13 +28,16 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import { ActivityIndicator } from "react-native";
 
 const ChatScreen = ({ navigation, route }) => {
-  const groupName = route?.params?.groupName;
-  // console.log(groupName);
+  // console.log(route.params);
 
+  const groupName = route?.params?.groupName;
+  const groupProfilePic= route?.params?.groupProfilePic;
+  // console.log(groupName);
   const [messageText, setMessageText] = useState("");
   const [chatId, setChatId] = useState(
     route.params.chatId ? route.params.chatId : ""
   );
+  // console.log(chatId)
   const [messageFailed, setMessageFailed] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [tempImageURI, setTempImageURI] = useState(null);
@@ -87,13 +89,16 @@ const ChatScreen = ({ navigation, route }) => {
             <TouchableOpacity onPress={() => navigation.navigate("ChatList")}>
               <AntDesign name="arrowleft" size={25} color="#fff" />
             </TouchableOpacity>
-            {route.params.groupName ? (
+            {
+             groupName ? (
               <>
                 <Image
                   source={
-                    selectedUserData?.ProfilePicURL
-                      ? { uri: selectedUserData?.ProfilePicURL }
-                      : userProfilePic
+                    groupProfilePic !== undefined ?(
+                      { uri: groupProfilePic }
+                    ):(
+                       userProfilePic
+                    )
                   }
                   style={styles.userImage}
                   resizeMode="contain"
@@ -127,30 +132,41 @@ const ChatScreen = ({ navigation, route }) => {
         );
       },
     });
-  }, [selectedUserData]);
+  }, [selectedUserData,groupName,groupProfilePic]);
 
   const SendMessageHandler = useCallback(async () => {
     try {
       let allChatUsersUid = await allChatUsers?.map((e) => e.uid);
       if (!chatId) {
         // console.log(allChatUsersUid);
-        let newChatId = await SaveNewChat(
-          loggedInUserData.uid,
-          allChatUsersUid
-        );
+        let newChatId;
+        if(groupName){
+           newChatId = await SaveNewChat(
+             loggedInUserData.uid,
+             allChatUsersUid,
+             groupName,
+             groupProfilePic
+           );
+        }else{
+          newChatId = await SaveNewChat(
+            loggedInUserData.uid,
+            allChatUsersUid,
+          );
+        }
+  
         await setChatId(newChatId);
         await sendMessage(
           newChatId,
           loggedInUserData.uid,
           messageText,
-          replyingTo && replyingTo.key
+          replyingTo && replyingTo.key,
         );
       } else {
         await sendMessage(
           chatId,
           loggedInUserData.uid,
           messageText,
-          replyingTo && replyingTo.key
+          replyingTo && replyingTo.key,
         );
       }
       setReplyingTo(null);
@@ -164,11 +180,7 @@ const ChatScreen = ({ navigation, route }) => {
         setMessageFailed("");
       }, 5000);
     }
-  }, [chatId, messageText]);
-
-  const CameraHandler = () => {
-    console.log("Camera opening ...📸");
-  };
+  }, [chatId, messageText,groupName,groupProfilePic]);
 
   const pickImage = useCallback(async () => {
     try {
@@ -243,7 +255,7 @@ const ChatScreen = ({ navigation, route }) => {
             </View>
           )}
            {
-            messageData.length > 1 &&
+            messageData.length > 0 &&
             <FlatList
             ref ={(ref)=>flatlist.current=ref}
             onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}

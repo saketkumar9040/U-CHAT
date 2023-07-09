@@ -4,14 +4,21 @@ import { Alert } from "react-native";
 
 const dbRef = ref(getDatabase(app));
 
-export const SaveNewChat = async (loggedInUserId, chatData) => {
+export const SaveNewChat = async (loggedInUserId, chatData,groupName=null,groupProfilePic=null) => {
   const newChatData = {
     users: [...chatData],
     createdBy: loggedInUserId,
     updatedBy: loggedInUserId,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(), 
   };
+
+  if(groupName){
+    newChatData.groupName=groupName;
+  }
+  if(groupProfilePic){
+    newChatData.groupProfilePic=groupProfilePic;
+  }
 
   const newChat = await push(child(dbRef, "Chats"), newChatData);
   // console.log(newChat.key)
