@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Alert,
   TextInput,
+  Linking
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import BackgroundImage from "../assets/images/chatScreenBackground.png";
@@ -125,10 +126,10 @@ const ChatScreen = ({ navigation, route }) => {
       headerRight: () => {
         return (
           <View style={{ ...styles.headerContainer, paddingRight: 15 }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>Linking.openURL(`tel:${selectedUserData.number}`)}>
               <Feather name="phone-call" size={25} color="#fff" style={{marginRight:15,}} />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate("Settings",{fromProfileScreen:true})}>
               <Feather name="settings" size={25} color="#fff" />   
             </TouchableOpacity>
           </View>
