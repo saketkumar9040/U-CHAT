@@ -126,7 +126,10 @@ const ChatScreen = ({ navigation, route }) => {
         return (
           <View style={{ ...styles.headerContainer, paddingRight: 15 }}>
             <TouchableOpacity>
-              <Feather name="phone-call" size={25} color="#fff" />
+              <Feather name="phone-call" size={25} color="#fff" style={{marginRight:15,}} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Feather name="settings" size={25} color="#fff" />   
             </TouchableOpacity>
           </View>
         );

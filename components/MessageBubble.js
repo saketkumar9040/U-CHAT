@@ -190,7 +190,7 @@ const MessageBubble = ({
                chatData.users.length > 2 ? (
                <>
                 <Text style={styles.receivedMessageText}>{data.text}</Text>
-                <View style={{flexDirection:"row",alignItems:'center',marginBottom:15,marginRight:10,}}>
+                <View style={{flexDirection:"row",alignItems:'center',marginBottom:20,marginRight:10,}}>
                    <Image
                     source={{
                       uri: storedUsers[data.sentBy]?.ProfilePicURL,
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingLeft: 40,
     paddingHorizontal: 20,
-    // marginLeft: "10%",
+    marginLeft: "10%",
     fontFamily: "MediumItalic",
     letterSpacing: 1,
     marginBottom: 5,
@@ -361,11 +361,12 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: "#6f4e37",
     padding: 5,
-    paddingRight: 40,
-    paddingHorizontal: 20,
+    paddingRight: 10,
+    paddingLeft: 20,
     fontFamily: "BoldItalic",
-    // marginRight: "20%",
+    marginRight: "10%",
     textAlign: "center",
+    paddingBottom:10,
   },
   sentMessagePopUps: {
     alignSelf: "flex-end",
@@ -425,8 +426,8 @@ const styles = StyleSheet.create({
     // marginVertical: 20,
     marginRight:20,
     marginLeft:10,
-    height: 300,
-    width: 200,
+    height: 250,
+    width: 250,
     // borderBottomRightRadius:20,
     // borderTopRightRadius:20,
     resizeMode:"contain"
