@@ -37,6 +37,7 @@ const MessageBubble = ({
   //   console.log(id.current);
   // console.log(selectedUser)
   // console.log(replyingTo)
+  // console.log(data)
 
   const storedUsers = useSelector((state) => state.users.storedUser);
   // console.log(storedUsers)
@@ -45,6 +46,8 @@ const MessageBubble = ({
     (state) => state.messages.starredMessages[chatId] ?? {}
   );
   // console.log(starredMessages)
+  const chatData = useSelector((state)=>state.chats.chatsData[chatId]);
+  // console.log(chatData.users)
 
   const isStarred = starredMessages[data.key] !== undefined;
   const userReplied = replyingTo && storedUsers[replyingTo.sentBy];
@@ -65,7 +68,8 @@ const MessageBubble = ({
           menuRef.current.props.ctx.menuActions.openMenu(id.current)
         }
       >
-        {data.sentBy === loggedInUserUid ? (
+        { // MESSAGE OF LOGGED IN USER ==============================>
+        data.sentBy === loggedInUserUid ? (
           <View style={styles.sentMessageContainer}>
             {userReplied && (
               <View
@@ -100,7 +104,7 @@ const MessageBubble = ({
                       alignSelf: "flex-end",
                     }}
                   >
-                    {userReplied.name}
+                    {userReplied.name.split(/(?<=^\S+)\s/)[0]}
                   </Text>
                   <Image
                     source={{
@@ -169,18 +173,41 @@ const MessageBubble = ({
                   <Text
                     style={{ color: "#fff", fontFamily: "Bold", padding: 2 }}
                   >
-                    {userReplied.name}
+                    {userReplied.name.split(/(?<=^\S+)\s/)[0]}
                   </Text>
                 </View>
               </View>
             )}
-               {data.text == "Image" && data?.imageURL ? (
+            {
+           // IF SENT - RECEIVED MESSAGE IS IMAGE ==================================>        
+               data.text == "Image" && data?.imageURL ? (
               <Image
                 style={styles.receivedMessageImage}
                 source={{ uri: data?.imageURL }}
               />
             ) : (
-              <Text style={styles.receivedMessageText}>{data.text}</Text>
+              <>{
+               chatData.users.length > 2 ? (
+               <>
+                <Text style={styles.receivedMessageText}>{data.text}</Text>
+                <View style={{flexDirection:"row",alignItems:'center',marginBottom:15,marginRight:10,}}>
+                   <Image
+                    source={{
+                      uri: storedUsers[data.sentBy]?.ProfilePicURL,
+                    }}
+                    style={{...styles.userImage,}}
+                    resizeMode="contain"
+                  />
+                  <Text style={{fontFamily:"Medium",fontSize:12,color:"#6f4e37"}}>{storedUsers[data.sentBy]?.name.split(/(?<=^\S+)\s/)[0]}</Text>
+                </View>
+                </>
+               ):(
+                <>
+                <Text style={styles.receivedMessageText}>{data.text}</Text>
+                </>
+               )
+              }
+              </>
             )}
             <Text style={styles.receivedDate}>
               {displayDate}:
