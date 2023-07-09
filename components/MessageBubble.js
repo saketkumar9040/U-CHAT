@@ -361,7 +361,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: "#6f4e37",
     padding: 5,
-    marginBottom: 10,
     paddingRight: 40,
     paddingHorizontal: 20,
     fontFamily: "BoldItalic",
