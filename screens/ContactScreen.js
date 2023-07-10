@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, Linking, StyleSheet, Text, View } from 'react-native'
 import React,{useEffect, useState} from 'react'
 import { TouchableOpacity } from 'react-native'
 import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
@@ -41,10 +41,10 @@ const ContactScreen = ({navigation,route}) => {
         headerRight:()=>{
             return(
                 <View style={{...styles.headerContainer,paddingRight:15,}}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>Linking.openURL(`tel:${currentUser.number}`)}>
                     <Feather name="phone" size={24} color="#fff" style={{paddingRight:15,}}/>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>Linking.openURL(`mailto:${currentUser.email}`)}>
                     <MaterialCommunityIcons name="email-outline" size={29} color="#fff" /> 
                     </TouchableOpacity>
                 </View>

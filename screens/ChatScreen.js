@@ -38,7 +38,6 @@ const ChatScreen = ({ navigation, route }) => {
   const [chatId, setChatId] = useState(
     route.params.chatId ? route.params.chatId : ""
   );
-  console.log(chatId)
   const [messageFailed, setMessageFailed] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [tempImageURI, setTempImageURI] = useState(null);
@@ -97,7 +96,7 @@ const ChatScreen = ({ navigation, route }) => {
       headerLeft: () => {
         return (
           <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("ChatList")}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign name="arrowleft" size={25} color="#fff" />
             </TouchableOpacity>
             {
