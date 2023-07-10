@@ -110,7 +110,10 @@ const StackNavigator = () => {
           component={ChatSettingScreen}
           options={{
             gestureEnabled: true,
-            headerTitle: "Settings",
+            headerTitle: "",
+            headerStyle: {
+              backgroundColor: "#6F4E37",
+            },
           }}
         />
         <Stack.Screen

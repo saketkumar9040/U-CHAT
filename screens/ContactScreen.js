@@ -99,6 +99,7 @@ const ContactScreen = ({navigation,route}) => {
             }
             )
            }
+           
          </>
        }
     </View>

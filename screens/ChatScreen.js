@@ -143,7 +143,7 @@ const ChatScreen = ({ navigation, route }) => {
             }
             <TouchableOpacity 
                   onPress={groupName?
-                       ()=>navigation.navigate(""):
+                       ()=>navigation.navigate("ChatSettingScreen",{chatId}):
                        ()=>navigation.navigate("Contact",{otherUserUid :selectedUserData.uid})
             }
             >
