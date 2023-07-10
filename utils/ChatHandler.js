@@ -81,3 +81,13 @@ export const starMessage = async (userId,chatId,messageId) => {
       console.log(error)
    }
 };
+
+export const getOtherUserChats = async(userId) => {
+  try {
+    const chatRef =await child(dbRef,`UsersChats/${userId}`);
+    const snapshot =await get(chatRef);
+    return snapshot.val();
+  } catch (error) {
+     console.log(error)
+  }
+}

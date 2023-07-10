@@ -1,15 +1,29 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React,{useEffect, useState} from 'react'
 import { TouchableOpacity } from 'react-native'
 import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
-import ProfileImage from '../components/ProfileImage'
+import ProfileImage from '../components/ProfileImage';
+import { getOtherUserChats } from '../utils/ChatHandler';
+import userProfilePic from "../assets/images/group.png";
+
 
 const ContactScreen = ({navigation,route}) => {
     // console.log(route.params);
+    const [commonChats,setCommonChats] = useState([]);
+    // console.log(commonChats)
     const storedUsers = useSelector(state=>state.users.storedUser);
     const currentUser = storedUsers[route.params.otherUserUid]
-    // console.log(currentUser)
+    const storedChats = useSelector(state=>state.chats.chatsData);
+    // console.log(storedChats)
+
+    useEffect(()=>{
+        const getUserChats = async()=>{
+           const currentUserChats =await getOtherUserChats(currentUser.uid);
+           setCommonChats(Object.values(currentUserChats).filter(cid => storedChats[cid] && storedChats[cid].groupName))
+        }
+        getUserChats();
+    },[])
   
     navigation.setOptions({
         headerLeft:()=>{
@@ -44,31 +58,49 @@ const ContactScreen = ({navigation,route}) => {
         <Image source={{uri:currentUser.ProfilePicURL}} style={styles.image} resizeMode="contain"/>
         </View>
        <Text style={styles.userName}>{currentUser.name.toUpperCase()}</Text>
-       <Text style={{fontSize:20,marginVertical:10,marginBottom:20,}}>{currentUser.about}</Text>
-       <View style={styles.inputContainer}>
-          <MaterialCommunityIcons name="email-outline" size={25} color="#fff" />
-          <Text
-            style={{
-              ...styles.textInput,
-              color: "#fff",
-              backgroundColor: "#6f4e37",
-            }}
-          >
-            {currentUser.email}
-          </Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <Feather name="phone" size={24} color="#fff" />
-          <Text
-            style={{
-              ...styles.textInput,
-              color: "#fff",
-              backgroundColor: "#6f4e37",
-            }}
-          >
-            {currentUser.number}
-          </Text>
-        </View>
+       <Text style={styles.userAbout}>{currentUser.about}</Text>
+       {
+         commonChats.length > 0 && <>
+           <Text style={styles.commonChatsText}>{commonChats.length}-{commonChats.lenght===1?"group":"group's"} in common</Text>
+           <View style={{flexDirection: 'row', alignItems: 'center'}}>
+           <View style={{flex: 1, height: 2, backgroundColor: '#6f4e37',marginBottom:10,}} />
+           </View>
+           {
+            
+            commonChats.map(cid=>{
+                const chatData = storedChats[cid]
+                // console.log(cid)
+                return(
+                    <View style={{flexDirection:'row',alignItems:"center",justifyContent:"center"}}>
+                    <TouchableOpacity
+                    style={styles.searchResultContainer}
+                    onPress={() => {
+                      navigation.push("ChatScreen",{
+                      chatId:cid,
+                      groupName:chatData.groupName
+                    })}
+                   }
+                  >
+                      <Image
+                      source={chatData?.groupProfilePic?{ uri: chatData.groupProfilePic }: userProfilePic }
+                      style={styles.searchUserImage}
+                      resizeMode="contain"
+                    /> 
+                    <View style={styles.searchUserTextContainer}>
+                      <Text style={styles.searchUserName}>
+                        {chatData?.groupName}
+                      </Text>
+                      <Text style={styles.latestMessageText}>{chatData?.latestMessageText?chatData?.latestMessageText.substring(0,20):""}</Text>
+                    </View>
+                    <AntDesign name="rightcircleo" size={24} color="#6f4e37" style={{position:'absolute',right:10,top:20,}} />
+                  </TouchableOpacity>
+                  </View>
+                )
+            }
+            )
+           }
+         </>
+       }
     </View>
   )
 }
@@ -85,6 +117,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#ffbf00",
         padding: 5,
+        paddingTop:10,
         alignItems: "center",
       },
       imageContainer: {
@@ -92,20 +125,27 @@ const styles = StyleSheet.create({
         marginTop: 15,
         padding:5,
         backgroundColor:"#6f4e37",
-        width: 160,
-        height: 160,
+        width: 140,
+        height: 140,
         borderRadius: 80,
       },
       image: {
-        width: 150,
-        height: 150,
+        width: 120,
+        height: 120,
         borderRadius: 80,
         borderWidth:3,
         borderColor:'#6f4e37'
       },
       userName:{
         marginTop:10,
-        fontSize:32,
+        fontSize:25,
+        fontFamily:"Bold",
+        color:'#6f4e37',
+        textAlign:"center",
+      },
+      userAbout:{
+        marginTop:15,
+        fontSize:20,
         fontFamily:"Bold",
         color:'#6f4e37',
         textAlign:"center",
@@ -131,5 +171,48 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontFamily: "BoldItalic",
         letterSpacing:2,
+      },
+      commonChatsText:{
+        marginTop:20,
+        marginLeft:10,
+        fontSize:20,
+        fontFamily:'Bold',
+        letterSpacing:1,
+        color:"#6f4e37",
+        alignSelf:"flex-start",
+      },
+      searchResultContainer: {
+        flex:1,
+        flexDirection: "row",
+        alignSelf: "flex-start",
+        height: 80,
+        paddingHorizontal: 10,
+        // marginTop:10,
+        marginHorizontal: 5,
+        // elevation:5,
+      },
+      searchUserImage: {
+        width: 60,
+        height: 60,
+        borderRadius: 40,
+        borderWidth: 1,
+        borderColor: "#fff",
+        backgroundColor: "#6f4e37",
+        marginRight: 5,
+        
+      },
+      searchUserTextContainer: {
+        flexDirection: "column",
+        marginLeft: 10,
+      },
+      latestMessageText: {
+        fontSize: 15,
+        color: "#6f4e37",
+        fontFamily: "MediumItalic",
+      },
+      searchUserName: {
+        fontSize: 22,
+        color: "#6f4e37",
+        fontFamily: "Bold",
       },
 })

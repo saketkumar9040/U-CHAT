@@ -38,7 +38,7 @@ const ChatScreen = ({ navigation, route }) => {
   const [chatId, setChatId] = useState(
     route.params.chatId ? route.params.chatId : ""
   );
-  // console.log(chatId)
+  console.log(chatId)
   const [messageFailed, setMessageFailed] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [tempImageURI, setTempImageURI] = useState(null);
@@ -53,8 +53,18 @@ const ChatScreen = ({ navigation, route }) => {
   let storedUsers = useSelector((state) => state.users.storedUser);
   // console.log(storedUsers)
 
-  let allChatUsers = route?.params?.chatUsers;
+  let chatData = useSelector(state=>state.chats.chatsData)
+
+  let allChatUsers ;
   // console.log("all chat users"+JSON.stringify(allChatUsers));
+    if(chatId){
+      // console.log(chatData[chatId].users)
+      const allChatUserUid = chatData[chatId].users
+      allChatUsers = allChatUserUid.map(id=>storedUsers[id])
+      // console.log(allChatUsers)
+    }else{
+      allChatUsers== route?.params?.chatUsers;
+    }
 
   let selectedUserData = allChatUsers.find(
     (e) => e.uid !== loggedInUserData.uid
@@ -126,9 +136,12 @@ const ChatScreen = ({ navigation, route }) => {
       headerRight: () => {
         return (
           <View style={{ ...styles.headerContainer, paddingRight: 15 }}>
-            <TouchableOpacity onPress={()=>Linking.openURL(`tel:${selectedUserData.number}`)}>
+            {
+              !groupName &&
+              <TouchableOpacity onPress={()=>Linking.openURL(`tel:${selectedUserData.number}`)}>
               <Feather name="phone-call" size={25} color="#fff" style={{marginRight:15,}} />
             </TouchableOpacity>
+            }
             <TouchableOpacity 
                   onPress={groupName?
                        ()=>navigation.navigate(""):
