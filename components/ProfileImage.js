@@ -20,7 +20,7 @@ const ProfileImage = ({ userData, chatId }) => {
   const [isLoading, setIsLoading] = useState("");
 
   const chatData = useSelector((state) => state.chats.chatsData[chatId]);
-  console.log(chatData)
+  // console.log(chatData)
 
   let previousImage;
   // console.log(previousImage)
@@ -55,6 +55,7 @@ const ProfileImage = ({ userData, chatId }) => {
           ...chatData,
           groupProfilePic: URL,
           imageName: imageName,
+          updatedAt: new Date().toISOString()
         }
         const chatRef = child(dbRef, `Chats/${chatId}`);
         await update(chatRef, updatedChatData);
