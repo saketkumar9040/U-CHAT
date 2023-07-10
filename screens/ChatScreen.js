@@ -129,7 +129,12 @@ const ChatScreen = ({ navigation, route }) => {
             <TouchableOpacity onPress={()=>Linking.openURL(`tel:${selectedUserData.number}`)}>
               <Feather name="phone-call" size={25} color="#fff" style={{marginRight:15,}} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>navigation.navigate("Settings",{fromProfileScreen:true})}>
+            <TouchableOpacity 
+                  onPress={groupName?
+                       ()=>navigation.navigate(""):
+                       ()=>navigation.navigate("Contact",{otherUserUid :selectedUserData.uid})
+            }
+            >
               <Feather name="settings" size={25} color="#fff" />   
             </TouchableOpacity>
           </View>

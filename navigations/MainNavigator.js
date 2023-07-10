@@ -17,6 +17,7 @@ import { setChatData } from "../store/chatSlice";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { setStoredUsers } from "../store/userSlice";
 import { setStarredMessages, setStoredMessage } from "../store/messageSlice";
+import ContactScreen from "../screens/ContactScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -110,6 +111,17 @@ const StackNavigator = () => {
           options={{
             gestureEnabled: true,
             headerTitle: "Settings",
+          }}
+        />
+        <Stack.Screen
+          name="Contact"
+          component={ContactScreen}
+          options={{
+            gestureEnabled: true,
+            headerTitle: "",
+            headerStyle: {
+              backgroundColor: "#6F4E37",
+            },
           }}
         />
       </Stack.Group>
