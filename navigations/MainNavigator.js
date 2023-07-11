@@ -178,6 +178,9 @@ const MainNavigator = () => {
           const data = chatSnapshot.val();
           // console.log(data)
           if(data){
+            if(!data.users.includes(userData.uid)){
+              return
+            }
             data.key = chatSnapshot.key;
             data.users.forEach(async(userId)=>{
               if(storedUsers[userId]){

@@ -134,7 +134,7 @@ const MessageBubble = ({
             </Text>
           </View>
         ) : (
-          <View style={styles.receivedMessageContainer}>
+          <View style={data?.type?styles.infoContainer:styles.receivedMessageContainer}>
             {userReplied && (
               <View
                 style={{
@@ -189,17 +189,20 @@ const MessageBubble = ({
               <>{
                chatData.users.length > 2 ? (
                <>
-                <Text style={styles.receivedMessageText}>{data.text}</Text>
+                <Text style={data?.type?styles.infoText:styles.receivedMessageText}>{data.text}</Text>
+                 { 
+                 !data.type &&
                 <View style={{flexDirection:"row",alignItems:'center',marginBottom:20,marginRight:10,}}>
-                   <Image
-                    source={{
-                      uri: storedUsers[data.sentBy]?.ProfilePicURL,
-                    }}
-                    style={{...styles.userImage,}}
-                    resizeMode="contain"
-                  />
+                 <Image
+                 source={{
+                   uri: storedUsers[data.sentBy]?.ProfilePicURL,
+                 }}
+                 style={{...styles.userImage,}}
+                 resizeMode="contain"
+               />
                   <Text style={{fontFamily:"Medium",fontSize:12,color:"#6f4e37"}}>{storedUsers[data.sentBy]?.name.split(/(?<=^\S+)\s/)[0]}</Text>
                 </View>
+                 }
                 </>
                ):(
                 <>
@@ -209,7 +212,7 @@ const MessageBubble = ({
               }
               </>
             )}
-            <Text style={styles.receivedDate}>
+            <Text style={data.type?styles.sendDate:styles.receivedDate}>
               {displayDate}:
               {date.getMinutes() > 9
                 ? date.getMinutes()
@@ -434,15 +437,16 @@ const styles = StyleSheet.create({
   },
   infoContainer:{
     alignSelf:"center",
-    backgroundColor:'#ff0000',
-    
+    backgroundColor:'#ff0000', 
+    borderRadius:5,
   },
   infoText:{
    paddingBottom:20,
    paddingTop:10,
-   paddingHorizontal:30,
+   paddingHorizontal:20,
    color:'#fff',
    fontSize:19,
-   fontFamily:"MediumItalic"
+   fontFamily:"MediumItalic",
+   letterSpacing:1,
   }
 });

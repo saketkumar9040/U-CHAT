@@ -32,7 +32,7 @@ export default function App() {
           ExtraLightItalic: require("./assets/fonts/Kanit-ExtraLightItalic.ttf"),
           Italic: require("./assets/fonts/Kanit-Italic.ttf"),
           Light: require("./assets/fonts/Kanit-Light.ttf"),
-          lightItalic: require("./assets/fonts/Kanit-LightItalic.ttf"),
+          LightItalic: require("./assets/fonts/Kanit-LightItalic.ttf"),
           Medium: require("./assets/fonts/Kanit-Medium.ttf"),
           MediumItalic: require("./assets/fonts/Kanit-MediumItalic.ttf"),
           Regular: require("./assets/fonts/Kanit-Regular.ttf"),

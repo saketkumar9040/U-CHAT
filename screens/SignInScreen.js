@@ -10,7 +10,7 @@ import {
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import backgroundImage from "../assets/images/authBackground.jpg";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { emailValidator, passwordValidator } from "../utils/Validators";
 import { useDispatch } from "react-redux";
 import { authenticate, autoLogout } from "../store/authSlice";
@@ -98,6 +98,7 @@ const SignInScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.signInTextContainer}>
         <Text style={styles.signInText}>Sign In</Text>
+        <Octicons name="sign-in" size={30} color="#fff" style={{paddingLeft:20,}} />
       </View>
       <ImageBackground
         source={backgroundImage}
@@ -205,10 +206,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#6f4e37",
   },
   signInText: {
-    fontSize: 35,
+    fontSize: 25,
     color: "#fff",
-    alignContent: "center",
-    fontFamily:"ExtraBoldItalic",
+    // alignContent: "center",
+    fontFamily:"BoldItalic",
     letterSpacing:3,
   },
   inputContainer: {
@@ -227,17 +228,17 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 20,
     marginVertical: 10,
-    fontSize: 20,
+    fontSize: 17,
     backgroundColor: "#fff",
     height: 40,
     marginLeft: 10,
-    fontFamily: "BoldItalic",
+    fontFamily: "MediumItalic",
   },
   buttonContainer: {
     width: "50%",
-    height: 60,
     marginTop: 20,
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical:10,
     alignSelf: "center",
     backgroundColor: "#6f4e37",
     borderRadius: 40,
@@ -245,14 +246,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 17,
     alignSelf: "center",
-    fontWeight:800,
-    letterSpacing: 3,
+   fontFamily:"Medium",
+    letterSpacing: 2,
   },
   signUpText: {
     color: "#6f4e37",
-    fontSize: 25,
+    fontSize: 22,
      padding:5,
     paddingHorizontal: 20,
     fontWeight:700,

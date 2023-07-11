@@ -19,7 +19,7 @@ const ContactScreen = ({navigation,route}) => {
     const loggedInUser = useSelector(state=>state.auth.userData)
     // console.log(storedChats);
     const chatId = route.params.chatId;
-    const chatData = chatId && storedChats[chatId]
+    const chatData = chatId && storedChats[chatId] || {}
 
     useEffect(()=>{
         const getUserChats = async()=>{
@@ -140,7 +140,8 @@ const ContactScreen = ({navigation,route}) => {
           <Text style={styles.buttonText}>REMOVE</Text>
         )}
       </TouchableOpacity>
-       }  
+       }
+         
     </View>
   )
 }

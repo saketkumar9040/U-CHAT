@@ -19,16 +19,18 @@ import { app } from "../firebase/FirebaseConfig";
 import { Alert } from "react-native";
 import { setChatData, updateChatData } from "../store/chatSlice";
 import userProfilePic from "../assets/images/group.png";
+import { removeFromChat, sendMessage } from "../utils/ChatHandler";
+import { useCallback } from "react";
 
 const ChatSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const chatId = route?.params?.chatId;
-  const chatData = useSelector((state) => state.chats?.chatsData[chatId]);
+  const chatData = useSelector((state) => state.chats?.chatsData[chatId]|| {});
   // console.log(chatData);
   const userData = useSelector((state) => state.users.storedUser);
   // console.log(userData);
-  const LoggedInUser = useSelector((state) => state.auth.userData);
-  // console.log(LoggedInUser)
+  const loggedInUser = useSelector((state) => state.auth.userData);
+  // console.log(loggedInUser)
   const allChatData= useSelector(state=>state.chats.chatsData);
 
   const [groupName, setGroupName] = useState(chatData?.groupName);
@@ -36,6 +38,9 @@ const ChatSettingScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if(!chatData){
+      return ;
+    }
     navigation.setOptions({
       headerLeft: () => {
         return (
@@ -89,6 +94,23 @@ const ChatSettingScreen = ({ navigation, route }) => {
     }
   };
 
+  const leaveChat = useCallback(async()=>{
+    try {
+      setIsLoading(true);
+      await removeFromChat(loggedInUser.uid,loggedInUser.uid,chatData);
+      Alert.alert("User removed successfully")
+      let message=`${currentUser.name} left the chat`
+      await sendMessage(chatData.key,loggedInUser.uid,message,null,null,"Info")
+      navigation.popToTop()
+    } catch (error) {
+       setIsLoading(false)
+       console.log(error)
+    }
+  },[navigation,isLoading]);
+
+  if(!chatData.users){
+    return null;
+  }
   return (
     <ScrollView style={styles.container}>
       <ProfileImage chatId={chatId} />
@@ -158,7 +180,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
             >
               <TouchableOpacity
                 style={styles.searchResultContainer}
-                onPress={currentUserData?.uid!== LoggedInUser?.uid ? async() => {
+                onPress={currentUserData?.uid!== loggedInUser?.uid ? async() => {
                   // console.log(Object.values(allChatData))
                     navigation.navigate("Contact", {
                       otherUserUid :currentUserData?.uid,
@@ -181,7 +203,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
                   </Text>
                   <Text style={styles.latestMessageText}>{currentUserData?.about}</Text>
                 </View>
-               { currentUserData?.uid !==LoggedInUser?.uid &&<AntDesign
+               { currentUserData?.uid !==loggedInUser?.uid &&<AntDesign
                   name="rightcircleo"
                   size={24}
                   color="#6f4e37"
@@ -192,6 +214,16 @@ const ChatSettingScreen = ({ navigation, route }) => {
           );
         })}
       </View>
+      <TouchableOpacity
+        style={{...styles.buttonContainer,backgroundColor:"#ff0000",marginTop:20,}}
+        onPress={()=>leaveChat()}
+      >
+        {isLoading ? (
+          <ActivityIndicator size={32} color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>LEAVE CHAT</Text>
+        )}
+      </TouchableOpacity>
     </ScrollView>
   );
 };
