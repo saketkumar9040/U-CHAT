@@ -70,7 +70,7 @@ const MessageBubble = ({
       >
         { // MESSAGE OF LOGGED IN USER ==============================>
         data.sentBy === loggedInUserUid ? (
-          <View style={styles.sentMessageContainer}>
+          <View style={data?.type?styles.infoContainer:styles.sentMessageContainer}>
             {userReplied && (
               <View
                 style={{
@@ -121,8 +121,8 @@ const MessageBubble = ({
                 style={styles.sentMessageImage}
                 source={{ uri: data?.imageURL }}
               />
-            ) : (
-              <Text style={styles.sentMessageText}>{data.text}</Text>
+            ) : ( 
+                <Text style={data?.type?styles.infoText:styles.sentMessageText}>{data.text}</Text>
             )}
             <Text style={styles.sendDate}>
               {isStarred && <AntDesign name="star" size={20} color="yellow" />}
@@ -431,5 +431,18 @@ const styles = StyleSheet.create({
     // borderBottomRightRadius:20,
     // borderTopRightRadius:20,
     resizeMode:"contain"
+  },
+  infoContainer:{
+    alignSelf:"center",
+    backgroundColor:'#ff0000',
+    
+  },
+  infoText:{
+   paddingBottom:20,
+   paddingTop:10,
+   paddingHorizontal:30,
+   color:'#fff',
+   fontSize:19,
+   fontFamily:"MediumItalic"
   }
 });
