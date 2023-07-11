@@ -1,6 +1,7 @@
 import { child, get, getDatabase, push, ref, remove, set, update } from "firebase/database";
 import { app } from "../firebase/FirebaseConfig";
 import { Alert } from "react-native";
+import { updateChatData } from "../store/chatSlice";
 
 const dbRef = ref(getDatabase(app));
 
@@ -89,5 +90,36 @@ export const getOtherUserChats = async(userId) => {
     return snapshot.val();
   } catch (error) {
      console.log(error)
+  }
+}
+
+export const removeFromChat = async(userLoggedInUid,removeUserUid,chatData) => {
+  try {
+
+    const newChatUsers = chatData.users.filter((u)=>u!==removeUserUid);
+    console.log(removeUserUid)
+    const updatedChatData = {
+      ...chatData,
+      users:newChatUsers,
+      updatedAt:new Date().toISOString(),
+      updatedBy:userLoggedInUid,
+    }
+    const chatRef = child(dbRef,`Chats/${chatData.key}`);
+    await update(chatRef,updatedChatData);
+
+    const userChatRef = child(dbRef,`UsersChats/${removeUserUid}`);
+    const snapshot =await get(userChatRef)
+    const userChats = snapshot.val();  
+    // console.log(userChats)
+
+    for(const key in userChats){
+       const currentChatId = userChats[key];
+       if(currentChatId===chatData.key){
+         const deleteChatRef = child(dbRef,`UsersChats/${removeUserUid}/${key}`)
+         await remove(deleteChatRef);
+       }
+    }
+  } catch (error) {
+    console.log(error)
   }
 }

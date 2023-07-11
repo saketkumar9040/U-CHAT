@@ -128,7 +128,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
                 style={styles.newGroupContainer} 
                 onPress={()=>navigation.navigate("NewChatScreen",{isGroupChat :true})}
             >
-             <Ionicons name="person-add" size={30} color="#6f4e37" />
+             <Ionicons name="person-add" size={23} color="#6f4e37" />
               <Text style={styles.newGroupText}>Add user</Text>
             </TouchableOpacity>
         {chatData.users.map((uid) => {
@@ -144,25 +144,13 @@ const ChatSettingScreen = ({ navigation, route }) => {
             >
               <TouchableOpacity
                 style={styles.searchResultContainer}
-                onPress={async() => {
+                onPress={currentUserData?.uid!== LoggedInUser?.uid ? async() => {
                   // console.log(Object.values(allChatData))
-                  let alreadyChatWith =await Object.values(allChatData).find(
-                    (e) => !e.groupName && e?.users[0] == currentUserData?.uid
-                  );
-                  // console.log(alreadyChatWith);
-                  const chatUsers = [currentUserData, LoggedInUser];
-                  if(alreadyChatWith){
-                    navigation.push("ChatScreen", {
-                      chatUsers: chatUsers, 
-                      chatId: alreadyChatWith?.key, 
+                    navigation.navigate("Contact", {
+                      otherUserUid :currentUserData?.uid,
+                      chatId
                     });
-                  }else{
-                    navigation.push("ChatScreen", {
-                      chatUsers: chatUsers,
-                    });
-                  }
-                
-                }}
+                }:()=>Alert.alert("It's Me 😎😎😎")}
               >
                 <Image
                   source={
@@ -175,16 +163,16 @@ const ChatSettingScreen = ({ navigation, route }) => {
                 />
                 <View style={styles.searchUserTextContainer}>
                   <Text style={styles.searchUserName}>
-                    {currentUserData?.name ? currentUserData.name : ""}
+                    {currentUserData?.name ? currentUserData?.name : ""}
                   </Text>
-                  <Text style={styles.latestMessageText}>Tap to view</Text>
+                  <Text style={styles.latestMessageText}>{currentUserData?.about}</Text>
                 </View>
-                <AntDesign
+               { currentUserData?.uid !==LoggedInUser?.uid &&<AntDesign
                   name="rightcircleo"
                   size={24}
                   color="#6f4e37"
-                  style={{ position: "absolute", right: 10, top: 20 }}
-                />
+                  style={{ position: "absolute", right: 10 }}
+                />}
               </TouchableOpacity>
             </View>
           );
@@ -270,13 +258,13 @@ const styles = StyleSheet.create({
     color: "#000",
     borderRadius: 4,
     paddingHorizontal: 20,
-    paddingVertical: 5,
+    // paddingVertical: 5,
     marginVertical: 10,
-    fontSize: 20,
+    fontSize: 17,
     backgroundColor: "#fff",
     marginLeft: 10,
     fontFamily: "BoldItalic",
-    letterSpacing: 2,
+    letterSpacing: 1,
     textAlign: "center",
   },
   buttonContainer: {
@@ -351,7 +339,7 @@ const styles = StyleSheet.create({
     alignItems:"center",
      alignSelf:"center",
      paddingHorizontal:20,
-     paddingVertical:5,
+     paddingVertical:3,
      backgroundColor:"white",
      borderWidth:3,
      borderColor:"#6f4e37",
@@ -360,7 +348,7 @@ const styles = StyleSheet.create({
   },
   newGroupText:{
     marginLeft:5,
-    fontSize: 16,
+    fontSize: 14,
     color: "#6f4e37",
     fontFamily: "Bold",
   },

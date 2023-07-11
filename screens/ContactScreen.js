@@ -1,21 +1,25 @@
-import { Image, Linking, StyleSheet, Text, View } from 'react-native'
-import React,{useEffect, useState} from 'react'
+import { ActivityIndicator, Alert, Image, Linking, StyleSheet, Text, View } from 'react-native'
+import React,{useCallback, useEffect, useState} from 'react'
 import { TouchableOpacity } from 'react-native'
-import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
+import { AntDesign, Entypo, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
 import ProfileImage from '../components/ProfileImage';
-import { getOtherUserChats } from '../utils/ChatHandler';
+import { getOtherUserChats, removeFromChat } from '../utils/ChatHandler';
 import userProfilePic from "../assets/images/group.png";
 
 
 const ContactScreen = ({navigation,route}) => {
     // console.log(route.params);
     const [commonChats,setCommonChats] = useState([]);
-    // console.log(commonChats)
+    const [isLoading,setIsLoading]= useState(false)
+    // console.log(commonChats);
     const storedUsers = useSelector(state=>state.users.storedUser);
     const currentUser = storedUsers[route.params.otherUserUid]
     const storedChats = useSelector(state=>state.chats.chatsData);
-    // console.log(storedChats)
+    const loggedInUser = useSelector(state=>state.auth.userData)
+    // console.log(storedChats);
+    const chatId = route.params.chatId;
+    const chatData = chatId && storedChats[chatId]
 
     useEffect(()=>{
         const getUserChats = async()=>{
@@ -24,12 +28,24 @@ const ContactScreen = ({navigation,route}) => {
         }
         getUserChats();
     },[])
+
+    const removeUser = useCallback(async()=>{
+      try {
+        setIsLoading(true);
+        await removeFromChat(loggedInUser.uid,currentUser.uid,chatData);
+        Alert.alert("User removed successfully")
+        navigation.goBack()
+      } catch (error) {
+         setIsLoading(false)
+         console.log(error)
+      }
+    },[navigation,isLoading])
   
     navigation.setOptions({
         headerLeft:()=>{
             return(
                 <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("ChatList")}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign name="arrowleft" size={25} color="#fff" />
             </TouchableOpacity>
             <Text style={{marginLeft:10,fontSize:25,fontFamily:"Bold",color:"#fff"}}>
@@ -60,9 +76,8 @@ const ContactScreen = ({navigation,route}) => {
        <Text style={styles.userName}>{currentUser.name.toUpperCase()}</Text>
        <Text style={styles.userAbout}>{currentUser.about}</Text>
        {
-         commonChats.length > 0 && <>
+         commonChats.length > 0 ? <>
            <Text style={styles.commonChatsText}>{commonChats.length}-{commonChats.lenght===1?"group":"group's"} in common</Text>
-           // HORIZONAL LINE =================================================================//
            <View style={{flexDirection: 'row', alignItems: 'center'}}>
            <View style={{flex: 1, height: 2, backgroundColor: '#6f4e37',marginBottom:10,}} />
            </View>
@@ -101,8 +116,29 @@ const ContactScreen = ({navigation,route}) => {
             )
            }
            
+         </>:
+         <>
+           <Text style={styles.commonChatsText}>No group's in common</Text>
+           <View style={{flexDirection: 'row', alignItems: 'center'}}>
+           <View style={{flex: 1, height: 2, backgroundColor: '#6f4e37',marginBottom:10,}} />
+           </View>
+           <Entypo name="emoji-sad" size={200} color="#6f4e37" style={{marginTop:80,}} />
          </>
        }
+       {
+        chatData&&chatData.groupName &&
+        
+        <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={()=>removeUser()}
+      >
+        {isLoading ? (
+          <ActivityIndicator size={32} color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>REMOVE</Text>
+        )}
+      </TouchableOpacity>
+       }  
     </View>
   )
 }
@@ -216,5 +252,21 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: "#6f4e37",
         fontFamily: "Bold",
+      },
+      buttonContainer: {
+        width: "45%",
+        // height: 50,
+        // marginTop: 20,
+        padding: 5,
+        alignSelf: "center",
+        backgroundColor: "red",
+        borderRadius: 10,
+      },
+      buttonText: {
+        color: "#fff",
+        fontSize: 20,
+        alignSelf: "center",
+        fontFamily:"Medium",
+        letterSpacing: 2,
       },
 })
