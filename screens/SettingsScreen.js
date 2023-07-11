@@ -41,6 +41,7 @@ const SettingsScreen = ({ navigation }) => {
   const [hasChanges, setHasChanges] = useState(false);
 
   const submitHandler = async () => {
+    
     if (nameVaildator(name) !== undefined) {
       return alert(nameVaildator(name).name);
     }

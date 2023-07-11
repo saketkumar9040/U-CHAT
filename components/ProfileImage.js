@@ -20,7 +20,7 @@ const ProfileImage = ({ userData, chatId }) => {
   const [isLoading, setIsLoading] = useState("");
 
   const chatData = useSelector((state) => state.chats.chatsData[chatId]);
-  // console.log(chatData)
+  console.log(chatData)
 
   let previousImage;
   // console.log(previousImage)
@@ -57,14 +57,16 @@ const ProfileImage = ({ userData, chatId }) => {
           imageName: imageName,
           updatedAt: new Date().toISOString()
         }
+        let newChatData = {}
+        newChatData[chatId]=updatedChatData;
         const chatRef = child(dbRef, `Chats/${chatId}`);
         await update(chatRef, updatedChatData);
         setIsLoading(false);
         Alert.alert("Group Profile pic updated successfully 😎");
-        await dispatch(updateChatData({updatedChatData}))
+        await dispatch(updateChatData({newChatData}))
         // REMOVE PREVIOUS SAVED PROFILE PIC ====================================>
         if (previousImage) {
-          await deletePreviousProfilePic(previousImage);//imageName": "376480ac-2fbc-475c-a376-e6635b4469c8.jpeg
+          await deletePreviousProfilePic(previousImage);
         }
       } else {
         // SAVE URL LINK TO DATABASE ============================================>
