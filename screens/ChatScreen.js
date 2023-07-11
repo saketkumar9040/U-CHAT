@@ -31,8 +31,7 @@ import { ActivityIndicator } from "react-native";
 const ChatScreen = ({ navigation, route }) => {
   // console.log(route.params);
 
-  const groupName = route?.params?.groupName;
-  const groupProfilePic= route?.params?.groupProfilePic;
+
   // console.log(groupName);
   const [messageText, setMessageText] = useState("");
   const [chatId, setChatId] = useState(
@@ -52,10 +51,20 @@ const ChatScreen = ({ navigation, route }) => {
   let storedUsers = useSelector((state) => state.users.storedUser);
   // console.log(storedUsers)
 
-  let chatData = useSelector(state=>state.chats.chatsData)
+  let chatData = useSelector(state=>state.chats.chatsData);
+
+
+  let groupName;
+  let groupProfilePic;
+  if(chatId){
+     groupName= chatData[chatId]?.groupName;
+     groupProfilePic = chatData[chatId]?.groupProfilePic;
+  }else{
+    groupName = route?.params?.groupName;
+    groupProfilePic= route?.params?.groupProfilePic;
+  }
 
   let allChatUsers ;
-  // console.log("all chat users"+JSON.stringify(allChatUsers));
     if(chatId){
       // console.log(chatData[chatId].users)
       const allChatUserUid = chatData[chatId].users
