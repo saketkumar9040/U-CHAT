@@ -32,7 +32,7 @@ export const SaveNewChat = async (loggedInUserId, chatData,groupName=null,groupP
   return newChat.key;
 };
 
-export const sendMessage = async (chatId, senderId, messageText,replyTo=null,imageURL=null) => {
+export const sendMessage = async (chatId, senderId, messageText,replyTo=null,imageURL=null,type=null) => {
     // console.log("save message chat id"+chatId);
     // console.log(senderId)
     // console.log(messageText)
@@ -47,6 +47,9 @@ export const sendMessage = async (chatId, senderId, messageText,replyTo=null,ima
   }
   if(imageURL){
     messageData.imageURL=imageURL
+  }
+  if(type){
+    messageData.type=type;
   }
   
   await push(messageRef, messageData);

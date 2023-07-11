@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native'
 import { AntDesign, Entypo, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
 import ProfileImage from '../components/ProfileImage';
-import { getOtherUserChats, removeFromChat } from '../utils/ChatHandler';
+import { getOtherUserChats, removeFromChat, sendMessage } from '../utils/ChatHandler';
 import userProfilePic from "../assets/images/group.png";
 
 
@@ -34,6 +34,8 @@ const ContactScreen = ({navigation,route}) => {
         setIsLoading(true);
         await removeFromChat(loggedInUser.uid,currentUser.uid,chatData);
         Alert.alert("User removed successfully")
+        let message=`${currentUser.name} was removed from the chat`
+        await sendMessage(chatData.key,loggedInUser.uid,message,null,null,"Info")
         navigation.goBack()
       } catch (error) {
          setIsLoading(false)

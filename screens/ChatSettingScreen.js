@@ -112,6 +112,20 @@ const ChatSettingScreen = ({ navigation, route }) => {
           }}
         />
       </View>
+      <View style={styles.mainButtonContainer}>
+        {hasChanges && (
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={submitHandler}
+          >
+            {isLoading ? (
+              <ActivityIndicator size={30} color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>SAVE</Text>
+            )}
+          </TouchableOpacity>
+        )}
+      </View>
       <View>
         <Text style={styles.commonChatsText}>Group member's👩‍👩‍👧‍👦</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -177,20 +191,6 @@ const ChatSettingScreen = ({ navigation, route }) => {
             </View>
           );
         })}
-      </View>
-      <View style={styles.mainButtonContainer}>
-        {hasChanges && (
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={submitHandler}
-          >
-            {isLoading ? (
-              <ActivityIndicator size={30} color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>SAVE</Text>
-            )}
-          </TouchableOpacity>
-        )}
       </View>
     </ScrollView>
   );
@@ -271,7 +271,8 @@ const styles = StyleSheet.create({
     width: "45%",
     // height: 50,
     // marginTop: 20,
-    padding: 10,
+    paddingHorizontal: 20,
+    paddingVertical:5,
     alignSelf: "center",
     backgroundColor: "green",
     borderRadius: 10,
@@ -280,13 +281,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 20,
     alignSelf: "center",
-    fontWeight: 900,
+    fontFamily:"Medium",
     letterSpacing: 2,
   },
   mainButtonContainer: {
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
+    alignSelf:"center",
     // position: "absolute",
     // bottom: 5,
   },
