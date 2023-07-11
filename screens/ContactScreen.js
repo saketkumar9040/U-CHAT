@@ -62,6 +62,7 @@ const ContactScreen = ({navigation,route}) => {
        {
          commonChats.length > 0 && <>
            <Text style={styles.commonChatsText}>{commonChats.length}-{commonChats.lenght===1?"group":"group's"} in common</Text>
+           // HORIZONAL LINE =================================================================//
            <View style={{flexDirection: 'row', alignItems: 'center'}}>
            <View style={{flex: 1, height: 2, backgroundColor: '#6f4e37',marginBottom:10,}} />
            </View>
@@ -71,7 +72,7 @@ const ContactScreen = ({navigation,route}) => {
                 const chatData = storedChats[cid]
                 // console.log(cid)
                 return(
-                    <View style={{flexDirection:'row',alignItems:"center",justifyContent:"center"}}>
+                    <View style={{flexDirection:'row',alignItems:"center",justifyContent:"center"}} key={cid}>
                     <TouchableOpacity
                     style={styles.searchResultContainer}
                     onPress={() => {

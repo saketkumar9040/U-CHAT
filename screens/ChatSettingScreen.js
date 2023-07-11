@@ -14,16 +14,22 @@ import ProfileImage from "../components/ProfileImage";
 import { TextInput } from "react-native";
 import { useState } from "react";
 import { ActivityIndicator } from "react-native";
-import { child,getDatabase,ref,update } from "firebase/database";
+import { child, getDatabase, ref, update } from "firebase/database";
 import { app } from "../firebase/FirebaseConfig";
 import { Alert } from "react-native";
 import { setChatData, updateChatData } from "../store/chatSlice";
+import userProfilePic from "../assets/images/group.png";
 
 const ChatSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const chatId = route?.params?.chatId;
   const chatData = useSelector((state) => state.chats?.chatsData[chatId]);
-  console.log(chatData);
+  // console.log(chatData);
+  const userData = useSelector((state) => state.users.storedUser);
+  // console.log(userData);
+  const LoggedInUser = useSelector((state) => state.auth.userData);
+  // console.log(LoggedInUser)
+  const allChatData= useSelector(state=>state.chats.chatsData);
 
   const [groupName, setGroupName] = useState(chatData?.groupName);
   const [hasChanges, setHasChanges] = useState(false);
@@ -53,35 +59,35 @@ const ChatSettingScreen = ({ navigation, route }) => {
     });
   }, []);
 
-  const submitHandler = async() => {
-    if(groupName ==""){
+  const submitHandler = async () => {
+    if (groupName == "") {
       Alert.alert("group name cannot be empty😵");
       return;
     }
     try {
       setIsLoading(true);
-      let updatedGroupData={
+      let updatedGroupData = {
         ...chatData,
-        groupName:groupName,
-        updatedAt:new Date().toISOString()
-      }
+        groupName: groupName,
+        updatedAt: new Date().toISOString(),
+      };
       // console.log(updatedgroupData)
       let newChatData = {};
-      newChatData[chatId]=updatedGroupData;
+      newChatData[chatId] = updatedGroupData;
       const dbRef = ref(getDatabase());
-      const chatRef = child(dbRef,`Chats/${chatId}`);
-      await update(chatRef,updatedGroupData);
+      const chatRef = child(dbRef, `Chats/${chatId}`);
+      await update(chatRef, updatedGroupData);
       Alert.alert("Profile Updated Successfully🤗");
-      await dispatch(updateChatData({newChatData}));
-     setIsLoading(false);
-     setHasChanges(false);
+      await dispatch(updateChatData({ newChatData }));
+      setIsLoading(false);
+      setHasChanges(false);
     } catch (error) {
       setIsLoading(false);
-      setHasChanges(false)
-      Alert.alert("Unable to update profile,please try again😔")
+      setHasChanges(false);
+      Alert.alert("Unable to update profile,please try again😔");
       console.log(error);
     }
-  }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -99,27 +105,99 @@ const ChatSettingScreen = ({ navigation, route }) => {
             setHasChanges(true);
             setGroupName(e);
           }}
-          onBlur={()=>{
-            if( groupName == chatData?.groupName ){
-              setHasChanges(false)
-            } 
+          onBlur={() => {
+            if (groupName == chatData?.groupName) {
+              setHasChanges(false);
+            }
           }}
         />
       </View>
-      <View style={styles.mainButtonContainer}>
-
-            {hasChanges && (
+      <View>
+        <Text style={styles.commonChatsText}>Group member's👩‍👩‍👧‍👦</Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View
+            style={{
+              flex: 1,
+              height: 2,
+              backgroundColor: "#6f4e37",
+              marginBottom: 10,
+            }}
+          />
+        </View>
+        {chatData.users.map((uid) => {
+          let currentUserData = userData[uid];
+          // console.log(currentUserData)
+          // console.log(uid)
+          return (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              key={uid}
+            >
               <TouchableOpacity
-                style={styles.buttonContainer}
-                onPress={submitHandler}
+                style={styles.searchResultContainer}
+                onPress={async() => {
+                  // console.log(Object.values(allChatData))
+                  let alreadyChatWith =await Object.values(allChatData).find(
+                    (e) => !e.groupName && e.users[0] == currentUserData?.uid
+                  );
+                  // console.log(alreadyChatWith);
+                  const chatUsers = [currentUserData, LoggedInUser];
+                  if(alreadyChatWith){
+                    navigation.push("ChatScreen", {
+                      chatUsers: chatUsers,
+                      chatId: alreadyChatWith?.key, 
+                    });
+                  }else{
+                    navigation.push("ChatScreen", {
+                      chatUsers: chatUsers,
+                    });
+                  }
+                
+                }}
               >
-                {isLoading ? (
-                  <ActivityIndicator size={30} color="#fff" />
-                ) : (
-                  <Text style={styles.buttonText}>SAVE</Text>
-                )}
+                <Image
+                  source={
+                    currentUserData?.ProfilePicURL
+                      ? { uri: currentUserData?.ProfilePicURL }
+                      : userProfilePic
+                  }
+                  style={styles.searchUserImage}
+                  resizeMode="contain"
+                />
+                <View style={styles.searchUserTextContainer}>
+                  <Text style={styles.searchUserName}>
+                    {currentUserData?.name ? currentUserData.name : ""}
+                  </Text>
+                  <Text style={styles.latestMessageText}>Tap to view</Text>
+                </View>
+                <AntDesign
+                  name="rightcircleo"
+                  size={24}
+                  color="#6f4e37"
+                  style={{ position: "absolute", right: 10, top: 20 }}
+                />
               </TouchableOpacity>
+            </View>
+          );
+        })}
+      </View>
+      <View style={styles.mainButtonContainer}>
+        {hasChanges && (
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={submitHandler}
+          >
+            {isLoading ? (
+              <ActivityIndicator size={30} color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>SAVE</Text>
             )}
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
   );
@@ -145,7 +223,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 15,
     padding: 5,
-
     width: 140,
     height: 140,
     borderRadius: 80,
@@ -219,5 +296,47 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     // position: "absolute",
     // bottom: 5,
+  },
+  commonChatsText: {
+    marginTop: 20,
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: "Bold",
+    letterSpacing: 1,
+    color: "#6f4e37",
+    alignSelf: "flex-start",
+  },
+  searchResultContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignSelf: "flex-start",
+    height: 80,
+    paddingHorizontal: 10,
+    // marginTop:10,
+    marginHorizontal: 5,
+    // elevation:5,
+  },
+  searchUserImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 40,
+    borderWidth: 1,
+    borderColor: "#fff",
+    backgroundColor: "#6f4e37",
+    marginRight: 5,
+  },
+  searchUserTextContainer: {
+    flexDirection: "column",
+    marginLeft: 10,
+  },
+  latestMessageText: {
+    fontSize: 15,
+    color: "#6f4e37",
+    fontFamily: "MediumItalic",
+  },
+  searchUserName: {
+    fontSize: 22,
+    color: "#6f4e37",
+    fontFamily: "Bold",
   },
 });
