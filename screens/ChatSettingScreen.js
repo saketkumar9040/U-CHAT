@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useEffect } from "react";
-import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import groupPic from "../assets/images/group.png";
 import ProfileImage from "../components/ProfileImage";
@@ -124,10 +124,15 @@ const ChatSettingScreen = ({ navigation, route }) => {
             }}
           />
         </View>
+        <TouchableOpacity 
+                style={styles.newGroupContainer} 
+                onPress={()=>navigation.navigate("NewChatScreen",{isGroupChat :true})}
+            >
+             <Ionicons name="person-add" size={30} color="#6f4e37" />
+              <Text style={styles.newGroupText}>Add user</Text>
+            </TouchableOpacity>
         {chatData.users.map((uid) => {
           let currentUserData = userData[uid];
-          // console.log(currentUserData)
-          // console.log(uid)
           return (
             <View
               style={{
@@ -142,13 +147,13 @@ const ChatSettingScreen = ({ navigation, route }) => {
                 onPress={async() => {
                   // console.log(Object.values(allChatData))
                   let alreadyChatWith =await Object.values(allChatData).find(
-                    (e) => !e.groupName && e.users[0] == currentUserData?.uid
+                    (e) => !e.groupName && e?.users[0] == currentUserData?.uid
                   );
                   // console.log(alreadyChatWith);
                   const chatUsers = [currentUserData, LoggedInUser];
                   if(alreadyChatWith){
                     navigation.push("ChatScreen", {
-                      chatUsers: chatUsers,
+                      chatUsers: chatUsers, 
                       chatId: alreadyChatWith?.key, 
                     });
                   }else{
@@ -309,16 +314,18 @@ const styles = StyleSheet.create({
   searchResultContainer: {
     flex: 1,
     flexDirection: "row",
+    alignItems:"center",
     alignSelf: "flex-start",
-    height: 80,
+    // height: 80,
     paddingHorizontal: 10,
     // marginTop:10,
     marginHorizontal: 5,
+    marginVertical:5,
     // elevation:5,
   },
   searchUserImage: {
-    width: 60,
-    height: 60,
+    width: 40,
+    height: 40,
     borderRadius: 40,
     borderWidth: 1,
     borderColor: "#fff",
@@ -330,12 +337,30 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   latestMessageText: {
-    fontSize: 15,
+    fontSize: 11,
     color: "#6f4e37",
     fontFamily: "MediumItalic",
   },
   searchUserName: {
-    fontSize: 22,
+    fontSize: 18,
+    color: "#6f4e37",
+    fontFamily: "Bold",
+  },
+  newGroupContainer:{
+    flexDirection:"row",
+    alignItems:"center",
+     alignSelf:"center",
+     paddingHorizontal:20,
+     paddingVertical:5,
+     backgroundColor:"white",
+     borderWidth:3,
+     borderColor:"#6f4e37",
+     borderRadius:40,
+     
+  },
+  newGroupText:{
+    marginLeft:5,
+    fontSize: 16,
     color: "#6f4e37",
     fontFamily: "Bold",
   },
