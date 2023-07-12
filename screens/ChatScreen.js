@@ -50,30 +50,30 @@ const ChatScreen = ({ navigation, route }) => {
   // console.log(storedUsers)
 
   let chatData = useSelector(state=>state.chats.chatsData);
-  console.log(chatData)
+  // console.log(chatData)
 
 
   let groupName;
   let groupProfilePic;
-  if(chatId){
+  if(chatId && chatData[chatId]){
      groupName= chatData[chatId]?.groupName;
      groupProfilePic = chatData[chatId]?.groupProfilePic;
   }else{
-    groupName = route?.params?.groupName;
-    groupProfilePic= route?.params?.groupProfilePic;
+    groupName = route?.params?.groupName || "";
+    groupProfilePic= route?.params?.groupProfilePic || "";
   }
 
   let allChatUsers ;
-    if(chatId){
-      console.log(chatData[chatId].users)
+    if(chatId && chatData[chatId]){
+      // console.log(chatData[chatId].users)
       const allChatUserUid = chatData[chatId]?.users
       allChatUsers = allChatUserUid.map(id=>storedUsers[id])
       console.log(allChatUsers)
     }else{
-      allChatUsers== route?.params?.chatUsers;
+      allChatUsers== route?.params?.chatUsers || {};
     }
 
-  let selectedUserData = allChatUsers?.find(
+  let selectedUserData =allChatUsers && allChatUsers?.find(
     (e) => e?.uid !== loggedInUserData.uid
   );
 

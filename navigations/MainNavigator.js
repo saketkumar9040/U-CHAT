@@ -179,7 +179,7 @@ const MainNavigator = () => {
           // console.log(data)
           if(data){
             if(!data.users.includes(userData.uid)){
-              return
+              return;
             }
             data.key = chatSnapshot.key;
             data.users.forEach(async(userId)=>{

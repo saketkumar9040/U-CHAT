@@ -25,14 +25,14 @@ import { useCallback } from "react";
 const ChatSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const chatId = route?.params?.chatId;
-  const chatData = useSelector((state) => state.chats.chatsData[chatId]);
-  console.log(chatData.groupName);
+  const chatData = useSelector((state) => state.chats.chatsData[chatId] || {});
+  // console.log(chatData);
   const userData = useSelector((state) => state.users.storedUser);
   // console.log(userData);
   const loggedInUser = useSelector((state) => state.auth.userData);
   // console.log(loggedInUser)
 
-  const [groupName, setGroupName] = useState("");
+  const [groupName, setGroupName] = useState(chatData.groupName);
   // console.log(groupName)
   const [hasChanges, setHasChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +41,6 @@ const ChatSettingScreen = ({ navigation, route }) => {
     if(!chatData){
       return ;
     }
-    setGroupName(chatData.groupName)
     navigation.setOptions({
       headerLeft: () => {
         return (
@@ -115,7 +114,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
   return (
   <>
   {
-    chatData =={} ?(
+    chatData =={} || !chatData?(
       <View style={{flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"#ffbf00"}}>
         <ActivityIndicator size={200} color="#6f4e37"/>
         <Text style={{fontSize:40,fontFamily:"Bold",color:'#6f4e37',letterSpacing:2,}}>LOADING...</Text>
@@ -230,8 +229,10 @@ const ChatSettingScreen = ({ navigation, route }) => {
           );
         })}
       </View>
+    </ScrollView>
+    <View style={{backgroundColor:"#ffbf00"}}>
       <TouchableOpacity
-        style={{...styles.buttonContainer,backgroundColor:"#ff0000",marginTop:20,marginBottom:30,}}
+        style={{...styles.buttonContainer,backgroundColor:"#ff0000",marginBottom:5,}}
         onPress={()=>leaveChat()}
       >
         {isLoading ? (
@@ -240,7 +241,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
           <Text style={{...styles.buttonText,fontSize:13,}}>LEAVE CHAT</Text>
         )}
       </TouchableOpacity>
-    </ScrollView>
+    </View>
       </>
     )
   }
