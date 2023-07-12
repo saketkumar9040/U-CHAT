@@ -29,7 +29,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import { ActivityIndicator } from "react-native";
 
 const ChatScreen = ({ navigation, route }) => {
-  console.log(route.params);
+  // console.log(route.params);
 
   const [messageText, setMessageText] = useState("");
   const [chatId, setChatId] = useState(
@@ -47,7 +47,7 @@ const ChatScreen = ({ navigation, route }) => {
   // console.log(loggedInUserData.uid)
 
   let storedUsers = useSelector((state) => state?.users?.storedUser);
-  console.log(storedUsers)
+  // console.log(storedUsers)
 
   let chatData = useSelector(state=>state.chats.chatsData);
   console.log(chatData)

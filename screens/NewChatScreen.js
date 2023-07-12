@@ -225,14 +225,14 @@ const NewChatScreen = ({ navigation, route }) => {
     await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
 
     const chatRef = child(dbRef, `Chats/${chatId}`);
-    onValue(chatRef,async(snapshot)=>{
+    await onValue(chatRef,async(snapshot)=>{
       let chatsData={}
       chatsData[chatId]=snapshot.val()
       await dispatch(updateChatData({ chatsData}))
     })
     setIsSaving(false);
     Alert.alert("Group chat created successfully😄")
-    navigation.navigate("ChatScreen", {
+    navigation.navigate("ChatSettingScreen", {
        chatId
     });
   } catch (error) {

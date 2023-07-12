@@ -31,11 +31,15 @@ const ChatSettingScreen = ({ navigation, route }) => {
   // console.log(userData);
   const loggedInUser = useSelector((state) => state.auth.userData);
   // console.log(loggedInUser)
-  const allChatData= useSelector(state=>state.chats.chatsData);
 
   const [groupName, setGroupName] = useState(chatData?.groupName);
+  // console.log(groupName)
   const [hasChanges, setHasChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(()=>{
+    
+  })
 
   useEffect(() => {
     if(!chatData){
@@ -168,7 +172,13 @@ const ChatSettingScreen = ({ navigation, route }) => {
               <Text style={styles.newGroupText}>Add user</Text>
             </TouchableOpacity>
         {chatData.users.map((uid) => {
-          let currentUserData = userData[uid];
+          let currentUserData ;
+          if(uid ===loggedInUser.uid){
+            currentUserData=loggedInUser
+          }else{
+            currentUserData = userData[uid];
+          }
+         
           return (
             <View
               style={{
