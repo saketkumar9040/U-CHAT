@@ -16,7 +16,7 @@ export const launchImagePicker = async () => {
     quality: 1,
   });
   if (result.assets[0].uri) {
-    //    console.log(result.assets[0].uri);
+      //  console.log(result.assets[0].uri);
     return result.assets[0].uri;
   }
 };

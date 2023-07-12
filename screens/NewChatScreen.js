@@ -12,12 +12,13 @@ import {
   endAt,
   get,
   getDatabase,
+  onValue,
   orderByChild,
   query,
   ref,
   startAt,
 } from "firebase/database";
-import { db } from "../firebase/FirebaseConfig.js";
+import { app, db } from "../firebase/FirebaseConfig.js";
 import { ActivityIndicator } from "react-native";
 import { FlatList } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
@@ -26,13 +27,18 @@ import { setStoredUsers } from "../store/userSlice.js";
 import { Alert } from "react-native";
 import { useRef } from "react";
 import userPic from "../assets/images/userProfile.png";
+import { launchImagePicker, uploadImage } from "../utils/ImagePickerHelper.js";
+import { SaveNewChat } from "../utils/ChatHandler.js";
+import { updateChatData } from "../store/chatSlice.js";
 
 const NewChatScreen = ({ navigation, route }) => {
   const isGroupChat = route?.params?.isGroupChat;
   // console.log(isGroupChat)
 
   const [isLoading, setIsLoading] = useState(false);
-  const [users, setUsers] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [tempUri,setTempUri]= useState("")
+  const [users, setUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
   // const [placeholderText, setPlaceholderText] = useState("Search");
   const [noUserFound, setNoUserFound] = useState(false);
@@ -50,6 +56,8 @@ const NewChatScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const flatlistRef = useRef();
+
+  const dbRef = ref(getDatabase(app));
 
   useEffect(() => {
     navigation.setOptions({
@@ -78,31 +86,36 @@ const NewChatScreen = ({ navigation, route }) => {
         return (
           <View>
             {isGroupChat && (
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingRight: 15,
-                }}
-                onPress={() => saveGroupHandler()}
-              >
-                {/* {groupName !== "" && selectedUser.length !==0 && (
-                  <> */}
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        fontFamily: "Medium",
-                        color: "#fff",
-                        marginRight: 2,
-                      }}
-                    >
-                      Create
-                    </Text>
-                    <Ionicons name="save" size={24} color="#fff" />
-                  {/* </>
-                )} */}
-              </TouchableOpacity>
+               <>
+               {isSaving ?
+               <ActivityIndicator size={30} color="#6f4e37"/>:
+               <TouchableOpacity
+               style={{
+                 flexDirection: "row",
+                 alignItems: "center",
+                 justifyContent: "center",
+                 paddingRight: 15,
+               }}
+               onPress={() => saveGroupHandler()}
+             >
+               {/* {groupName !== "" && selectedUser.length !==0 && (
+                 <> */}
+                   <Text
+                     style={{
+                       fontSize: 18,
+                       fontFamily: "Medium",
+                       color: "#fff",
+                       marginRight: 2,
+                     }}
+                   >
+                     Create
+                   </Text>
+                   <Ionicons name="save" size={24} color="#fff" />
+                 {/* </>
+               )} */}
+             </TouchableOpacity>
+              }
+               </>
             )}
           </View>
         );
@@ -186,7 +199,10 @@ const NewChatScreen = ({ navigation, route }) => {
   //   });
   // };
 
+
   const saveGroupHandler = async() => {
+  try {
+    setIsSaving(true)
     if(selectedUser.length < 1 && groupName ===""){
       Alert.alert("Please Enter a Group Name and select group members")
       return;
@@ -199,26 +215,54 @@ const NewChatScreen = ({ navigation, route }) => {
       Alert.alert("Please Enter a group name");
       return;
     }
-    navigation.navigate("ChatList", {
-      selectedUser: selectedUser,
-      groupName
+
+    const usersId =selectedUser.map((e)=>e.uid)
+    
+
+
+    // console.log(usersId)
+
+
+    let uploadedImage =await uploadImage(tempUri)
+    let chatId = await SaveNewChat(loginUserData.uid,usersId,groupName,uploadedImage.URL,uploadedImage.imageName);
+    await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
+
+    const chatRef = child(dbRef, `Chats/${chatId}`);
+    onValue(chatRef,async(snapshot)=>{
+      let chatsData={}
+      chatsData[chatId]=snapshot.val()
+      await dispatch(updateChatData({ chatsData:chatsData}))
+    })
+    setIsSaving(false);
+    Alert.alert("Group chat created successfully😄")
+    navigation.navigate("ChatScreen", {
+       chatId
     });
-    await dispatch(setStoredUsers({ newUsers: { ...selectedUser } }));
+  } catch (error) {
+    setIsSaving(false)
+    Alert.alert("Unable to create group chat😌")
+    console.log(error)
+  }
+  }
+
+  const imageHandler = async () => {
+    const uri =await launchImagePicker();
+    setTempUri(uri)
   }
 
   return (
     <SafeAreaView style={styles.container}>
       {isGroupChat && (
         <>
-        <TouchableOpacity style={styles.imageContainer} >
-      {/* { isLoading ?(
+        <TouchableOpacity style={styles.imageContainer} onPress={()=>imageHandler()} >
+      { isLoading && !tempUri?(
         <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
           <ActivityIndicator size={70} color="#fff"/>
         </View>
-      ):( */}
-        <Image source={ userPic} style={styles.image} resizeMode="contain"/>
-      {/* )
-    } */}
+      ):(
+        <Image source={tempUri? {uri:tempUri}:userPic} style={styles.image} resizeMode="contain"/>
+      )
+    }
       <View style={styles.editIconContainer}>
         <MaterialCommunityIcons name="pencil" size={24} color="black" />
       </View>

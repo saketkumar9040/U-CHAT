@@ -1,11 +1,10 @@
 import { child, get, getDatabase, push, ref, remove, set, update } from "firebase/database";
 import { app } from "../firebase/FirebaseConfig";
 import { Alert } from "react-native";
-import { updateChatData } from "../store/chatSlice";
 
 const dbRef = ref(getDatabase(app));
 
-export const SaveNewChat = async (loggedInUserId, chatData,groupName=null,groupProfilePic=null) => {
+export const SaveNewChat = async (loggedInUserId, chatData,groupName=null,groupProfilePic=null,imageName=null) => {
   const newChatData = {
     users: [...chatData],
     createdBy: loggedInUserId,
@@ -19,6 +18,9 @@ export const SaveNewChat = async (loggedInUserId, chatData,groupName=null,groupP
   }
   if(groupProfilePic){
     newChatData.groupProfilePic=groupProfilePic;
+  }
+  if(imageName){
+    newChatData.imageName=imageName;
   }
 
   const newChat = await push(child(dbRef, "Chats"), newChatData);

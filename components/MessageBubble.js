@@ -206,7 +206,7 @@ const MessageBubble = ({
                 </>
                ):(
                 <>
-                <Text style={styles.receivedMessageText}>{data.text}</Text>
+                <Text style={data.type?styles.infoText:styles.receivedMessageText}>{data.text}</Text>
                 </>
                )
               }

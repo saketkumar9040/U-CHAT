@@ -253,10 +253,11 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     color: "#6f4e37",
-    fontSize: 22,
+    fontSize: 17,
      padding:5,
-    paddingHorizontal: 20,
-    fontWeight:700,
+    paddingHorizontal: 40,
+    fontFamily:"Medium",
+    letterSpacing: 2,
   },
   signUpButton: {
     borderWidth: 3,

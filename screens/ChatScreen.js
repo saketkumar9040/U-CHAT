@@ -48,10 +48,11 @@ const ChatScreen = ({ navigation, route }) => {
   let loggedInUserData = useSelector((state) => state.auth.userData);
   // console.log(loggedInUserData.uid)
 
-  let storedUsers = useSelector((state) => state.users.storedUser);
-  // console.log(storedUsers)
+  let storedUsers = useSelector((state) => state?.users?.storedUser);
+  console.log(storedUsers)
 
   let chatData = useSelector(state=>state.chats.chatsData);
+  // console.log(chatData)
 
 
   let groupName;
@@ -67,15 +68,15 @@ const ChatScreen = ({ navigation, route }) => {
   let allChatUsers ;
     if(chatId){
       // console.log(chatData[chatId].users)
-      const allChatUserUid = chatData[chatId].users
+      const allChatUserUid = chatData[chatId]?.users
       allChatUsers = allChatUserUid.map(id=>storedUsers[id])
-      // console.log(allChatUsers)
+      console.log(allChatUsers)
     }else{
       allChatUsers== route?.params?.chatUsers;
     }
 
-  let selectedUserData = allChatUsers.find(
-    (e) => e.uid !== loggedInUserData.uid
+  let selectedUserData = allChatUsers?.find(
+    (e) => e?.uid !== loggedInUserData.uid
   );
 
   const messageData = useSelector((state) => {
@@ -176,12 +177,12 @@ const ChatScreen = ({ navigation, route }) => {
              allChatUsersUid,
              groupName,
              groupProfilePic
-           );
+           ).key;
         }else{
           newChatId = await SaveNewChat(
             loggedInUserData.uid,
             allChatUsersUid,
-          );
+          ).key;
         }
   
         await setChatId(newChatId);
@@ -245,7 +246,7 @@ const ChatScreen = ({ navigation, route }) => {
         let newChatId = await SaveNewChat(
           loggedInUserData.uid,
           allChatUsersUid
-        );
+        ).key;
         await setChatId(newChatId);
       }
       const uploadURL = await uploadImage(tempImageURI, true);
@@ -300,7 +301,7 @@ const ChatScreen = ({ navigation, route }) => {
                   setReply={() => setReplyingTo(e.item)}
                   replyingTo={
                     e.item.replyTo &&
-                    messageData.find((i) => i.key === e.item.replyTo)
+                    messageData?.find((i) => i.key === e.item.replyTo)
                   }
                 />
               );

@@ -25,7 +25,7 @@ import { useCallback } from "react";
 const ChatSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const chatId = route?.params?.chatId;
-  const chatData = useSelector((state) => state.chats?.chatsData[chatId]|| {});
+  const chatData = useSelector((state) => state.chats?.chatsData[chatId] || {});
   // console.log(chatData);
   const userData = useSelector((state) => state.users.storedUser);
   // console.log(userData);
@@ -99,7 +99,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
       setIsLoading(true);
       await removeFromChat(loggedInUser.uid,loggedInUser.uid,chatData);
       Alert.alert("User removed successfully")
-      let message=`${currentUser.name} left the chat`
+      let message=`${loggedInUser.name} left the chat`
       await sendMessage(chatData.key,loggedInUser.uid,message,null,null,"Info")
       navigation.popToTop()
     } catch (error) {
@@ -221,7 +221,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
         {isLoading ? (
           <ActivityIndicator size={32} color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>LEAVE CHAT</Text>
+          <Text style={{...styles.buttonText,fontSize:13,}}>LEAVE CHAT</Text>
         )}
       </TouchableOpacity>
     </ScrollView>
