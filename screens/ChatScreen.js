@@ -29,10 +29,8 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import { ActivityIndicator } from "react-native";
 
 const ChatScreen = ({ navigation, route }) => {
-  // console.log(route.params);
+  console.log(route.params);
 
-
-  // console.log(groupName);
   const [messageText, setMessageText] = useState("");
   const [chatId, setChatId] = useState(
     route.params.chatId ? route.params.chatId : ""
@@ -52,7 +50,7 @@ const ChatScreen = ({ navigation, route }) => {
   console.log(storedUsers)
 
   let chatData = useSelector(state=>state.chats.chatsData);
-  // console.log(chatData)
+  console.log(chatData)
 
 
   let groupName;
@@ -67,7 +65,7 @@ const ChatScreen = ({ navigation, route }) => {
 
   let allChatUsers ;
     if(chatId){
-      // console.log(chatData[chatId].users)
+      console.log(chatData[chatId].users)
       const allChatUserUid = chatData[chatId]?.users
       allChatUsers = allChatUserUid.map(id=>storedUsers[id])
       console.log(allChatUsers)
@@ -99,7 +97,7 @@ const ChatScreen = ({ navigation, route }) => {
     }
     return messageList;
   });
-  console.log(messageData);
+  // console.log(messageData);
 
   useEffect(() => {
     navigation.setOptions({

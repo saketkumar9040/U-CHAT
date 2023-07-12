@@ -121,7 +121,7 @@ const NewChatScreen = ({ navigation, route }) => {
         );
       },
     });
-  }, [groupName,selectedUser.length]);
+  }, [groupName,selectedUser.length,isSaving]);
 
   useEffect(() => {
     const delaySearch = setTimeout(async () => {
@@ -217,8 +217,9 @@ const NewChatScreen = ({ navigation, route }) => {
     }
 
     const usersId =selectedUser.map((e)=>e.uid)
+    usersId.push(loginUserData.uid)
     // console.log(usersId)
-    
+
     let uploadedImage =await uploadImage(tempUri)
     let chatId = await SaveNewChat(loginUserData.uid,usersId,groupName,uploadedImage.URL,uploadedImage.imageName);
     await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
@@ -227,7 +228,7 @@ const NewChatScreen = ({ navigation, route }) => {
     onValue(chatRef,async(snapshot)=>{
       let chatsData={}
       chatsData[chatId]=snapshot.val()
-      await dispatch(updateChatData({ chatsData:chatsData}))
+      await dispatch(updateChatData({ chatsData}))
     })
     setIsSaving(false);
     Alert.alert("Group chat created successfully😄")

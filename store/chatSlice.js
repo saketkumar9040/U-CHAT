@@ -11,7 +11,7 @@ const chatSlice = createSlice({
             // console.log(state.chatsData)
         },
         updateChatData:(state,action) => {
-            // console.log(action.payload.chatsData)
+            console.log(action.payload.chatsData)
             state.chatsData = {...state.chatsData,...action.payload.chatsData}
         }
       },
