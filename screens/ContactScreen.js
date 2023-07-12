@@ -71,6 +71,7 @@ const ContactScreen = ({navigation,route}) => {
     })
 
   return (
+    <>
     <View style={styles.container}>
         <View styel={styles.imageContainer}>
         <Image source={{uri:currentUser.ProfilePicURL}} style={styles.image} resizeMode="contain"/>
@@ -127,22 +128,26 @@ const ContactScreen = ({navigation,route}) => {
            <Entypo name="emoji-sad" size={200} color="#6f4e37" style={{marginTop:80,}} />
          </>
        }
-       {
-        chatData&&chatData.groupName &&
-        
-        <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={()=>removeUser()}
-      >
-        {isLoading ? (
-          <ActivityIndicator size={32} color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>REMOVE</Text>
-        )}
-      </TouchableOpacity>
-       }
          
     </View>
+    <View style={{backgroundColor:"#ffbf00",paddingBottom:5,}}>
+
+      {
+       chatData&&chatData.groupName &&
+       
+       <TouchableOpacity
+       style={styles.buttonContainer}
+       onPress={()=>removeUser()}
+     >
+       {isLoading ? (
+         <ActivityIndicator size={32} color="#fff" />
+       ) : (
+         <Text style={styles.buttonText}>REMOVE FROM CHAT</Text>
+       )}
+     </TouchableOpacity>
+      }
+    </View>
+    </>
   )
 }
 
@@ -257,7 +262,7 @@ const styles = StyleSheet.create({
         fontFamily: "Bold",
       },
       buttonContainer: {
-        width: "45%",
+        // width: "45%",
         // height: 50,
         // marginTop: 20,
         padding: 5,
@@ -271,5 +276,6 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         fontFamily:"Medium",
         letterSpacing: 2,
+        paddingHorizontal:10,
       },
 })
