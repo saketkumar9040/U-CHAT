@@ -25,26 +25,23 @@ import { useCallback } from "react";
 const ChatSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const chatId = route?.params?.chatId;
-  const chatData = useSelector((state) => state.chats?.chatsData[chatId] || {});
-  // console.log(chatData);
+  const chatData = useSelector((state) => state.chats.chatsData[chatId]);
+  console.log(chatData.groupName);
   const userData = useSelector((state) => state.users.storedUser);
   // console.log(userData);
   const loggedInUser = useSelector((state) => state.auth.userData);
   // console.log(loggedInUser)
 
-  const [groupName, setGroupName] = useState(chatData?.groupName);
+  const [groupName, setGroupName] = useState("");
   // console.log(groupName)
   const [hasChanges, setHasChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(()=>{
-    
-  })
 
   useEffect(() => {
     if(!chatData){
       return ;
     }
+    setGroupName(chatData.groupName)
     navigation.setOptions({
       headerLeft: () => {
         return (
@@ -116,7 +113,16 @@ const ChatSettingScreen = ({ navigation, route }) => {
     return null;
   }
   return (
-    <ScrollView style={styles.container}>
+  <>
+  {
+    chatData =={} ?(
+      <View style={{flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"#ffbf00"}}>
+        <ActivityIndicator size={200} color="#6f4e37"/>
+        <Text style={{fontSize:40,fontFamily:"Bold",color:'#6f4e37',letterSpacing:2,}}>LOADING...</Text>
+      </View>
+    ):(
+      <>
+          <ScrollView style={styles.container}>
       <ProfileImage chatId={chatId} />
       <View style={styles.inputContainer}>
         <FontAwesome name="group" size={28} color="#fff" />
@@ -235,6 +241,11 @@ const ChatSettingScreen = ({ navigation, route }) => {
         )}
       </TouchableOpacity>
     </ScrollView>
+      </>
+    )
+  }
+  </>
+
   );
 };
 

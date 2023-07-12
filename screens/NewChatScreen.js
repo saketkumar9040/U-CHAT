@@ -88,7 +88,7 @@ const NewChatScreen = ({ navigation, route }) => {
             {isGroupChat && (
                <>
                {isSaving ?
-               <ActivityIndicator size={30} color="#6f4e37"/>:
+               <ActivityIndicator size={30} color="#fff" style={{marginRight:20}}/>:
                <TouchableOpacity
                style={{
                  flexDirection: "row",
@@ -96,11 +96,11 @@ const NewChatScreen = ({ navigation, route }) => {
                  justifyContent: "center",
                  paddingRight: 15,
                }}
-               onPress={() => saveGroupHandler()}
+               onPress={() =>saveGroupHandler()}
              >
                {/* {groupName !== "" && selectedUser.length !==0 && (
                  <> */}
-                   <Text
+                   {/* <Text
                      style={{
                        fontSize: 18,
                        fontFamily: "Medium",
@@ -109,8 +109,8 @@ const NewChatScreen = ({ navigation, route }) => {
                      }}
                    >
                      Create
-                   </Text>
-                   <Ionicons name="save" size={24} color="#fff" />
+                   </Text> */}
+                   <Ionicons name="save" size={30} color="#fff" />
                  {/* </>
                )} */}
              </TouchableOpacity>
@@ -166,38 +166,6 @@ const NewChatScreen = ({ navigation, route }) => {
     }, 500);
     return () => clearTimeout(delaySearch);
   }, [searchText]);
-
-  // useEffect(() => {
-  //   const placeHolderText = async () => {
-  //     let names = ["Friends😎", "Family👪", "Groups👩‍👩‍👧‍👦"];
-  //     let count = 0;
-
-  //     const cycleArray = async () => {
-  //       let name = names[count];
-  //       // console.log(name);
-  //       setTimeout(async () => {
-  //         await setPlaceholderText(name);
-  //       }, 3000);
-  //       // increment our counter
-  //       count++;
-
-  //       // reset counter if we reach end of array
-  //       if (count === names.length) {
-  //         count = 0;
-  //       }
-  //     };
-  //     setInterval(cycleArray, 5000);
-  //   };
-  //   placeHolderText();
-  // }, []);
-
-  // const userPressed = async (userData) => {
-  //   // console.log(userData)
-  //   await dispatch(setStoredUsers({ newUsers: { userData } }));
-  //   navigation.navigate("ChatList", {
-  //     selectedUser: userData,
-  //   });
-  // };
 
 
   const saveGroupHandler = async() => {
@@ -265,7 +233,7 @@ const NewChatScreen = ({ navigation, route }) => {
       </View>
     </TouchableOpacity>
         <View style={styles.groupNameContainer}>
-          <Text style={styles.groupText}>GROUP NAME</Text>
+          <MaterialCommunityIcons name="account-group" size={30} color="#fff" style={{marginRight:5,marginLeft:5,}}/>
           <TextInput
             placeholder="Enter group name"
             placeholderTextColor="#808080"

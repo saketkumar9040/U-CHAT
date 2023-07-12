@@ -306,7 +306,7 @@ const ChatScreen = ({ navigation, route }) => {
             }}
             showsVerticalScrollIndicator={false}
           />:
-          <View style={{alignSelf:"center",backgroundColor:"#fff",marginTop:20,elevation:10,}}>
+          <View style={{alignSelf:"center",backgroundColor:"#fff",marginTop:20,elevation:10,borderRadius:10,}}>
             <Text style={{fontSize:17,fontFamily:"Medium",paddingHorizontal:30,paddingVertical:5,color:"#6f4e37"}}> No Messages yet😶, Say HI👋</Text>
           </View>
            }
