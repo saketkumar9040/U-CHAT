@@ -99,7 +99,7 @@ const ChatScreen = ({ navigation, route }) => {
     }
     return messageList;
   });
-  // console.log(messageData);
+  console.log(messageData);
 
   useEffect(() => {
     navigation.setOptions({
@@ -286,7 +286,7 @@ const ChatScreen = ({ navigation, route }) => {
             </View>
           )}
            {
-            messageData.length > 0 &&
+            messageData.length > 0 ?
             <FlatList
             ref ={(ref)=>flatlist.current=ref}
             onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
@@ -307,7 +307,10 @@ const ChatScreen = ({ navigation, route }) => {
               );
             }}
             showsVerticalScrollIndicator={false}
-          />
+          />:
+          <View style={{alignSelf:"center",backgroundColor:"#fff",marginTop:20,elevation:10,}}>
+            <Text style={{fontSize:17,fontFamily:"Medium",paddingHorizontal:30,paddingVertical:5,color:"#6f4e37"}}> No Messages yet😶, Say HI👋</Text>
+          </View>
            }
         </View>
       </ImageBackground>

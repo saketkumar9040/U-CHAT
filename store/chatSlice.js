@@ -8,7 +8,7 @@ const chatSlice = createSlice({
     reducers: {
         setChatData: (state, action) => {
             state.chatsData = action.payload.chatsData
-            console.log(state.chatsData)
+            // console.log(state.chatsData)
         },
         updateChatData:(state,action) => {
             // console.log(action.payload.chatsData)

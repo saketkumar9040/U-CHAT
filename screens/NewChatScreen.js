@@ -217,12 +217,8 @@ const NewChatScreen = ({ navigation, route }) => {
     }
 
     const usersId =selectedUser.map((e)=>e.uid)
-    
-
-
     // console.log(usersId)
-
-
+    
     let uploadedImage =await uploadImage(tempUri)
     let chatId = await SaveNewChat(loginUserData.uid,usersId,groupName,uploadedImage.URL,uploadedImage.imageName);
     await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
