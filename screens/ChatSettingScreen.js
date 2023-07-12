@@ -215,7 +215,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
         })}
       </View>
       <TouchableOpacity
-        style={{...styles.buttonContainer,backgroundColor:"#ff0000",marginTop:20,}}
+        style={{...styles.buttonContainer,backgroundColor:"#ff0000",marginTop:20,marginBottom:30,}}
         onPress={()=>leaveChat()}
       >
         {isLoading ? (
@@ -236,7 +236,8 @@ const styles = StyleSheet.create({
     // alignItems:"center",
     // justifyContent:"center",
     backgroundColor: "#ffbf00",
-    paddingTop: 20,
+    // paddingTop: 20,
+    // paddingBottom:50,
   },
   headerContainer: {
     flexDirection: "row",
