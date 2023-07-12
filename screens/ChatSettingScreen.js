@@ -171,7 +171,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
         </View>
         <TouchableOpacity 
                 style={styles.newGroupContainer} 
-                onPress={()=>navigation.navigate("NewChatScreen",{isGroupChat :true})}
+                onPress={()=>navigation.navigate("NewChatScreen",{isGroupChat :true,chatId})}
             >
              <Ionicons name="person-add" size={23} color="#6f4e37" />
               <Text style={styles.newGroupText}>Add user</Text>

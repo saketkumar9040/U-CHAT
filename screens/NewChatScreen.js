@@ -17,6 +17,7 @@ import {
   query,
   ref,
   startAt,
+  update,
 } from "firebase/database";
 import { app, db } from "../firebase/FirebaseConfig.js";
 import { ActivityIndicator } from "react-native";
@@ -34,6 +35,8 @@ import { updateChatData } from "../store/chatSlice.js";
 const NewChatScreen = ({ navigation, route }) => {
   const isGroupChat = route?.params?.isGroupChat;
   // console.log(isGroupChat)
+  const chatId = route?.params?.chatId;
+  // console.log(chatId)
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -53,6 +56,9 @@ const NewChatScreen = ({ navigation, route }) => {
  
   let storedUser = useSelector(state=>state.users.storedUser);
   // console.log(storedUser)
+
+  let chatData = chatId && useSelector(state=>state.chats.chatsData[chatId]);
+
   const dispatch = useDispatch();
 
   const flatlistRef = useRef();
@@ -85,7 +91,7 @@ const NewChatScreen = ({ navigation, route }) => {
       headerRight: () => {
         return (
           <View>
-            {isGroupChat && (
+            {isGroupChat &&!chatId ? (
                <>
                {isSaving ?
                <ActivityIndicator size={30} color="#fff" style={{marginRight:20}}/>:
@@ -98,25 +104,29 @@ const NewChatScreen = ({ navigation, route }) => {
                }}
                onPress={() =>saveGroupHandler()}
              >
-               {/* {groupName !== "" && selectedUser.length !==0 && (
-                 <> */}
-                   {/* <Text
-                     style={{
-                       fontSize: 18,
-                       fontFamily: "Medium",
-                       color: "#fff",
-                       marginRight: 2,
-                     }}
-                   >
-                     Create
-                   </Text> */}
-                   <Ionicons name="save" size={30} color="#fff" />
-                 {/* </>
-               )} */}
+              <Ionicons name="save" size={30} color="#fff" />
              </TouchableOpacity>
               }
                </>
-            )}
+            ):(
+              <>
+              {isSaving ?
+              <ActivityIndicator size={30} color="#fff" style={{marginRight:20}}/>:
+              <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingRight: 15,
+              }}
+              onPress={() =>addParticipants()}
+            >
+              <Text style={styles.groupText}>ADD</Text>
+            </TouchableOpacity>
+             }
+              </>
+            )
+            }
           </View>
         );
       },
@@ -150,6 +160,7 @@ const NewChatScreen = ({ navigation, route }) => {
           if (searchResult[loginUserData?.uid]) {
             await delete searchResult[loginUserData?.uid]; //  DELETE LOGGED-IN USER FROM SEARCH RESULT  //
           }
+
           await setUsers(searchResult);
 
           setNoUserFound(false);
@@ -190,14 +201,14 @@ const NewChatScreen = ({ navigation, route }) => {
 
     let uploadedImage =await uploadImage(tempUri)
     let chatId = await SaveNewChat(loginUserData.uid,usersId,groupName,uploadedImage.URL,uploadedImage.imageName);
-    await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
-
-    const chatRef = child(dbRef, `Chats/${chatId}`);
+    
+    c
     await onValue(chatRef,async(snapshot)=>{
       let chatsData={}
       chatsData[chatId]=snapshot.val()
       await dispatch(updateChatData({ chatsData}))
     })
+    await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
     setIsSaving(false);
     Alert.alert("Group chat created successfully😄")
     navigation.navigate("ChatSettingScreen", {
@@ -214,10 +225,33 @@ const NewChatScreen = ({ navigation, route }) => {
     const uri =await launchImagePicker();
     setTempUri(uri)
   }
+console.log([...selectedUser.map((e)=>e.uid),...chatData.users])
+  const addParticipants = async () => {
+    try {
+      if(selectedUser.length ===0){
+        Alert.alert("please add participants😏");
+        return
+      }
+      const usersId =selectedUser.map((e)=>e.uid);
+      const chatRef= await child(dbRef,`Chats/${chatId}`);
+      const updatedChatData ={
+           ...chatData,
+           users:[...chatData.users,...usersId]
+      }
+      await update(chatRef,updatedChatData)
+
+      
+      await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
+      Alert.alert("Participant's added successfully🤩")
+    } catch (error) {
+      Alert.alert("unable to add participants😌")
+      console.log(error)
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {isGroupChat && (
+      {isGroupChat && !chatId && (
         <>
         <TouchableOpacity style={styles.imageContainer} onPress={()=>imageHandler()} >
       { isLoading && !tempUri?(
@@ -307,7 +341,7 @@ const NewChatScreen = ({ navigation, route }) => {
         // SHOWING USER FLATLIST
         !isLoading && !noUserFound && users && (
           <FlatList
-            data={Object.keys(users)}
+            data={chatId ?Object.keys(users).filter((e)=>console.log(chatData.users.includes[e])):Object.keys(users)}
             renderItem={(itemData) => {
               const userId = itemData.item;
               const userData = users[userId];
