@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { SafeAreaView } from "react-native";
 import { FontAwesome, Entypo, Ionicons, Feather, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { SearchBar } from "react-native-screens";
 import {
   child,
   endAt,
@@ -19,7 +18,7 @@ import {
   startAt,
   update,
 } from "firebase/database";
-import { app, db } from "../firebase/FirebaseConfig.js";
+import { app} from "../firebase/FirebaseConfig.js";
 import { ActivityIndicator } from "react-native";
 import { FlatList } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
@@ -58,6 +57,7 @@ const NewChatScreen = ({ navigation, route }) => {
   // console.log(storedUser)
 
   let chatData = chatId && useSelector(state=>state.chats.chatsData[chatId]);
+  // console.log(chatData)
 
   const dispatch = useDispatch();
 
@@ -225,7 +225,7 @@ const NewChatScreen = ({ navigation, route }) => {
     const uri =await launchImagePicker();
     setTempUri(uri)
   }
-console.log([...selectedUser.map((e)=>e.uid),...chatData.users])
+
   const addParticipants = async () => {
     try {
       if(selectedUser.length ===0){
@@ -280,6 +280,16 @@ console.log([...selectedUser.map((e)=>e.uid),...chatData.users])
           />
         </View>
         </>
+      )}
+      { chatId &&(
+        <View>
+          <Image 
+              source={ {uri:chatData.groupProfilePic}??userPic} 
+              style={{...styles.image,alignSelf:"center",marginTop:10,width:80,height:80,borderWidth:3,borderColor:"#6f4e37"}} 
+              resizeMode="contain"
+          />
+          <Text style={{alignSelf:'center',fontSize:20,fontFamily:"Bold",color:'#6f4e37'}}>{chatData.groupName}</Text>
+        </View>
       )}
       {
       isGroupChat && selectedUser.length > 0 &&
@@ -341,11 +351,14 @@ console.log([...selectedUser.map((e)=>e.uid),...chatData.users])
         // SHOWING USER FLATLIST
         !isLoading && !noUserFound && users && (
           <FlatList
-            data={chatId ?Object.keys(users).filter((e)=>console.log(chatData.users.includes[e])):Object.keys(users)}
+            data={Object.keys(users)}
             renderItem={(itemData) => {
               const userId = itemData.item;
               const userData = users[userId];
               // console.log(userData)
+              if(chatData.users.includes(itemData.item)){
+                return
+              }
               return (
                 <TouchableOpacity
                   style={styles.searchResultContainer}
