@@ -140,7 +140,7 @@ const ContactScreen = ({navigation,route}) => {
        onPress={()=>removeUser()}
      >
        {isLoading ? (
-         <ActivityIndicator size={32} color="#fff" />
+         <ActivityIndicator size={25} color="#fff" />
        ) : (
          <Text style={styles.buttonText}>REMOVE FROM CHAT</Text>
        )}
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
         fontFamily: "Bold",
       },
       buttonContainer: {
-        // width: "45%",
+        width: "70%",
         // height: 50,
         // marginTop: 20,
         padding: 5,

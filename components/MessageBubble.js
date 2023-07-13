@@ -206,7 +206,7 @@ const MessageBubble = ({
                 </>
                ):(
                 <>
-                <Text style={data.type?styles.infoText:styles.receivedMessageText}>{data.text}</Text>
+                {/* <Text style={data.type?styles.infoText:styles.receivedMessageText}>{data.text}</Text> */}
                 </>
                )
               }
@@ -437,15 +437,15 @@ const styles = StyleSheet.create({
   },
   infoContainer:{
     alignSelf:"center",
-    backgroundColor:'#ff0000', 
+    backgroundColor:'#fff', 
     borderRadius:5,
   },
   infoText:{
-   paddingBottom:20,
-   paddingTop:10,
+   paddingBottom:5,
+   paddingTop:5,
    paddingHorizontal:20,
-   color:'#fff',
-   fontSize:19,
+   color:'red',
+   fontSize:15,
    fontFamily:"MediumItalic",
    letterSpacing:1,
   }

@@ -240,6 +240,17 @@ const NewChatScreen = ({ navigation, route }) => {
            users:[...chatData.users,...usersId]
       }
       await update(chatRef,updatedChatData)
+
+      for (let i = 0; i < usersId.length; i++) {
+        let userId = usersId[i]
+        await push(child(dbRef, `UsersChats/${userId}`), chatId);
+      }
+
+
+
+
+
+
       const chatsData = {}
       chatsData[chatId]=updatedChatData
       const moreAddedUser = selectedUser.length >1 ? ` and ${selectedUser.length -1} others `: ""
