@@ -1,5 +1,6 @@
-import React, {  useEffect, useState } from "react";
-
+import React, {  useEffect, useRef, useState } from "react";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ChatListScreen from "../screens/ChatListScreen";
@@ -7,8 +8,6 @@ import ChatSettingScreen from "../screens/ChatSettingScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import { Ionicons, Fontisto } from "@expo/vector-icons";
 import ChatScreen from "../screens/ChatScreen";
-import SignUpScreen from "../screens/SignUpScreen";
-import SignInScreen from "../screens/SignInScreen";
 import NewChatScreen from "../screens/NewChatScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { child, get, getDatabase, off, onValue, ref } from "firebase/database";
@@ -156,6 +155,36 @@ const MainNavigator = () => {
   const storedUsers = useSelector((state) => state.users.storedUser);
   // console.log(storedUsers)
 
+  //   PUSH NOTIFICATION START =========================================================>
+
+  const [expoPushToken, setExpoPushToken] = useState('');
+  // console.log(expoPushToken);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      // HANDLE PUSH NOTIFICATION ===================>
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log("Notification tapped :");
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+  
+
+  //  PUSH NOTIFICATION END'S =====================================================>
+
+
   useEffect(() => {
     // console.log("subscribing to firebase listener");
     const dbRef = ref(getDatabase(app));
@@ -260,3 +289,39 @@ const styles = StyleSheet.create({
     justifyContent:"center",
   }
 })
+
+
+export const registerForPushNotificationsAsync = async()=> {
+  let token;
+
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync({
+      projectId: '31e16bb3-9f3b-4ccf-9d06-d97345783a30',
+    })).data;
+    // console.log(token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  return token;
+}
+

@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { authenticate, autoLogout } from "../store/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setStoredUsers } from "../store/userSlice";
+import { savePushToken } from "../utils/tokenHandler";
 
 const SignUpScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -85,6 +86,7 @@ const SignUpScreen = ({ navigation }) => {
           //  STORING THE USER STATE AND TOKEN IN STORE ========================>
           dispatch(authenticate({ token: accessToken, userData }));
           dispatch(setStoredUsers({ newUsers: { userData } }));
+          await savePushToken(userData)
 
           //  STORING USER DATA TO LOCAL STORAGE ================================>
           AsyncStorage.setItem(

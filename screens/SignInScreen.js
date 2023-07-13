@@ -20,6 +20,7 @@ import { app, auth } from "../firebase/FirebaseConfig";
 import { child, get, getDatabase, ref } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setStoredUsers } from "../store/userSlice";
+import { savePushToken } from "../utils/tokenHandler";
 
 let timer;
 
@@ -57,6 +58,7 @@ const SignInScreen = ({ navigation }) => {
       //  SENDING DATA TO STORE  ======================================>
       dispatch(authenticate({ token: accessToken, userData }));
       dispatch(setStoredUsers({ newUsers: { userData } }));
+      await savePushToken(userData)
 
       //  STORING USER DATA TO LOCAL STORAGE ================================>
       AsyncStorage.setItem(
