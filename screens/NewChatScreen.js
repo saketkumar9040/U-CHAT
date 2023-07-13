@@ -201,8 +201,6 @@ const NewChatScreen = ({ navigation, route }) => {
 
     let uploadedImage =await uploadImage(tempUri)
     let chatId = await SaveNewChat(loginUserData.uid,usersId,groupName,uploadedImage.URL,uploadedImage.imageName);
-    
-    c
     await onValue(chatRef,async(snapshot)=>{
       let chatsData={}
       chatsData[chatId]=snapshot.val()
@@ -239,10 +237,12 @@ const NewChatScreen = ({ navigation, route }) => {
            users:[...chatData.users,...usersId]
       }
       await update(chatRef,updatedChatData)
-
-      
+      const chatsData = {}
+      chatsData[chatId]=updatedChatData
+      await dispatch(updateChatData({chatsData}))
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
-      Alert.alert("Participant's added successfully🤩")
+      Alert.alert("Participant's added successfully🤩");
+      navigation.goBack()
     } catch (error) {
       Alert.alert("unable to add participants😌")
       console.log(error)
