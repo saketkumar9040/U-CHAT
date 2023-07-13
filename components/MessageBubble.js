@@ -122,16 +122,35 @@ const MessageBubble = ({
                 source={{ uri: data?.imageURL }}
               />
             ) : ( 
-                <Text style={data?.type?styles.infoText:styles.sentMessageText}>{data.text}</Text>
+              <>
+              {
+                data.type =="Info" && (
+                  <Text style={data?.type?styles.infoText:styles.sentMessageText}>{data.text}</Text>
+
+                )
+              }
+             { data.type =="userAdded" && (
+                <Text style={data?.type?{...styles.infoText,color:"green"}:styles.sentMessageText}>{data.text}</Text>
+              )
+             }
+             { !data.type && (
+                <Text style={styles.sentMessageText}>{data.text}</Text>
+              )
+             }
+              </>
             )}
-            <Text style={styles.sendDate}>
-              {isStarred && <AntDesign name="star" size={20} color="yellow" />}
-              {displayDate}:
-              {date.getMinutes() > 9
-                ? date.getMinutes()
-                : `0${date.getMinutes()}`}{" "}
-              {date.getHours() > 12 ? "PM" : "AM"}
-            </Text>
+              {
+                !data.type && (
+                  <Text style={styles.sendDate}>
+                  {isStarred && <AntDesign name="star" size={20} color="yellow" />}
+                  {displayDate}:
+                  {date.getMinutes() > 9
+                    ? date.getMinutes()
+                    : `0${date.getMinutes()}`}{" "}
+                  {date.getHours() > 12 ? "PM" : "AM"}
+                </Text>
+                )
+              }
           </View>
         ) : (
           <View style={data?.type?styles.infoContainer:styles.receivedMessageContainer}>
@@ -189,10 +208,24 @@ const MessageBubble = ({
               <>{
                chatData.users.length > 2 ? (
                <>
-                <Text style={data?.type?styles.infoText:styles.receivedMessageText}>{data.text}</Text>
+               {
+                data.type == "Info" && (
+                  <Text style={styles.infoText}>{data.text}</Text>
+                )
+               }
+               {
+                data.type == "userAdded" && (
+                  <Text style={{...styles.infoText,color:"green"}}>{data.text}</Text>
+                )
+               }{
+                !data.type && (
+                  <Text style={styles.receivedMessageText}>{data.text}</Text>
+                )
+               }
+              
                  { 
                  !data.type &&
-                <View style={{flexDirection:"row",alignItems:'center',marginBottom:20,marginRight:10,}}>
+                <View style={{flexDirection:"row",alignItems:'center',marginBottom:12,marginRight:10,}}>
                  <Image
                  source={{
                    uri: storedUsers[data.sentBy]?.ProfilePicURL,
@@ -206,20 +239,24 @@ const MessageBubble = ({
                 </>
                ):(
                 <>
-                {/* <Text style={data.type?styles.infoText:styles.receivedMessageText}>{data.text}</Text> */}
+                <Text style={data.type?styles.infoText:styles.receivedMessageText}>{data.text}</Text>
                 </>
                )
               }
               </>
             )}
-            <Text style={data.type?styles.sendDate:styles.receivedDate}>
-              {displayDate}:
-              {date.getMinutes() > 9
-                ? date.getMinutes()
-                : `0${date.getMinutes()}`}{" "}
-              {date.getHours() > 12 ? "PM" : "AM"}
-              {isStarred && <AntDesign name="star" size={20} color="green" />}
-            </Text>
+            {
+              !data.type && (
+                <Text style={data.type?styles.sendDate:styles.receivedDate}>
+                {displayDate}:
+                {date.getMinutes() > 9
+                  ? date.getMinutes()
+                  : `0${date.getMinutes()}`}{" "}
+                {date.getHours() > 12 ? "PM" : "AM"}
+                {isStarred && <AntDesign name="star" size={20} color="green" />}
+              </Text>
+              )
+            }
           </View>
         )}
       </TouchableWithoutFeedback>
@@ -369,7 +406,7 @@ const styles = StyleSheet.create({
     fontFamily: "BoldItalic",
     marginRight: "10%",
     textAlign: "center",
-    paddingBottom:10,
+    // paddingBottom:10,
   },
   sentMessagePopUps: {
     alignSelf: "flex-end",
@@ -445,7 +482,7 @@ const styles = StyleSheet.create({
    paddingTop:5,
    paddingHorizontal:20,
    color:'red',
-   fontSize:15,
+   fontSize:13,
    fontFamily:"MediumItalic",
    letterSpacing:1,
   }

@@ -33,9 +33,10 @@ const ContactScreen = ({navigation,route}) => {
       try {
         setIsLoading(true);
         await removeFromChat(loggedInUser.uid,currentUser.uid,chatData);
-        Alert.alert("User removed successfully")
         let message=`${currentUser.name} was removed from the chat`
         await sendMessage(chatData.key,loggedInUser.uid,message,null,null,"Info")
+        setIsLoading(false)
+        Alert.alert("User removed successfully")
         navigation.goBack()
       } catch (error) {
          setIsLoading(false)

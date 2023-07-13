@@ -13,6 +13,7 @@ import {
   getDatabase,
   onValue,
   orderByChild,
+  push,
   query,
   ref,
   startAt,
@@ -246,11 +247,6 @@ const NewChatScreen = ({ navigation, route }) => {
         await push(child(dbRef, `UsersChats/${userId}`), chatId);
       }
 
-
-
-
-
-
       const chatsData = {}
       chatsData[chatId]=updatedChatData
       const moreAddedUser = selectedUser.length >1 ? ` and ${selectedUser.length -1} others `: ""
@@ -258,6 +254,7 @@ const NewChatScreen = ({ navigation, route }) => {
       await sendMessage(chatId, loginUserData.uid, messageText,replyTo=null,imageURL=null,type="userAdded")
       await dispatch(updateChatData({chatsData}))
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
+      setIsSaving(false)
       Alert.alert("Participant's added successfully🤩");
       navigation.goBack()
     } catch (error) {
