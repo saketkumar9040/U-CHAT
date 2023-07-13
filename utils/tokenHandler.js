@@ -10,8 +10,9 @@ export const savePushToken = async(userData) => {
    try {
       const newToken =(await Notifications.getExpoPushTokenAsync({
         projectId: '31e16bb3-9f3b-4ccf-9d06-d97345783a30',
-      })).data
-      const tokenData = userData.pushTokens || {}
+      })).data;
+// DESTRUCTURE BECAUSE ITS A READ ONLY DATA ==========================================>
+      const tokenData = {...userData.pushTokens} || {} 
       const tokenArray = Object.values(tokenData);
       console.log(tokenData)
 
@@ -21,15 +22,14 @@ export const savePushToken = async(userData) => {
       tokenArray.push(newToken);
       console.log(tokenArray)
 
-      let newTokenData = {};
       for(let i =0;i<tokenArray.length;i++){
         let tok= tokenArray[i]
-         newTokenData[i]=tok
+        tokenData[i]=tok
       }
-      console.log(newTokenData)
+      console.log(tokenData)
       
       const userRef = child(dbRef,`UserData/${userData.uid}/pushTokens`);
-      await set(userRef,newTokenData);
+      await set(userRef,tokenData);
    
    } catch (error) {
      console.log(error)
