@@ -28,7 +28,7 @@ import { Alert } from "react-native";
 import { useRef } from "react";
 import userPic from "../assets/images/userProfile.png";
 import { launchImagePicker, uploadImage } from "../utils/ImagePickerHelper.js";
-import { SaveNewChat } from "../utils/ChatHandler.js";
+import { SaveNewChat, sendMessage } from "../utils/ChatHandler.js";
 import { updateChatData } from "../store/chatSlice.js";
 
 const NewChatScreen = ({ navigation, route }) => {
@@ -201,6 +201,7 @@ const NewChatScreen = ({ navigation, route }) => {
 
     let uploadedImage =await uploadImage(tempUri)
     let chatId = await SaveNewChat(loginUserData.uid,usersId,groupName,uploadedImage.URL,uploadedImage.imageName);
+    const chatRef = child(dbRef,`Chats/${chatId}`);
     await onValue(chatRef,async(snapshot)=>{
       let chatsData={}
       chatsData[chatId]=snapshot.val()
@@ -230,7 +231,9 @@ const NewChatScreen = ({ navigation, route }) => {
         Alert.alert("please add participants😏");
         return
       }
+      setIsSaving(true);
       const usersId =selectedUser.map((e)=>e.uid);
+      const usersName = selectedUser.map(e=>e.name)
       const chatRef= await child(dbRef,`Chats/${chatId}`);
       const updatedChatData ={
            ...chatData,
@@ -239,11 +242,15 @@ const NewChatScreen = ({ navigation, route }) => {
       await update(chatRef,updatedChatData)
       const chatsData = {}
       chatsData[chatId]=updatedChatData
+      const moreAddedUser = selectedUser.length >1 ? ` and ${selectedUser.length -1} others `: ""
+      const messageText = `${usersName[0]} ${moreAddedUser}were added in group`
+      await sendMessage(chatId, loginUserData.uid, messageText,replyTo=null,imageURL=null,type="userAdded")
       await dispatch(updateChatData({chatsData}))
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
       Alert.alert("Participant's added successfully🤩");
       navigation.goBack()
     } catch (error) {
+      setIsSaving(false);
       Alert.alert("unable to add participants😌")
       console.log(error)
     }

@@ -102,7 +102,7 @@ export const removeFromChat = async(userLoggedInUid,removeUserUid,chatData) => {
   try {
 
     const newChatUsers = chatData.users.filter((u)=>u!==removeUserUid);
-    console.log(removeUserUid)
+    // console.log(removeUserUid)
     const updatedChatData = {
       ...chatData,
       users:newChatUsers,

@@ -68,7 +68,7 @@ const ChatScreen = ({ navigation, route }) => {
       // console.log(chatData[chatId].users)
       const allChatUserUid = chatData[chatId]?.users
       allChatUsers = allChatUserUid.map(id=>storedUsers[id])
-      console.log(allChatUsers)
+      // console.log(allChatUsers)
     }else{
       allChatUsers== route?.params?.chatUsers || {};
     }
