@@ -26,6 +26,7 @@ import { child, getDatabase, ref, update } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { autoLogout, updateUserData } from "../store/authSlice";
 import ProfileImage from "../components/ProfileImage";
+import { removePushToken } from "../utils/tokenHandler";
 
 const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -74,11 +75,16 @@ const SettingsScreen = ({ navigation }) => {
     }
   };
 
-  const logoutHandler = () => {
-    AsyncStorage.clear();
-    dispatch(autoLogout());
-    console.log("logOut successfully 😏");
-    Alert.alert("Logout Successfully 😏");
+  const logoutHandler = async() => {
+     try {
+      await removePushToken(userData);
+      AsyncStorage.clear();
+      dispatch(autoLogout());
+      console.log("logOut successfully 😏");
+      Alert.alert("Logout Successfully 😏");
+     } catch (error) {
+        console.log(error)
+     }
   };
 
   useEffect(() => {
@@ -90,7 +96,7 @@ const SettingsScreen = ({ navigation }) => {
               <AntDesign name="arrowleft" size={25} color="#fff" />
             </TouchableOpacity>
               <Ionicons name="settings" size={30} style={{marginLeft:20,color:"#fff"}} />
-            <Text style={{marginLeft:5,fontSize:32,fontFamily:"Bold",color:"#fff"}}>
+            <Text style={{marginLeft:5,fontSize:28,fontFamily:"Bold",color:"#fff"}}>
               Settings
             </Text>
           </View>
