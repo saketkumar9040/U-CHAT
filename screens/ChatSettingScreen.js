@@ -100,7 +100,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
       await removeFromChat(loggedInUser.uid,loggedInUser.uid,chatData);
       Alert.alert("User removed successfully")
       let message=`${loggedInUser.name} left the chat`
-      await sendMessage(chatData.key,loggedInUser.uid,message,null,null,"Info")
+      await sendMessage(chatData.key,loggedInUser,message,null,null,"Info")
       navigation.popToTop()
     } catch (error) {
        setIsLoading(false)

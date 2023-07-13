@@ -54,6 +54,7 @@ const SignInScreen = ({ navigation }) => {
       const userRef = child(dbRef, `UserData/${uid}`);
       const snapshot = await get(userRef);
       let userData = snapshot.val();
+      console.log(userData);
 
       //  SENDING DATA TO STORE  ======================================>
       dispatch(authenticate({ token: accessToken, userData }));

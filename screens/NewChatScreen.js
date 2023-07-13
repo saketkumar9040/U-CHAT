@@ -251,7 +251,7 @@ const NewChatScreen = ({ navigation, route }) => {
       chatsData[chatId]=updatedChatData
       const moreAddedUser = selectedUser.length >1 ? ` and ${selectedUser.length -1} others `: ""
       const messageText = `${usersName[0]} ${moreAddedUser}were added in group`
-      await sendMessage(chatId, loginUserData.uid, messageText,replyTo=null,imageURL=null,type="userAdded")
+      await sendMessage(chatId, loginUserData, messageText,replyTo=null,imageURL=null,type="userAdded")
       await dispatch(updateChatData({chatsData}))
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
       setIsSaving(false)

@@ -50,7 +50,7 @@ const ChatScreen = ({ navigation, route }) => {
   // console.log(storedUsers)
 
   let chatData = useSelector(state=>state.chats.chatsData);
-  // console.log(chatData)
+  // console.log(chatData[chatId])
 
 
   let groupName;
@@ -76,6 +76,7 @@ const ChatScreen = ({ navigation, route }) => {
   let selectedUserData =allChatUsers && allChatUsers?.find(
     (e) => e?.uid !== loggedInUserData.uid
   );
+  // console.log(allChatUsers)
 
   const messageData = useSelector((state) => {
     if (!chatId) {
@@ -186,16 +187,22 @@ const ChatScreen = ({ navigation, route }) => {
         await setChatId(newChatId);
         await sendMessage(
           newChatId,
-          loggedInUserData.uid,
+          loggedInUserData,
           messageText,
           replyingTo && replyingTo.key,
+          null,
+          null,
+          allChatUsersUid
         );
       } else {
         await sendMessage(
           chatId,
-          loggedInUserData.uid,
+          loggedInUserData,
           messageText,
           replyingTo && replyingTo.key,
+          null,
+          null,
+          allChatUsersUid
         );
       }
       setReplyingTo(null);
@@ -235,7 +242,7 @@ const ChatScreen = ({ navigation, route }) => {
     }
   }, [tempImageURI]);
 
-  const uploadChatImage = useCallback(async () => {
+  const sendChatImage = useCallback(async () => {
     setIsLoading(true);
     try {
       let allChatUsersUid = await allChatUsers?.map((e) => e.uid);
@@ -253,10 +260,12 @@ const ChatScreen = ({ navigation, route }) => {
       // SEND IMAGE MESSAGE
       const sendImageMessage = await sendMessage(
         chatId,
-        loggedInUserData.uid,
+        loggedInUserData,
         "Image",
         replyingTo && replyingTo.key,
-        uploadURL.URL
+        uploadURL.URL,
+        null,
+        allChatUsersUid
       );
       setReplyingTo(null);
       console.log("Image uploaded successfully🤗");
@@ -397,7 +406,7 @@ const ChatScreen = ({ navigation, route }) => {
           titleStyle={styles.popUpTitleStyle}
           onCancelPressed={() => setTempImageURI(null)}
           onDismiss={() => setTempImageURI(null)}
-          onConfirmPressed={() => uploadChatImage()}
+          onConfirmPressed={() => sendChatImage()}
           contentContainerStyle={styles.popUpContainer}
           customView={
             <View style={{ borderRadius: 20 }}>
@@ -466,7 +475,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 10,
     marginHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 5,
     backgroundColor: "#fff",
     paddingLeft: 15,
     paddingRight: 15,

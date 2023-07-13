@@ -1,6 +1,7 @@
 import { child, get, getDatabase, push, ref, remove, set, update } from "firebase/database";
 import { app } from "../firebase/FirebaseConfig";
 import { Alert } from "react-native";
+import { getUserPushTokens } from "./tokenHandler";
 
 const dbRef = ref(getDatabase(app));
 
@@ -34,13 +35,13 @@ export const SaveNewChat = async (loggedInUserId, chatData,groupName=null,groupP
   return newChat.key;
 };
 
-export const sendMessage = async (chatId, senderId, messageText,replyTo=null,imageURL=null,type=null) => {
+export const sendMessage = async (chatId, senderData, messageText,replyTo=null,imageURL=null,type=null,chatUsers=null) => {
     // console.log("save message chat id"+chatId);
     // console.log(senderId)
     // console.log(messageText)
   const messageRef = child(dbRef, `Messages/${chatId}`);
   const messageData = {
-    sentBy: senderId,
+    sentBy: senderData.uid,
     sentAt: new Date().toISOString(),
     text: messageText,
   };
@@ -58,10 +59,17 @@ export const sendMessage = async (chatId, senderId, messageText,replyTo=null,ima
 
   const chatRef = child(dbRef, `Chats/${chatId}`);
   await update(chatRef, {
-    updatedBy: senderId,
+    updatedBy: senderData.uid,
     updatedAt: new Date().toISOString(),
     latestMessageText: messageText,
   });
+
+  // SENDING PUSH NOTIFICATION TO USERS ===================================>
+  if(messageText=="Image"){
+    messageText="sent an Image🖼"
+  }
+  let otherUsers = chatUsers.filter(e=>e!==senderData.uid)
+  await sendPushNotifications(otherUsers,senderData.name,messageText,chatId)
 };
 
 export const starMessage = async (userId,chatId,messageId) => {
@@ -126,5 +134,32 @@ export const removeFromChat = async(userLoggedInUid,removeUserUid,chatData) => {
     }
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const sendPushNotifications = async(chatUsers,title,body,chatId) => {
+  try {
+    chatUsers.forEach(async(uid) => {
+     const tokens = await getUserPushTokens(uid);
+     for(const key in tokens){
+      const token = tokens[key];
+       await fetch('https://exp.host/--/api/v2/push/send',{
+         method:"POST",
+         headers:{
+          "Content-Type":"application/json"
+         },
+         body:JSON.stringify({
+          to:token,
+          sound: 'default',
+          title,
+          body,
+          data:{chatId}
+         })
+       })
+     }
+    });
+    
+  } catch (error) {
+      console.log(error)
   }
 }

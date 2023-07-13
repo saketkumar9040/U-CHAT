@@ -17,6 +17,7 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { setStoredUsers } from "../store/userSlice";
 import { setStarredMessages, setStoredMessage } from "../store/messageSlice";
 import ContactScreen from "../screens/ContactScreen";
+import { StackActions, useNavigation } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -148,6 +149,7 @@ const StackNavigator = () => {
 const MainNavigator = () => {
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -169,9 +171,13 @@ const MainNavigator = () => {
       // HANDLE PUSH NOTIFICATION ===================>
     });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log("Notification tapped :");
-      console.log(response);
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(async response => {
+      const {chatId } = response.notification.request.content.data
+      console.log(chatId)
+      if(chatId){
+        const pushAction = StackActions.push("ChatScreen",{chatId});
+       await navigation.dispatch(pushAction)
+      }
     });
 
     return () => {

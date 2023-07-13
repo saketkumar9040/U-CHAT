@@ -57,7 +57,7 @@ export const removePushToken = async (userData) => {
         newTokenData[i] = tokenArray[i];
       }
     }
-    console.log(newTokenData);
+    // console.log(newTokenData);
     const userRef = child(dbRef, `UserData/${userData.uid}/pushTokens`);
     await set(userRef, newTokenData);
   } catch (error) {
