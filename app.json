@@ -11,6 +11,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#6f4e37"
     },
+    "updates": {
+      "fallbackToCacheTimeout": 60000,
+      "url": "https://u.expo.dev/5131dff2-533a-423a-b093-a6c141ec4061"
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -23,7 +27,10 @@
         "backgroundColor": "#6f4e37"
       }
     },
-    "androidNavigationBar": { "barStyle": "light-content", "backgroundColor": "#6f4e37" },
+    "androidNavigationBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#6f4e37"
+    },
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#6f4e37"
@@ -43,6 +50,14 @@
           ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5131dff2-533a-423a-b093-a6c141ec4061"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
   }
 }

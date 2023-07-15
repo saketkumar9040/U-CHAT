@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  TouchableWithoutFeedback,
   Alert,
   TextInput,
   Linking
@@ -14,7 +13,7 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import BackgroundImage from "../assets/images/chatScreenBackground.png";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons, Feather, FontAwesome, AntDesign } from "@expo/vector-icons";
+import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
 import userProfilePic from "../assets/images/userProfile.png";
 import { useSelector } from "react-redux";
 import ErrorBubble from "../components/ErrorBubble";
@@ -27,10 +26,11 @@ import {
 } from "../utils/ImagePickerHelper";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { ActivityIndicator } from "react-native";
+import { createSelector } from "@reduxjs/toolkit";
 
 const ChatScreen = ({ navigation, route }) => {
   // console.log(route.params);
-
+  // const [messageData,setMessageData] = useState([]);
   const [messageText, setMessageText] = useState("");
   const [chatId, setChatId] = useState(
     route.params.chatId ? route.params.chatId : ""
@@ -78,26 +78,58 @@ const ChatScreen = ({ navigation, route }) => {
   );
   // console.log(allChatUsers)
 
-  const messageData = useSelector((state) => {
-    if (!chatId) {
-      return [];
-    }
-    const allMessageData = state.messages.storedMessages[chatId];
-
-    if (!allMessageData) {
-      return [];
-    }
-
-    const messageList = [];
-    for (let key in allMessageData) {
-      const message = allMessageData[key];
-      messageList.push({
-        key,
-        ...message,
-      });
-    }
-    return messageList;
+  const storedMessageData = state=>state.messages.storedMessages[chatId];
+  // console.log(storedMessageData);
+  const messageData = createSelector([storedMessageData],data => {
+    let messageList = [];
+      for (let key in data) {
+        const message = data[key];
+        messageList.push({
+          key,
+          ...message,
+        });
+      }
+      return messageList;
   });
+  // console.log(messageData)
+
+  const allMessageData = useSelector(messageData);
+  // console.log(allMessageData);
+
+  // useEffect(()=>{
+  //   if(storedMessageData.length==0 || !storedMessageData){
+  //     return ;
+  //   }  const messageList = [];
+  //     for (let key in storedMessageData) {
+  //       const message = storedMessageData[key];
+  //       messageList.push({
+  //         key,
+  //         ...message,
+  //       });
+  //     }
+  //     setMessageData(messageList);
+  // },[storedMessageData]);
+//  console.log(messageData)
+  // const messageData = useSelector((state) => {
+  //   if (!chatId) {
+  //     return [];
+  //   }
+  //   const allMessageData = state.messages.storedMessages[chatId];
+
+  //   if (!allMessageData) {
+  //     return [];
+  //   }
+
+  //   const messageList = [];
+  //   for (let key in allMessageData) {
+  //     const message = allMessageData[key];
+  //     messageList.push({
+  //       key,
+  //       ...message,
+  //     });
+  //   }
+  //   return messageList;
+  // });
   // console.log(messageData);
 
   useEffect(() => {
@@ -293,13 +325,14 @@ const ChatScreen = ({ navigation, route }) => {
             </View>
           )}
            {
-            messageData.length > 0 ?
+            allMessageData.length > 0 ?
             <FlatList
             ref ={(ref)=>flatlist.current=ref}
             onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
             onLayout={()=>flatlist.current.scrollToEnd({animated:false})}
-            data={messageData}
+            data={allMessageData}
             renderItem={(e) => {
+              console.log(e.item)
               return (
                 <MessageBubble
                   data={e.item}
@@ -314,7 +347,8 @@ const ChatScreen = ({ navigation, route }) => {
               );
             }}
             showsVerticalScrollIndicator={false}
-          />:
+          />
+          :
           <View style={{alignSelf:"center",backgroundColor:"#fff",marginTop:20,elevation:10,borderRadius:10,}}>
             <Text style={{fontSize:17,fontFamily:"Medium",paddingHorizontal:30,paddingVertical:5,color:"#6f4e37"}}> No Messages yet😶, Say HI👋</Text>
           </View>

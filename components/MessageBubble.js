@@ -37,7 +37,7 @@ const MessageBubble = ({
   //   console.log(id.current);
   // console.log(selectedUser)
   // console.log(replyingTo)
-  // console.log(data)
+  console.log(data)
 
   const storedUsers = useSelector((state) => state.users.storedUser);
   // console.log(storedUsers)
@@ -68,7 +68,7 @@ const MessageBubble = ({
           menuRef.current.props.ctx.menuActions.openMenu(id.current)
         }
       >
-        { // MESSAGE OF LOGGED IN USER ==============================>
+        { // MESSAGE OF LOGGED IN USER ==================================================>
         data.sentBy === loggedInUserUid ? (
           <View style={data?.type?styles.infoContainer:styles.sentMessageContainer}>
             {userReplied && (
