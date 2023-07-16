@@ -343,7 +343,6 @@ const ChatScreen = ({ navigation, route }) => {
                     e.item.replyTo &&
                     messageData?.find((i) => i.key === e.item.replyTo)
                   }
-                  isGroupChat ={chatData[chatId].users.length >2}
                 />
               );
             }}
