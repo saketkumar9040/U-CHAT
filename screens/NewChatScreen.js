@@ -41,7 +41,8 @@ const NewChatScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [tempUri,setTempUri]= useState("")
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState();
+  // console.log(users)
   const [searchText, setSearchText] = useState("");
   // const [placeholderText, setPlaceholderText] = useState("Search");
   const [noUserFound, setNoUserFound] = useState(false);
@@ -132,7 +133,7 @@ const NewChatScreen = ({ navigation, route }) => {
         );
       },
     });
-  }, [groupName,selectedUser.length,isSaving]);
+  }, [groupName,isSaving]);
 
   useEffect(() => {
     const delaySearch = setTimeout(async () => {
@@ -146,7 +147,6 @@ const NewChatScreen = ({ navigation, route }) => {
         const searchQuery = searchText.toLowerCase().trim();
         const dbRef = ref(getDatabase());
         const userRef = child(dbRef, "UserData");
-
         const queryRef = query(
           userRef,
           orderByChild("searchName"),
@@ -161,13 +161,11 @@ const NewChatScreen = ({ navigation, route }) => {
           if (searchResult[loginUserData?.uid]) {
             await delete searchResult[loginUserData?.uid]; //  DELETE LOGGED-IN USER FROM SEARCH RESULT  //
           }
-
           await setUsers(searchResult);
-
           setNoUserFound(false);
           return;
         } else {
-          setUsers({});
+          setUsers();
           setNoUserFound(true);
         }
       } catch (error) {
@@ -182,7 +180,7 @@ const NewChatScreen = ({ navigation, route }) => {
 
   const saveGroupHandler = async() => {
   try {
-    setIsSaving(true)
+    
     if(selectedUser.length < 1 && groupName ===""){
       Alert.alert("Please Enter a Group Name and select group members")
       return;
@@ -195,7 +193,7 @@ const NewChatScreen = ({ navigation, route }) => {
       Alert.alert("Please Enter a group name");
       return;
     }
-
+    setIsSaving(true)
     const usersId =selectedUser.map((e)=>e.uid)
     usersId.push(loginUserData.uid)
     // console.log(usersId)
@@ -299,7 +297,7 @@ const NewChatScreen = ({ navigation, route }) => {
       { chatId &&(
         <View>
           <Image 
-              source={ {uri:chatData.groupProfilePic}??userPic} 
+              source={{uri:chatData.groupProfilePic}??userPic} 
               style={{...styles.image,alignSelf:"center",marginTop:10,width:80,height:80,borderWidth:3,borderColor:"#6f4e37"}} 
               resizeMode="contain"
           />
@@ -363,7 +361,8 @@ const NewChatScreen = ({ navigation, route }) => {
         )
       }
       {
-        // SHOWING USER FLATLIST
+        // SHOWING USER FLATLIST  ====================================================>
+
         !isLoading && !noUserFound && users && (
           <FlatList
             data={Object.keys(users)}
@@ -371,7 +370,7 @@ const NewChatScreen = ({ navigation, route }) => {
               const userId = itemData.item;
               const userData = users[userId];
               // console.log(userData)
-              if(chatData.users.includes(itemData.item)){
+              if(chatData && chatData.users.includes(userId)){
                 return
               }
               return (
@@ -426,7 +425,7 @@ const NewChatScreen = ({ navigation, route }) => {
       }
       {
         //  NO USER FOUND
-        !isLoading && noUserFound && (
+        !isLoading && noUserFound &&  (
           <View style={styles.noUserContainer}>
             <Entypo name="emoji-sad" size={130} color="#6f4e37" />
             <Text style={styles.noUserText}>No user found</Text>
