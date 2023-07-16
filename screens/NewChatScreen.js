@@ -251,11 +251,10 @@ const NewChatScreen = ({ navigation, route }) => {
       // chatsData[chatId]=updatedChatData
       const moreAddedUser = selectedUser.length >1 ? ` and ${selectedUser.length -1} others `: ""
       const messageText = `${usersName[0]} ${moreAddedUser}were added in group`
-      await sendMessage(chatId, loginUserData, messageText,replyTo=null,imageURL=null,type="userAdded").then(()=>{
+      await sendMessage(chatId, loginUserData, messageText,replyTo=null,imageURL=null,type="userAdded",chatData.users)
         setIsSaving(false)
         navigation.goBack()
         Alert.alert("Participant's added successfully🤩");
-      })
       // await dispatch(updateChatData({chatsData}))
       // await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
     } catch (error) {
