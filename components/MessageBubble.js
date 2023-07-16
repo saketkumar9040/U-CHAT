@@ -30,14 +30,17 @@ const MessageBubble = ({
   chatId,
   setReply,
   replyingTo,
+  isGroupChat,
 }) => {
+
   const menuRef = useRef(null);
   const id = useRef(uuid.v4());
 
-  //   console.log(id.current);
+  // console.log(id.current);
   // console.log(selectedUser)
   // console.log(replyingTo)
-  console.log(data)
+  // console.log(data)
+  // console.log(isGroupChat)
 
   const storedUsers = useSelector((state) => state.users.storedUser);
   // console.log(storedUsers)
@@ -64,14 +67,14 @@ const MessageBubble = ({
   return (
     <View style={styles.messageContainer}>
       <TouchableWithoutFeedback
-        onLongPress={() =>
+        onLongPress={() =>!data.type &&  !data.sentBy === loggedInUserUid &&
           menuRef.current.props.ctx.menuActions.openMenu(id.current)
         }
       >
         { // MESSAGE OF LOGGED IN USER ==================================================>
         data.sentBy === loggedInUserUid ? (
           <View style={data?.type?styles.infoContainer:styles.sentMessageContainer}>
-            {userReplied && (
+            {userReplied &&  (
               <View
                 style={{
                   backgroundColor: "#fff",
@@ -271,7 +274,7 @@ const MessageBubble = ({
         }
       >
         <MenuTrigger />
-        <MenuOptions>
+        <MenuOptions >
           <MenuOption onSelect={setReply} style={styles.menuOptionsContainer}>
             <Text
               style={{

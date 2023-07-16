@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#6f4e37"
-      }
+      },
+      "package": "com.saketkumar.UCHAT"
     },
     "androidNavigationBar": {
       "barStyle": "light-content",
@@ -45,8 +46,7 @@
           "icon": "./assets/icon.png",
           "color": "#6f4e37",
           "sounds": [
-            "./assets/tones/pushTone.mp3",
-            "./assets/tones/tone.mp3"
+            "./assets/tones/pushtone.mp3"
           ]
         }
       ]
