@@ -34,10 +34,10 @@ const MessageBubble = ({
   const menuRef = useRef(null);
   const id = useRef(uuid.v4());
 
-  //   console.log(id.current);
+  //  console.log(id.current);
   // console.log(selectedUser)
   // console.log(replyingTo)
-  console.log(data)
+  // console.log(data)
 
   const storedUsers = useSelector((state) => state.users.storedUser);
   // console.log(storedUsers)
