@@ -24,53 +24,64 @@ const ContactScreen = ({navigation,route}) => {
     useEffect(()=>{
         const getUserChats = async()=>{
            const currentUserChats =await getOtherUserChats(currentUser.uid);
-           setCommonChats(Object.values(currentUserChats).filter(cid => storedChats[cid] && storedChats[cid].groupName))
+           if(!currentUserChats || currentUserChats.length ===0){
+            return []
+           }else{
+            let chatsInCommon = Object.values(currentUserChats).filter(cid => storedChats[cid] && storedChats[cid].groupName)
+            if(chatsInCommon || chatsInCommon.length > 0){
+              setCommonChats(chatsInCommon)
+            }else{
+              return
+            }
+           }
         }
         getUserChats();
+    },[]);
+
+    useEffect(()=>{
+      navigation.setOptions({
+          headerLeft:()=>{
+              return(
+                  <View style={styles.headerContainer}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <AntDesign name="arrowleft" size={25} color="#fff" />
+              </TouchableOpacity>
+              <Text style={{marginLeft:10,fontSize:25,fontFamily:"Bold",color:"#fff"}}>
+                Contact Info
+              </Text>
+                  </View>
+              )
+          },
+          headerRight:()=>{
+              return(
+                  <View style={{...styles.headerContainer,paddingRight:15,}}>
+                      <TouchableOpacity onPress={()=>Linking.openURL(`tel:${currentUser.number}`)}>
+                      <Feather name="phone" size={24} color="#fff" style={{paddingRight:15,}}/>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>Linking.openURL(`mailto:${currentUser.email}`)}>
+                      <MaterialCommunityIcons name="email-outline" size={29} color="#fff" /> 
+                      </TouchableOpacity>
+                  </View>
+              )
+          }
+      })
     },[])
 
     const removeUser = useCallback(async()=>{
       try {
         setIsLoading(true);
         await removeFromChat(loggedInUser.uid,currentUser.uid,chatData);
-        let message=`${currentUser.name} was removed from the chat`
-        await sendMessage(chatData.key,loggedInUser,message,null,null,"Info")
+        // let message=`${currentUser.name} was removed from the chat`
+        // await sendMessage(chatData.key,loggedInUser,message,null,null,"Info")
+        navigation.goBack();
+        Alert.alert("User removed successfully");
         setIsLoading(false)
-        Alert.alert("User removed successfully")
-        navigation.goBack()
       } catch (error) {
          setIsLoading(false)
          console.log(error)
       }
     },[navigation,isLoading])
   
-    navigation.setOptions({
-        headerLeft:()=>{
-            return(
-                <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={25} color="#fff" />
-            </TouchableOpacity>
-            <Text style={{marginLeft:10,fontSize:25,fontFamily:"Bold",color:"#fff"}}>
-              Contact Info
-            </Text>
-                </View>
-            )
-        },
-        headerRight:()=>{
-            return(
-                <View style={{...styles.headerContainer,paddingRight:15,}}>
-                    <TouchableOpacity onPress={()=>Linking.openURL(`tel:${currentUser.number}`)}>
-                    <Feather name="phone" size={24} color="#fff" style={{paddingRight:15,}}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>Linking.openURL(`mailto:${currentUser.email}`)}>
-                    <MaterialCommunityIcons name="email-outline" size={29} color="#fff" /> 
-                    </TouchableOpacity>
-                </View>
-            )
-        }
-    })
-
   return (
     <>
     <View style={styles.container}>

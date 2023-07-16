@@ -2,6 +2,8 @@ import { child, get, getDatabase, push, ref, remove, set, update } from "firebas
 import { app } from "../firebase/FirebaseConfig";
 import { Alert } from "react-native";
 import { getUserPushTokens } from "./tokenHandler";
+import { useDispatch } from "react-redux";
+import { updateChatData } from "../store/chatSlice";
 
 const dbRef = ref(getDatabase(app));
 
@@ -69,7 +71,7 @@ export const sendMessage = async (chatId, senderData, messageText,replyTo=null,i
     messageText="sent an Image🖼"
   }
   let otherUsers = chatUsers.filter(e=>e!==senderData.uid)
-  await sendPushNotifications(otherUsers,senderData.name,messageText,chatId)
+  return await sendPushNotifications(otherUsers,senderData.name,messageText,chatId)
 };
 
 export const starMessage = async (userId,chatId,messageId) => {
@@ -108,7 +110,6 @@ export const getOtherUserChats = async(userId) => {
 
 export const removeFromChat = async(userLoggedInUid,removeUserUid,chatData) => {
   try {
-
     const newChatUsers = chatData.users.filter((u)=>u!==removeUserUid);
     // console.log(removeUserUid)
     const updatedChatData = {
@@ -119,7 +120,6 @@ export const removeFromChat = async(userLoggedInUid,removeUserUid,chatData) => {
     }
     const chatRef = child(dbRef,`Chats/${chatData.key}`);
     await update(chatRef,updatedChatData);
-
     const userChatRef = child(dbRef,`UsersChats/${removeUserUid}`);
     const snapshot =await get(userChatRef)
     const userChats = snapshot.val();  
@@ -130,6 +130,7 @@ export const removeFromChat = async(userLoggedInUid,removeUserUid,chatData) => {
        if(currentChatId===chatData.key){
          const deleteChatRef = child(dbRef,`UsersChats/${removeUserUid}/${key}`)
          await remove(deleteChatRef);
+         break;
        }
     }
   } catch (error) {

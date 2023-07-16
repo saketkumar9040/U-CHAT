@@ -332,7 +332,7 @@ const ChatScreen = ({ navigation, route }) => {
             onLayout={()=>flatlist.current.scrollToEnd({animated:false})}
             data={allMessageData}
             renderItem={(e) => {
-              console.log(e.item)
+              // console.log(e.item)
               return (
                 <MessageBubble
                   data={e.item}

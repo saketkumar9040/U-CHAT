@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import userProfilePic from "../assets/images/group.png"
 import { useSelector } from "react-redux";
-import { Ionicons, FontAwesome, AntDesign,MaterialIcons,MaterialCommunityIcons, Entypo  } from "@expo/vector-icons";
+import { Ionicons, FontAwesome, MaterialIcons, Entypo  } from "@expo/vector-icons";
 
 const ChatListScreen = ({ navigation, route }) => {
 

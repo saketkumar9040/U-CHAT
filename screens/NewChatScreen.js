@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton.js";
 import { useEffect } from "react";
@@ -247,22 +247,23 @@ const NewChatScreen = ({ navigation, route }) => {
         await push(child(dbRef, `UsersChats/${userId}`), chatId);
       }
 
-      const chatsData = {}
-      chatsData[chatId]=updatedChatData
+      // const chatsData = {}
+      // chatsData[chatId]=updatedChatData
       const moreAddedUser = selectedUser.length >1 ? ` and ${selectedUser.length -1} others `: ""
       const messageText = `${usersName[0]} ${moreAddedUser}were added in group`
-      await sendMessage(chatId, loginUserData, messageText,replyTo=null,imageURL=null,type="userAdded")
-      await dispatch(updateChatData({chatsData}))
-      await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
-      setIsSaving(false)
-      Alert.alert("Participant's added successfully🤩");
-      navigation.goBack()
+      await sendMessage(chatId, loginUserData, messageText,replyTo=null,imageURL=null,type="userAdded").then(()=>{
+        setIsSaving(false)
+        navigation.goBack()
+        Alert.alert("Participant's added successfully🤩");
+      })
+      // await dispatch(updateChatData({chatsData}))
+      // await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
     } catch (error) {
       setIsSaving(false);
       Alert.alert("unable to add participants😌")
       console.log(error)
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
