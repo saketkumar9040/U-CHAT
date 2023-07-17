@@ -96,42 +96,6 @@ const ChatScreen = ({ navigation, route }) => {
   const allMessageData = useSelector(messageData);
   // console.log(allMessageData);
 
-  // useEffect(()=>{
-  //   if(storedMessageData.length==0 || !storedMessageData){
-  //     return ;
-  //   }  const messageList = [];
-  //     for (let key in storedMessageData) {
-  //       const message = storedMessageData[key];
-  //       messageList.push({
-  //         key,
-  //         ...message,
-  //       });
-  //     }
-  //     setMessageData(messageList);
-  // },[storedMessageData]);
-//  console.log(messageData)
-  // const messageData = useSelector((state) => {
-  //   if (!chatId) {
-  //     return [];
-  //   }
-  //   const allMessageData = state.messages.storedMessages[chatId];
-
-  //   if (!allMessageData) {
-  //     return [];
-  //   }
-
-  //   const messageList = [];
-  //   for (let key in allMessageData) {
-  //     const message = allMessageData[key];
-  //     messageList.push({
-  //       key,
-  //       ...message,
-  //     });
-  //   }
-  //   return messageList;
-  // });
-  // console.log(messageData);
-
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => {
@@ -311,7 +275,7 @@ const ChatScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
       <ImageBackground source={BackgroundImage} style={styles.image}>
         <View style={styles.innerContainer}>
-          {!chatId && <ErrorBubble text="No messages yet😶. say HI👋" />}
+          {!chatId || messageData.length ===0 && <ErrorBubble text="No messages yet😶. say HI👋" />}
           {messageFailed !== "" && (
             <View>
               <ErrorBubble
@@ -325,7 +289,7 @@ const ChatScreen = ({ navigation, route }) => {
             </View>
           )}
            {
-            allMessageData.length > 0 ?
+            allMessageData.length > 0 &&
             <FlatList
             ref ={(ref)=>flatlist.current=ref}
             onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
@@ -348,10 +312,6 @@ const ChatScreen = ({ navigation, route }) => {
             }}
             showsVerticalScrollIndicator={false}
           />
-          :
-          <View style={{alignSelf:"center",backgroundColor:"#fff",marginTop:20,elevation:10,borderRadius:10,}}>
-            <Text style={{fontSize:17,fontFamily:"Medium",paddingHorizontal:30,paddingVertical:5,color:"#6f4e37"}}> No Messages yet😶, Say HI👋</Text>
-          </View>
            }
         </View>
       </ImageBackground>
