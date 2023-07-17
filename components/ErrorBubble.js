@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   bubbleContainerIn: {
     backgroundColor: "#fff",
     borderRadius: 10,
-    marginTop:40,
+    marginTop:30,
     padding:5,
     paddingHorizontal:40,
     elevation:10,
