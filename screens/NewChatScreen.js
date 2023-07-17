@@ -78,7 +78,7 @@ const NewChatScreen = ({ navigation, route }) => {
               iconName="ios-close-sharp"
               color="#fff"
               onPress={() => {
-                navigation.goBack();
+                navigation.popToTop();
               }}
               style={{ paddingHorizontal: 10 }}
             />
@@ -306,6 +306,7 @@ const NewChatScreen = ({ navigation, route }) => {
         </View>
       )}
       {
+      // SELECTED USER PROFILE BELOW GROUP NAME IMPUT ======================================>
       isGroupChat && selectedUser.length > 0 &&
       <View style={{paddingTop:5,}}>
       <FlatList
