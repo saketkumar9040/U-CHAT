@@ -357,7 +357,7 @@ const ChatScreen = ({ navigation, route }) => {
       </ImageBackground>
 
       {
-        //  REPLYING CONTAINER ==============================>
+        //  REPLYING CONTAINER ======================================================>
         replyingTo && (
           <View style={styles.replyContainer}>
             <View

@@ -7,7 +7,13 @@ import {
   View,
 } from "react-native";
 import React, { useEffect } from "react";
-import { AntDesign, Feather, FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import groupPic from "../assets/images/group.png";
 import ProfileImage from "../components/ProfileImage";
@@ -15,7 +21,6 @@ import { TextInput } from "react-native";
 import { useState } from "react";
 import { ActivityIndicator } from "react-native";
 import { child, getDatabase, ref, update } from "firebase/database";
-import { app } from "../firebase/FirebaseConfig";
 import { Alert } from "react-native";
 import { setChatData, updateChatData } from "../store/chatSlice";
 import userProfilePic from "../assets/images/group.png";
@@ -25,7 +30,8 @@ import { useCallback } from "react";
 const ChatSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const chatId = route?.params?.chatId;
-  const chatData = useSelector((state) => state.chats.chatsData[chatId] || {});
+  // console.log(chatId)
+  const chatData = useSelector((state) => state.chats.chatsData[chatId]) || route.params.chatData
   // console.log(chatData);
   const userData = useSelector((state) => state.users.storedUser);
   // console.log(userData);
@@ -37,9 +43,10 @@ const ChatSettingScreen = ({ navigation, route }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+
   useEffect(() => {
-    if(!chatData){
-      return ;
+    if (!chatData) {
+      return;
     }
     navigation.setOptions({
       headerLeft: () => {
@@ -62,7 +69,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
         );
       },
     });
-  }, []);
+  }, [chatId]);
 
   const submitHandler = async () => {
     if (groupName == "") {
@@ -94,159 +101,181 @@ const ChatSettingScreen = ({ navigation, route }) => {
     }
   };
 
-  const leaveChat = useCallback(async()=>{
+  const leaveChat = useCallback(async () => {
     try {
       setIsLoading(true);
-      await removeFromChat(loggedInUser.uid,loggedInUser.uid,chatData);
-      Alert.alert("User removed successfully")
-      let message=`${loggedInUser.name} left the chat`
-      await sendMessage(chatData.key,loggedInUser,message,null,null,"Info")
-      navigation.popToTop()
+      await removeFromChat(loggedInUser.uid, loggedInUser.uid, chatData);
+      Alert.alert("User removed successfully");
+      let message = `${loggedInUser.name} left the chat`;
+      await sendMessage(
+        chatData.key,
+        loggedInUser,
+        message,
+        null,
+        null,
+        "Info"
+      );
+      navigation.popToTop();
     } catch (error) {
-       setIsLoading(false)
-       console.log(error)
+      setIsLoading(false);
+      console.log(error);
     }
-  },[navigation,isLoading]);
+  }, [navigation, isLoading]);
 
-  if(!chatData.users){
+  if (!chatData.users) {
     return null;
   }
+
   return (
-  <>
-  {
-    chatData =={} || !chatData?(
-      <View style={{flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"#ffbf00"}}>
-        <ActivityIndicator size={200} color="#6f4e37"/>
-        <Text style={{fontSize:40,fontFamily:"Bold",color:'#6f4e37',letterSpacing:2,}}>LOADING...</Text>
-      </View>
-    ):(
-      <>
-          <ScrollView style={styles.container}>
-      <ProfileImage chatId={chatId} />
-      <View style={styles.inputContainer}>
-        <FontAwesome name="group" size={28} color="#fff" />
-        <TextInput
-          placeholder="Enter Group Name"
-          placeholderTextColor="#6f4e37"
-          autoCapitalize="none"
-          style={styles.textInput}
-          selectionColor="#6f4e37"
-          value={groupName}
-          onChangeText={(e) => {
-            setHasChanges(true);
-            setGroupName(e);
-          }}
-          onBlur={() => {
-            if (groupName == chatData?.groupName) {
-              setHasChanges(false);
-            }
-          }}
-        />
-      </View>
-      <View style={styles.mainButtonContainer}>
-        {hasChanges && (
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={submitHandler}
-          >
-            {isLoading ? (
-              <ActivityIndicator size={30} color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>SAVE</Text>
-            )}
-          </TouchableOpacity>
-        )}
-      </View>
-      <View>
-        <Text style={styles.commonChatsText}>Group member's👩‍👩‍👧‍👦</Text>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <View
-            style={{
-              flex: 1,
-              height: 2,
-              backgroundColor: "#6f4e37",
-              marginBottom: 10,
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#ffbf00",
+      }}
+    >
+      <ScrollView style={styles.container}>
+        <ProfileImage chatId={chatId} />
+        <View style={styles.inputContainer}>
+          <FontAwesome name="group" size={28} color="#fff" />
+          <TextInput
+            placeholder="Enter Group Name"
+            placeholderTextColor="#6f4e37"
+            autoCapitalize="none"
+            style={styles.textInput}
+            selectionColor="#6f4e37"
+            value={groupName}
+            onChangeText={(e) => {
+              setHasChanges(true);
+              setGroupName(e);
+            }}
+            onBlur={() => {
+              if (groupName == chatData?.groupName) {
+                setHasChanges(false);
+              }
             }}
           />
         </View>
-        <TouchableOpacity 
-                style={styles.newGroupContainer} 
-                onPress={()=>navigation.navigate("NewChatScreen",{isGroupChat :true,chatId})}
+        <View style={styles.mainButtonContainer}>
+          {hasChanges && (
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={submitHandler}
             >
-             <Ionicons name="person-add" size={23} color="#6f4e37" />
-              <Text style={styles.newGroupText}>Add user</Text>
+              {isLoading ? (
+                <ActivityIndicator size={30} color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>SAVE</Text>
+              )}
             </TouchableOpacity>
-        {chatData.users.map((uid) => {
-          let currentUserData ;
-          if(uid ===loggedInUser.uid){
-            currentUserData=loggedInUser
-          }else{
-            currentUserData = userData[uid];
-          }
-         
-          return (
+          )}
+        </View>
+        <View>
+          <Text style={styles.commonChatsText}>Group member's👩‍👩‍👧‍👦</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
+                flex: 1,
+                height: 2,
+                backgroundColor: "#6f4e37",
+                marginBottom: 10,
               }}
-              key={uid}
-            >
-              <TouchableOpacity
-                style={styles.searchResultContainer}
-                onPress={currentUserData?.uid!== loggedInUser?.uid ? async() => {
-                  // console.log(Object.values(allChatData))
-                    navigation.navigate("Contact", {
-                      otherUserUid :currentUserData?.uid,
-                      chatId
-                    });
-                }:()=>Alert.alert("It's Me 😎😎😎")}
-              >
-                <Image
-                  source={
-                    currentUserData?.ProfilePicURL
-                      ? { uri: currentUserData?.ProfilePicURL }
-                      : userProfilePic
-                  }
-                  style={styles.searchUserImage}
-                  resizeMode="contain"
-                />
-                <View style={styles.searchUserTextContainer}>
-                  <Text style={styles.searchUserName}>
-                    {currentUserData?.name ? currentUserData?.name : ""}
-                  </Text>
-                  <Text style={styles.latestMessageText}>{currentUserData?.about}</Text>
-                </View>
-               { currentUserData?.uid !==loggedInUser?.uid &&<AntDesign
-                  name="rightcircleo"
-                  size={24}
-                  color="#6f4e37"
-                  style={{ position: "absolute", right: 10 }}
-                />}
-              </TouchableOpacity>
-            </View>
-          );
-        })}
-      </View>
-    </ScrollView>
-    <View style={{backgroundColor:"#ffbf00"}}>
-      <TouchableOpacity
-        style={{...styles.buttonContainer,backgroundColor:"#ff0000",marginBottom:5,}}
-        onPress={()=>leaveChat()}
-      >
-        {isLoading ? (
-          <ActivityIndicator size={32} color="#fff" />
-        ) : (
-          <Text style={{...styles.buttonText,fontSize:13,}}>LEAVE CHAT</Text>
-        )}
-      </TouchableOpacity>
-    </View>
-      </>
-    )
-  }
-  </>
+            />
+          </View>
+          <TouchableOpacity
+            style={styles.newGroupContainer}
+            onPress={() =>
+              navigation.navigate("NewChatScreen", {
+                isGroupChat: true,
+                chatId,
+              })
+            }
+          >
+            <Ionicons name="person-add" size={23} color="#6f4e37" />
+            <Text style={styles.newGroupText}>Add user</Text>
+          </TouchableOpacity>
+          {chatData.users.map((uid) => {
+            let currentUserData;
+            if (uid === loggedInUser.uid) {
+              currentUserData = loggedInUser;
+            } else {
+              currentUserData = userData[uid];
+            }
 
+            return (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                key={uid}
+              >
+                <TouchableOpacity
+                  style={styles.searchResultContainer}
+                  onPress={
+                    currentUserData?.uid !== loggedInUser?.uid
+                      ? async () => {
+                          // console.log(Object.values(allChatData))
+                          navigation.navigate("Contact", {
+                            otherUserUid: currentUserData?.uid,
+                            chatId,
+                          });
+                        }
+                      : () => Alert.alert("It's Me 😎😎😎")
+                  }
+                >
+                  <Image
+                    source={
+                      currentUserData?.ProfilePicURL
+                        ? { uri: currentUserData?.ProfilePicURL }
+                        : userProfilePic
+                    }
+                    style={styles.searchUserImage}
+                    resizeMode="contain"
+                  />
+                  <View style={styles.searchUserTextContainer}>
+                    <Text style={styles.searchUserName}>
+                      {currentUserData?.name ? currentUserData?.name : ""}
+                    </Text>
+                    <Text style={styles.latestMessageText}>
+                      {currentUserData?.about}
+                    </Text>
+                  </View>
+                  {currentUserData?.uid !== loggedInUser?.uid && (
+                    <AntDesign
+                      name="rightcircleo"
+                      size={24}
+                      color="#6f4e37"
+                      style={{ position: "absolute", right: 10 }}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </View>
+      </ScrollView>
+      <View style={{ backgroundColor: "#ffbf00" }}>
+        <TouchableOpacity
+          style={{
+            ...styles.buttonContainer,
+            backgroundColor: "#ff0000",
+            marginBottom: 5,
+          }}
+          onPress={() => leaveChat()}
+        >
+          {isLoading ? (
+            <ActivityIndicator size={32} color="#fff" />
+          ) : (
+            <Text style={{ ...styles.buttonText, fontSize: 13 }}>
+              LEAVE CHAT
+            </Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
@@ -327,7 +356,7 @@ const styles = StyleSheet.create({
     // height: 50,
     // marginTop: 20,
     paddingHorizontal: 20,
-    paddingVertical:5,
+    paddingVertical: 5,
     alignSelf: "center",
     backgroundColor: "green",
     borderRadius: 10,
@@ -336,12 +365,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 20,
     alignSelf: "center",
-    fontFamily:"Medium",
+    fontFamily: "Medium",
     letterSpacing: 2,
   },
   mainButtonContainer: {
     alignItems: "center",
-    alignSelf:"center",
+    alignSelf: "center",
     // position: "absolute",
     // bottom: 5,
   },
@@ -357,13 +386,13 @@ const styles = StyleSheet.create({
   searchResultContainer: {
     flex: 1,
     flexDirection: "row",
-    alignItems:"center",
+    alignItems: "center",
     alignSelf: "flex-start",
     // height: 80,
     paddingHorizontal: 10,
     // marginTop:10,
     marginHorizontal: 5,
-    marginVertical:5,
+    marginVertical: 5,
     // elevation:5,
   },
   searchUserImage: {
@@ -389,20 +418,19 @@ const styles = StyleSheet.create({
     color: "#6f4e37",
     fontFamily: "Bold",
   },
-  newGroupContainer:{
-    flexDirection:"row",
-    alignItems:"center",
-     alignSelf:"center",
-     paddingHorizontal:20,
-     paddingVertical:3,
-     backgroundColor:"white",
-     borderWidth:3,
-     borderColor:"#6f4e37",
-     borderRadius:40,
-     
+  newGroupContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 3,
+    backgroundColor: "white",
+    borderWidth: 3,
+    borderColor: "#6f4e37",
+    borderRadius: 40,
   },
-  newGroupText:{
-    marginLeft:5,
+  newGroupText: {
+    marginLeft: 5,
     fontSize: 14,
     color: "#6f4e37",
     fontFamily: "Bold",

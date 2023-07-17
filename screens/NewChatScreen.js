@@ -31,6 +31,7 @@ import userPic from "../assets/images/userProfile.png";
 import { launchImagePicker, uploadImage } from "../utils/ImagePickerHelper.js";
 import { SaveNewChat, sendMessage } from "../utils/ChatHandler.js";
 import { updateChatData } from "../store/chatSlice.js";
+import { async } from "validate.js";
 
 const NewChatScreen = ({ navigation, route }) => {
   const isGroupChat = route?.params?.isGroupChat;
@@ -50,7 +51,7 @@ const NewChatScreen = ({ navigation, route }) => {
   const [groupName, setGroupName] = useState("");
   // console.log(groupName)
   const [ selectedUser,setSelectedUser] = useState([]);
-  // console.log(selectedUser);
+  console.log(selectedUser);
 
   let loginUserData = useSelector((state) => state.auth.userData);
   // console.log(loginUserData.uid);
@@ -180,12 +181,11 @@ const NewChatScreen = ({ navigation, route }) => {
 
   const saveGroupHandler = async() => {
   try {
-    
     if(selectedUser.length < 1 && groupName ===""){
       Alert.alert("Please Enter a Group Name and select group members")
       return;
     }
-    if(selectedUser.length<1){
+    if(selectedUser.length < 1){
       Alert.alert("Please select Group memebers");
       return;
     }
@@ -205,13 +205,14 @@ const NewChatScreen = ({ navigation, route }) => {
       let chatsData={}
       chatsData[chatId]=snapshot.val()
       await dispatch(updateChatData({ chatsData}))
+      await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
+      Alert.alert("Group chat created successfully😄")
+      navigation.navigate("ChatSettingScreen", {
+          chatId,
+          chatData:snapshot.val()
+      });
+      setIsSaving(false);
     })
-    await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
-    setIsSaving(false);
-    Alert.alert("Group chat created successfully😄")
-    navigation.navigate("ChatSettingScreen", {
-       chatId
-    });
   } catch (error) {
     setIsSaving(false)
     Alert.alert("Unable to create group chat😌")
@@ -320,7 +321,7 @@ const NewChatScreen = ({ navigation, route }) => {
                 style={{padding:5,flexDirection:"row"}}
                 onPress={()=>{
                  const newSelectedUsers= selectedUser.filter(u=>u.uid != user.item.uid);
-                 setSelectedUser(newSelectedUsers);
+                  setSelectedUser(newSelectedUsers);
                 }}
              >
               <Entypo name="cross" size={20} color="#fff" style={{position:"absolute",right:0,backgroundColor:"#6f4e37",zIndex:1,borderRadius:50,}} />
@@ -351,7 +352,7 @@ const NewChatScreen = ({ navigation, route }) => {
         />
       </View>
       {
-        //  WHILE SEARCHING USER
+        //  WHILE SEARCHING USER ==================================================>
         isLoading && (
           <View
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -362,7 +363,6 @@ const NewChatScreen = ({ navigation, route }) => {
       }
       {
         // SHOWING USER FLATLIST  ====================================================>
-
         !isLoading && !noUserFound && users && (
           <FlatList
             data={Object.keys(users)}
