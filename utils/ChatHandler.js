@@ -124,7 +124,7 @@ export const removeFromChat = async(userLoggedInUid,removeUserUid,chatData) => {
     const snapshot =await get(userChatRef)
     const userChats = snapshot.val();  
     // console.log(userChats)
-
+    
     for(const key in userChats){
        const currentChatId = userChats[key];
        if(currentChatId===chatData.key){

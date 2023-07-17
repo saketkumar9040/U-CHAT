@@ -41,7 +41,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
   const [groupName, setGroupName] = useState(chatData.groupName);
   // console.log(groupName)
   const [hasChanges, setHasChanges] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {
@@ -113,7 +113,8 @@ const ChatSettingScreen = ({ navigation, route }) => {
         message,
         null,
         null,
-        "Info"
+        "Info",
+        chatData.users
       );
       navigation.popToTop();
     } catch (error) {
@@ -267,7 +268,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
           onPress={() => leaveChat()}
         >
           {isLoading ? (
-            <ActivityIndicator size={32} color="#fff" />
+            <ActivityIndicator size={22} color="#fff" style={{paddingHorizontal:50}}/>
           ) : (
             <Text style={{ ...styles.buttonText, fontSize: 13 }}>
               LEAVE CHAT
@@ -352,7 +353,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   buttonContainer: {
-    width: "45%",
+    width: "70%",
     // height: 50,
     // marginTop: 20,
     paddingHorizontal: 20,
@@ -363,10 +364,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 16,
     alignSelf: "center",
-    fontFamily: "Medium",
+    fontFamily:"Medium",
     letterSpacing: 2,
+    paddingHorizontal:10,
   },
   mainButtonContainer: {
     alignItems: "center",
