@@ -50,8 +50,8 @@ const NewChatScreen = ({ navigation, route }) => {
   // console.log(users);
   const [groupName, setGroupName] = useState("");
   // console.log(groupName)
-  const [ selectedUser,setSelectedUser] = useState([]);
-  console.log(selectedUser);
+  const [selectedUser,setSelectedUser] = useState([]);
+  // console.log(selectedUser);
 
   let loginUserData = useSelector((state) => state.auth.userData);
   // console.log(loginUserData.uid);
@@ -78,7 +78,7 @@ const NewChatScreen = ({ navigation, route }) => {
               iconName="ios-close-sharp"
               color="#fff"
               onPress={() => {
-                navigation.popToTop();
+                navigation.navigate("ChatList");
               }}
               style={{ paddingHorizontal: 10 }}
             />
@@ -134,7 +134,7 @@ const NewChatScreen = ({ navigation, route }) => {
         );
       },
     });
-  }, [groupName,isSaving]);
+  }, [groupName,isSaving,selectedUser]);
 
   useEffect(() => {
     const delaySearch = setTimeout(async () => {
@@ -227,7 +227,7 @@ const NewChatScreen = ({ navigation, route }) => {
 
   const addParticipants = async () => {
     try {
-      if(selectedUser.length ===0){
+      if(selectedUser.length === 0){
         Alert.alert("please add participants😏");
         return
       }
