@@ -275,7 +275,7 @@ const ChatScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
       <ImageBackground source={BackgroundImage} style={styles.image}>
         <View style={styles.innerContainer}>
-          {!chatId || messageData.length ===0 && <ErrorBubble text="No messages yet😶. say HI👋" />}
+          {!chatId || allMessageData.length ===0 && <ErrorBubble text="No messages yet😶. say HI👋" />}
           {messageFailed !== "" && (
             <View>
               <ErrorBubble
