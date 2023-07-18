@@ -34,7 +34,6 @@ const ChatListScreen = ({ navigation, route }) => {
   let chatData = Object.values(userChats).sort((a,b)=>{
     return new Date(b.updatedAt) - new Date(a.updatedAt);
   });
-  // console.log(chatData)
 
   const dayNames = ["Sun", "Mon", "Tue","Wed","Thr","Fri","Sat"];
   const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
@@ -141,6 +140,7 @@ const ChatListScreen = ({ navigation, route }) => {
               const otherUser = storedUser[otherUsersId];
               // console.log(otherUser)
               // console.log(`otheruser : ${JSON.stringify(otherUser)}`)
+              // console.log(e.item.key)
               return (
                 <TouchableOpacity
                   style={styles.searchResultContainer}

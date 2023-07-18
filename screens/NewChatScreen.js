@@ -22,7 +22,7 @@ import {
 import { app} from "../firebase/FirebaseConfig.js";
 import { ActivityIndicator } from "react-native";
 import { FlatList } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../store/userSlice.js";
 import { Alert } from "react-native";
@@ -181,11 +181,11 @@ const NewChatScreen = ({ navigation, route }) => {
 
   const saveGroupHandler = async() => {
   try {
-    if(selectedUser.length < 1 && groupName ===""){
+    if(selectedUser?.length < 1 && groupName ===""){
       Alert.alert("Please Enter a Group Name and select group members")
       return;
     }
-    if(selectedUser.length < 1){
+    if(selectedUser?.length < 1){
       Alert.alert("Please select Group memebers");
       return;
     }
@@ -203,7 +203,9 @@ const NewChatScreen = ({ navigation, route }) => {
     const chatRef = child(dbRef,`Chats/${chatId}`);
     await onValue(chatRef,async(snapshot)=>{
       let chatsData={}
-      chatsData[chatId]=snapshot.val()
+      const data = snapshot.val();
+      data.key=chatId
+      chatsData[chatId]=data;
       await dispatch(updateChatData({ chatsData}))
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
       setIsSaving(false);
@@ -227,7 +229,7 @@ const NewChatScreen = ({ navigation, route }) => {
 
   const addParticipants = async () => {
     try {
-      if(selectedUser.length === 0){
+      if(selectedUser?.length === 0){
         Alert.alert("please add participants😏");
         return
       }
@@ -241,21 +243,22 @@ const NewChatScreen = ({ navigation, route }) => {
       }
       await update(chatRef,updatedChatData)
 
-      for (let i = 0; i < usersId.length; i++) {
+      for (let i = 0; i < usersId?.length; i++) {
         let userId = usersId[i]
         await push(child(dbRef, `UsersChats/${userId}`), chatId);
       }
 
-      // const chatsData = {}
-      // chatsData[chatId]=updatedChatData
-      const moreAddedUser = selectedUser.length >1 ? ` and ${selectedUser.length -1} others `: ""
+      const chatsData = {}
+      updatedChatData.key=chatId
+      chatsData[chatId]=updatedChatData
+      const moreAddedUser = selectedUser?.length >1 ? ` and ${selectedUser?.length -1} others `: ""
       const messageText = `${usersName[0]} ${moreAddedUser}were added in group`
       await sendMessage(chatId, loginUserData, messageText,replyTo=null,imageURL=null,type="userAdded",chatData.users)
-        setIsSaving(false)
-        navigation.goBack()
-        Alert.alert("Participant's added successfully🤩");
-      // await dispatch(updateChatData({chatsData}))
-      // await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
+      await dispatch(updateChatData({chatsData}))
+      await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
+      Alert.alert("Participant's added successfully🤩");
+      setIsSaving(false)
+      navigation.navigate("chatScreen",{chatId})
     } catch (error) {
       setIsSaving(false);
       Alert.alert("unable to add participants😌")
@@ -265,7 +268,14 @@ const NewChatScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {isGroupChat && !chatId && (
+     { isSaving ?(
+        <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+        <Text style={{fontSize:28,fontFamily:'Bold',color:"#6f4e37",alignSelf:"center"}}>CREATING GROUP 👩‍👩‍👧‍👦</Text>
+        <FontAwesome5 name="smile-beam" size={200} color="#6f4e37" />
+        <Text style={{fontSize:25,fontFamily:'Bold',color:"#6f4e37",alignSelf:"center"}}>please wait........</Text>
+        </View>):
+        <>
+         {isGroupChat && !chatId && (
         <>
         <TouchableOpacity style={styles.imageContainer} onPress={()=>imageHandler()} >
       { isLoading && !tempUri?(
@@ -435,13 +445,15 @@ const NewChatScreen = ({ navigation, route }) => {
       }
       {
         //  WHEN SEARCH QUERY IS EMPTY
-        !isLoading && !users && selectedUser.length===0 && (
+        !isLoading && !users && selectedUser?.length===0 && (
           <View style={styles.noUserContainer}>
             <FontAwesome name="users" size={150} color="#6f4e37" />
             <Text style={styles.noUserText}>Enter a name to search user</Text>
           </View>
         )
       }
+        </>
+     }
     </SafeAreaView>
   );
 };

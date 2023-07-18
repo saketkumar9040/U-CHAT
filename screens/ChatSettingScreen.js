@@ -42,6 +42,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+
   useEffect(() => {
     if (!chatData) {
       return;
@@ -103,7 +104,6 @@ const ChatSettingScreen = ({ navigation, route }) => {
     try {
       setIsLoading(true);
       await removeFromChat(loggedInUser.uid, loggedInUser.uid, chatData);
-      Alert.alert("User removed successfully");
       let message = `${loggedInUser.name} left the chat`;
       await sendMessage(
         chatData.key,
@@ -113,14 +113,15 @@ const ChatSettingScreen = ({ navigation, route }) => {
         null,
         "Info",
         chatData.users
-      );
-      navigation.navigate("Home");
+        );
+        Alert.alert("you left chat successfully");
+        navigation.navigate("ChatList");
+        setIsLoading(false)
     } catch (error) {
       setIsLoading(false);
       console.log(error);
     }
   }
-
 
   return (
     <View

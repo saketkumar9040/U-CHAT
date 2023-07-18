@@ -19,7 +19,10 @@ const ContactScreen = ({navigation,route}) => {
     const loggedInUser = useSelector(state=>state.auth.userData)
     // console.log(storedChats);
     const chatId = route.params.chatId;
-    const chatData = chatId && storedChats[chatId] || {}
+    // console.log(chatId)
+    const chatData = chatId && storedChats[chatId] || {};
+    // console.log(chatData);
+    // console.log(currentUser)
 
     useEffect(()=>{
         const getUserChats = async()=>{

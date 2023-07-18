@@ -35,6 +35,7 @@ const ChatScreen = ({ navigation, route }) => {
   const [chatId, setChatId] = useState(
     route.params.chatId ? route.params.chatId : ""
   );
+  // console.log(chatId)
   const [messageFailed, setMessageFailed] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [tempImageURI, setTempImageURI] = useState(null);
@@ -151,7 +152,7 @@ const ChatScreen = ({ navigation, route }) => {
             }
             <TouchableOpacity 
                   onPress={groupName?
-                       ()=>navigation.navigate("ChatSettingScreen",{chatId}):
+                       ()=>navigation.navigate("ChatSettingScreen",{chatId:chatId}):
                        ()=>navigation.navigate("Contact",{otherUserUid :selectedUserData.uid})
             }
             >
