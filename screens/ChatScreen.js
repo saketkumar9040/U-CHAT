@@ -79,12 +79,18 @@ const ChatScreen = ({ navigation, route }) => {
   );
   // console.log(allChatUsers)
 
-  const storedMessageData = state=>state.messages.storedMessages[chatId];
   // console.log(storedMessageData);
-  const messageData = createSelector([storedMessageData],data => {
+  const messageData = useSelector(state=>{
+    if(!chatId){
+      return [];
+    }
+    const chatMessageData = state.messages.storedMessages[chatId];
+    if(!chatMessageData){
+      return [];
+    }
     let messageList = [];
-      for (let key in data) {
-        const message = data[key];
+      for (let key in chatMessageData) {
+        const message = chatMessageData[key];
         messageList.push({
           key,
           ...message,
@@ -94,8 +100,6 @@ const ChatScreen = ({ navigation, route }) => {
   });
   // console.log(messageData)
 
-  const allMessageData = useSelector(messageData);
-  // console.log(allMessageData);
 
   useEffect(() => {
     navigation.setOptions({
@@ -280,7 +284,7 @@ const ChatScreen = ({ navigation, route }) => {
       <ImageBackground source={BackgroundImage} style={styles.image}>
         <View style={styles.innerContainer}>
           {  //  NO CHAT ID / NO MESSAGE DATA    =======================================>
-          !chatId || allMessageData.length ===0 && <ErrorBubble text="No messages yet😶. say HI👋" />
+          !chatId || messageData.length ===0 && <ErrorBubble text="No messages yet😶. say HI👋" />
           } 
           {//  NO INTERNET OR MESSEGE FAILED TO SEND   =================================>
           messageFailed !== "" && (
@@ -296,12 +300,12 @@ const ChatScreen = ({ navigation, route }) => {
             </View>
           )}
            { // RENDER  MESSAGE DATA  =====================================================>
-            allMessageData.length > 0 &&
+            messageData.length > 0 &&
             <FlatList
             ref ={(ref)=>flatlist.current=ref}
             onContentSizeChange={()=>flatlist.current.scrollToEnd({animated:false})}
             onLayout={()=>flatlist.current.scrollToEnd({animated:false})}
-            data={allMessageData}
+            data={messageData}
             renderItem={(e) => {
               // console.log(e.item)
               return (

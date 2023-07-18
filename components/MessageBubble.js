@@ -4,6 +4,7 @@ import {
   View,
   TouchableWithoutFeedback,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useRef } from "react";
 import {
@@ -43,7 +44,7 @@ const MessageBubble = ({
   // console.log(storedUsers)
 
   const starredMessages = useSelector(
-    (state) => state.messages.starredMessages[chatId] ?? {}
+    (state) => state.messages.starredMessages[chatId] || {}
   );
   // console.log(starredMessages)
   const chatData = useSelector((state)=>state.chats.chatsData[chatId]);
@@ -62,7 +63,7 @@ const MessageBubble = ({
   }
 
   return (
-    <View style={styles.messageContainer}>
+    <SafeAreaView style={styles.messageContainer}>
       <TouchableWithoutFeedback
         onLongPress={() =>
           menuRef.current.props.ctx.menuActions.openMenu(id.current)
@@ -348,7 +349,7 @@ const MessageBubble = ({
           </MenuOption>
         </MenuOptions>
       </Menu>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -367,13 +368,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#6f4e37",
     borderTopLeftRadius: 40,
     borderBottomLeftRadius: 40,
-    borderWidth: 2,
-    borderRightWidth: 0,
+    borderBottomWidth: 3,
+    // borderRightWidth: 0,
     borderColor: "#fff",
-    paddingBottom: 15,
+    paddingBottom: 10,
   },
   sentMessageText: {
-    fontSize: 17,
+    fontSize: 16,
     color: "#fff",
     padding: 5,
     paddingTop: 10,
