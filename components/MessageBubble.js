@@ -143,7 +143,7 @@ const MessageBubble = ({
               {
                 !data.type && (
                   <Text style={styles.sendDate}>
-                  {isStarred && <AntDesign name="star" size={20} color="yellow" />}
+                  {isStarred && <AntDesign name="star" size={15} color="yellow" />}
                   {displayDate}:
                   {date.getMinutes() > 9
                     ? date.getMinutes()
@@ -254,7 +254,7 @@ const MessageBubble = ({
                   ? date.getMinutes()
                   : `0${date.getMinutes()}`}{" "}
                 {date.getHours() > 12 ? "PM" : "AM"}
-                {isStarred && <AntDesign name="star" size={20} color="green" />}
+                {isStarred && <AntDesign name="star" size={15} color="green" />}
               </Text>
               )
             }
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     padding: 5,
     paddingTop: 10,
-    paddingLeft: 40,
+    // paddingLeft: 40,
     paddingHorizontal: 20,
     marginLeft: "10%",
     fontFamily: "MediumItalic",
@@ -389,20 +389,20 @@ const styles = StyleSheet.create({
   receivedMessageContainer: {
     flexDirection: "column",
     alignSelf: "flex-start",
-    marginRight: "20%",
+    // marginRight: "20%",
     borderTopRightRadius: 40,
     borderBottomRightRadius: 40,
-    borderWidth: 4,
+    borderBottomWidth: 4,
     borderLeftWidth: 0,
     borderColor: "#6f4e37",
-    paddingBottom: 10,
+    paddingBottom: 15,
     backgroundColor: "#fff",
   },
   receivedMessageText: {
     fontSize: 17,
     color: "#6f4e37",
     padding: 5,
-    paddingRight: 10,
+    // paddingRight: 10,
     paddingLeft: 20,
     fontFamily: "BoldItalic",
     marginRight: "10%",
