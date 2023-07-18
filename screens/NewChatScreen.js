@@ -1,11 +1,8 @@
-import { StyleSheet, Text, TextInput, View, Image } from "react-native";
-import React, { useCallback, useState } from "react";
+import { StyleSheet, Text, TextInput, View, Image, TouchableOpacity, ActivityIndicator, Alert, FlatList, SafeAreaView} from "react-native";
+import React, { useState, useRef, useEffect } from "react";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton.js";
-import { useEffect } from "react";
-import { SafeAreaView } from "react-native";
-import { FontAwesome, Entypo, Ionicons, Feather, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FontAwesome, Entypo, Ionicons, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   child,
   endAt,
@@ -20,18 +17,13 @@ import {
   update,
 } from "firebase/database";
 import { app} from "../firebase/FirebaseConfig.js";
-import { ActivityIndicator } from "react-native";
-import { FlatList } from "react-native";
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../store/userSlice.js";
-import { Alert } from "react-native";
-import { useRef } from "react";
 import userPic from "../assets/images/userProfile.png";
 import { launchImagePicker, uploadImage } from "../utils/ImagePickerHelper.js";
 import { SaveNewChat, sendMessage } from "../utils/ChatHandler.js";
 import { updateChatData } from "../store/chatSlice.js";
-import { async } from "validate.js";
 
 const NewChatScreen = ({ navigation, route }) => {
   const isGroupChat = route?.params?.isGroupChat;
@@ -91,7 +83,7 @@ const NewChatScreen = ({ navigation, route }) => {
         );
       },
       headerTitle: "",
-      headerRight: () => {
+      headerRight:  () =>  { 
         return (
           <View>
             {isGroupChat &&!chatId ? (
@@ -113,7 +105,7 @@ const NewChatScreen = ({ navigation, route }) => {
                </>
             ):(
               <>
-              {isSaving ?
+              { isGroupChat && isSaving ?
               <ActivityIndicator size={30} color="#fff" style={{marginRight:20}}/>:
               <TouchableOpacity
               style={{
@@ -122,7 +114,7 @@ const NewChatScreen = ({ navigation, route }) => {
                 justifyContent: "center",
                 paddingRight: 15,
               }}
-              onPress={() =>addParticipants()}
+              onPress={() => addParticipants()}
             >
               <Text style={styles.groupText}>ADD</Text>
             </TouchableOpacity>
@@ -178,14 +170,13 @@ const NewChatScreen = ({ navigation, route }) => {
     return () => clearTimeout(delaySearch);
   }, [searchText]);
 
-
   const saveGroupHandler = async() => {
   try {
-    if(selectedUser?.length < 1 && groupName ===""){
+    if(!selectedUser || selectedUser?.length < 1 && groupName ===""){
       Alert.alert("Please Enter a Group Name and select group members")
       return;
     }
-    if(selectedUser?.length < 1){
+    if(!selectedUser && selectedUser?.length < 1){
       Alert.alert("Please select Group memebers");
       return;
     }
@@ -209,12 +200,11 @@ const NewChatScreen = ({ navigation, route }) => {
       await dispatch(updateChatData({ chatsData}))
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
       setIsSaving(false);
-      navigation.navigate("ChatScreen", {
-        chatId,
-        // chatData:snapshot.val()
-      });
+      setSelectedUser([]);
+      setGroupName("")
+      navigation.navigate("ChatList");
     })
-    Alert.alert("Group chat created successfully😄")
+    // Alert.alert("Group chat created successfully😄");
   } catch (error) {
     setIsSaving(false)
     Alert.alert("Unable to create group chat😌")
@@ -229,7 +219,7 @@ const NewChatScreen = ({ navigation, route }) => {
 
   const addParticipants = async () => {
     try {
-      if(selectedUser?.length === 0){
+      if( !selectedUser && selectedUser?.length === 0){
         Alert.alert("please add participants😏");
         return
       }
@@ -251,13 +241,15 @@ const NewChatScreen = ({ navigation, route }) => {
       const chatsData = {}
       updatedChatData.key=chatId
       chatsData[chatId]=updatedChatData
-      const moreAddedUser = selectedUser?.length >1 ? ` and ${selectedUser?.length -1} others `: ""
+      const moreAddedUser =selectedUser &&  selectedUser?.length >1 ? ` and ${selectedUser?.length -1} others `: ""
       const messageText = `${usersName[0]} ${moreAddedUser}were added in group`
       await sendMessage(chatId, loginUserData, messageText,replyTo=null,imageURL=null,type="userAdded",chatData.users)
       await dispatch(updateChatData({chatsData}))
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
       Alert.alert("Participant's added successfully🤩");
       setIsSaving(false)
+       setSelectedUser([]);
+       setGroupName("")
       navigation.navigate("chatScreen",{chatId})
     } catch (error) {
       setIsSaving(false);
@@ -317,7 +309,7 @@ const NewChatScreen = ({ navigation, route }) => {
       )}
       {
       // SELECTED USER PROFILE BELOW GROUP NAME IMPUT ======================================>
-      isGroupChat && selectedUser?.length > 0 &&
+      isGroupChat &&  selectedUser?.length > 0 &&
       <View style={{paddingTop:5,}}>
       <FlatList
       ref={(ref)=>flatlistRef.current = ref}
@@ -546,7 +538,7 @@ const styles = StyleSheet.create({
   },
   groupText: {
     fontSize: 17,
-    fontFamily: "Medium",
+    fontFamily: "Bold",
     color: "#fff",
     marginRight: 10,
   },
@@ -558,7 +550,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     backgroundColor: "#fff",
     height: 40,
-    fontFamily: "MediumItalic",
+    fontFamily: "BoldItalic",
     borderRadius: 40,
   },
   editIconContainer: {

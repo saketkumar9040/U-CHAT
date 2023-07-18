@@ -68,7 +68,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
         );
       },
     });
-  }, [chatId]);
+  }, []);
 
   const submitHandler = async () => {
     if (groupName == "") {

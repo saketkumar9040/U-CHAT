@@ -70,7 +70,7 @@ const ContactScreen = ({navigation,route}) => {
       })
     },[])
 
-    const removeUser = useCallback(async()=>{
+    const removeUser =async()=>{
       try {
         setIsLoading(true);
         await removeFromChat(loggedInUser.uid,currentUser.uid,chatData);
@@ -83,7 +83,7 @@ const ContactScreen = ({navigation,route}) => {
          setIsLoading(false)
          console.log(error)
       }
-    },[navigation,isLoading])
+    };
   
   return (
     <>
