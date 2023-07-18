@@ -51,7 +51,7 @@ const ChatScreen = ({ navigation, route }) => {
 
   let chatData = useSelector(state=>state.chats.chatsData);
   // console.log(chatData[chatId])
-
+  
 
   let groupName;
   let groupProfilePic;
@@ -101,7 +101,10 @@ const ChatScreen = ({ navigation, route }) => {
       headerLeft: () => {
         return (
           <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPress={groupName ?
+                 () => navigation.navigate("ChatList"):
+                 () => navigation.goBack()
+          }>
               <AntDesign name="arrowleft" size={25} color="#fff" />
             </TouchableOpacity>
             {
@@ -118,7 +121,7 @@ const ChatScreen = ({ navigation, route }) => {
                   style={styles.userImage}
                   resizeMode="contain"
                 />
-                <Text style={styles.userName}>{route.params.groupName}</Text>
+                <Text style={styles.userName}>{groupName}</Text>
               </>
             ) : (
               <>

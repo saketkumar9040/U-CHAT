@@ -51,7 +51,7 @@ const NewChatScreen = ({ navigation, route }) => {
   const [groupName, setGroupName] = useState("");
   // console.log(groupName)
   const [selectedUser,setSelectedUser] = useState([]);
-  // console.log(selectedUser);
+  // console.log(selectedUser.length);
 
   let loginUserData = useSelector((state) => state.auth.userData);
   // console.log(loginUserData.uid);
@@ -208,9 +208,9 @@ const NewChatScreen = ({ navigation, route }) => {
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
       setIsSaving(false);
       Alert.alert("Group chat created successfully😄")
-      navigation.navigate("ChatSettingScreen", {
+      navigation.navigate("ChatScreen", {
           chatId,
-          chatData:snapshot.val()
+          // chatData:snapshot.val()
       });
     })
   } catch (error) {
