@@ -41,7 +41,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
   const [groupName, setGroupName] = useState(chatData.groupName);
   // console.log(groupName)
   const [hasChanges, setHasChanges] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {

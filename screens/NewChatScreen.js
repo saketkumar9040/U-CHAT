@@ -179,7 +179,7 @@ const NewChatScreen = ({ navigation, route }) => {
   }, [searchText]);
 
 
-  const saveGroupHandler = useCallback(async() => {
+  const saveGroupHandler = async() => {
   try {
     if(selectedUser.length < 1 && groupName ===""){
       Alert.alert("Please Enter a Group Name and select group members")
@@ -201,24 +201,24 @@ const NewChatScreen = ({ navigation, route }) => {
     let uploadedImage =await uploadImage(tempUri)
     let chatId = await SaveNewChat(loginUserData.uid,usersId,groupName,uploadedImage.URL,uploadedImage.imageName);
     const chatRef = child(dbRef,`Chats/${chatId}`);
-    await get(chatRef,async(snapshot)=>{
+    await onValue(chatRef,async(snapshot)=>{
       let chatsData={}
       chatsData[chatId]=snapshot.val()
       await dispatch(updateChatData({ chatsData}))
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
+      setIsSaving(false);
       Alert.alert("Group chat created successfully😄")
       navigation.navigate("ChatSettingScreen", {
           chatId,
           chatData:snapshot.val()
       });
-      setIsSaving(false);
     })
   } catch (error) {
     setIsSaving(false)
     Alert.alert("Unable to create group chat😌")
     console.log(error)
   }
-  },[])
+  };
 
   const imageHandler = async () => {
     const uri =await launchImagePicker();
