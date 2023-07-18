@@ -21,15 +21,17 @@ const styles = StyleSheet.create({
   bubbleContainerIn: {
     backgroundColor: "#fff",
     borderRadius: 10,
-    marginTop:30,
+    marginTop:40,
     padding:5,
     paddingHorizontal:40,
+    width:"70%",
     elevation:10,
   },
   bubbleText: {
     fontSize: 17,
     color: "#6f4e37",
-    fontFamily:"Medium",
+    fontFamily:"MediumItalic",
+    letterSpacing:2,
     textAlign:"center",
   },
 });

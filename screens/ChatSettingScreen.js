@@ -31,7 +31,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const chatId = route?.params?.chatId;
   // console.log(chatId)
-  const chatData = useSelector((state) => state.chats.chatsData[chatId]) || route.params.chatData || {};
+  const chatData = useSelector((state) => state.chats.chatsData[chatId]) || route.params.chatData
   // console.log(chatData);
   const userData = useSelector((state) => state.users.storedUser);
   // console.log(userData);
@@ -41,7 +41,7 @@ const ChatSettingScreen = ({ navigation, route }) => {
   const [groupName, setGroupName] = useState(chatData.groupName);
   // console.log(groupName)
   const [hasChanges, setHasChanges] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {
