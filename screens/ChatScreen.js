@@ -279,8 +279,8 @@ const ChatScreen = ({ navigation, route }) => {
       <ImageBackground source={BackgroundImage} style={styles.image}>
         <View style={styles.innerContainer}>
           {  //  NO CHAT ID / NO MESSAGE DATA    =======================================>
-          !chatId || messageData.length ===0 && <ErrorBubble text="No messages yet😶. say HI👋" />
-          }
+          !chatId || allMessageData.length ===0 && <ErrorBubble text="No messages yet😶. say HI👋" />
+          } 
           {//  NO INTERNET OR MESSEGE FAILED TO SEND   =================================>
           messageFailed !== "" && (
             <View>

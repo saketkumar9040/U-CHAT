@@ -91,7 +91,7 @@ const ContactScreen = ({navigation,route}) => {
        <Text style={styles.userName}>{currentUser.name.toUpperCase()}</Text>
        <Text style={styles.userAbout}>{currentUser.about}</Text>
        {
-         commonChats.length > 0 ? <>
+        commonChats && commonChats.length > 0 ? <>
            <Text style={styles.commonChatsText}>{commonChats.length}-{commonChats.lenght===1?"group":"group's"} in common</Text>
            <View style={{flexDirection: 'row', alignItems: 'center'}}>
            <View style={{flex: 1, height: 2, backgroundColor: '#6f4e37',marginBottom:10,}} />

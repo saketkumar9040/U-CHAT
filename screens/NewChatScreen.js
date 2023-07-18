@@ -207,12 +207,12 @@ const NewChatScreen = ({ navigation, route }) => {
       await dispatch(updateChatData({ chatsData}))
       await dispatch(setStoredUsers({ newUsers: { selectedUser } }));
       setIsSaving(false);
-      Alert.alert("Group chat created successfully😄")
       navigation.navigate("ChatScreen", {
-          chatId,
-          // chatData:snapshot.val()
+        chatId,
+        // chatData:snapshot.val()
       });
     })
+    Alert.alert("Group chat created successfully😄")
   } catch (error) {
     setIsSaving(false)
     Alert.alert("Unable to create group chat😌")
@@ -307,7 +307,7 @@ const NewChatScreen = ({ navigation, route }) => {
       )}
       {
       // SELECTED USER PROFILE BELOW GROUP NAME IMPUT ======================================>
-      isGroupChat && selectedUser.length > 0 &&
+      isGroupChat && selectedUser?.length > 0 &&
       <View style={{paddingTop:5,}}>
       <FlatList
       ref={(ref)=>flatlistRef.current = ref}

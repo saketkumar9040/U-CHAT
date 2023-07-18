@@ -33,7 +33,7 @@ const TabNavigator = () => {
         },
         headerStyle: { backgroundColor: "#6F4E37" },
       }}
-      initialRouteName="ChatlistScreen"
+      initialRouteName="ChatList"
     >
       <Tab.Screen
         name="ChatList"
@@ -213,7 +213,7 @@ const MainNavigator = () => {
           const data = chatSnapshot.val();
           // console.log(data)
           if(data){
-            if(!data.users.includes(userData.uid)){
+            if(!data?.users.includes(userData.uid)){
               return;
             }
             data.key = chatSnapshot.key;
