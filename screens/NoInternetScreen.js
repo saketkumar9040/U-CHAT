@@ -8,7 +8,7 @@ const NoInternetScreen = ({props}) => {
     // console.log(props)
   return (
     <View style={styles.container}>
-      <Text style={{...styles.text,fontSize:50}}>SORRY !</Text>
+      <Text style={{...styles.text,fontSize:40}}>SORRY !</Text>
         <Entypo name="emoji-sad" size={150} color="#6f4e37" />
       <Text style={styles.text}>YOU ARE NOT CONNECTED TO INTERNET</Text>
       <MaterialCommunityIcons
