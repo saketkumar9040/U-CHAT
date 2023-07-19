@@ -26,7 +26,6 @@ import {
 } from "../utils/ImagePickerHelper";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { ActivityIndicator } from "react-native";
-import { createSelector } from "@reduxjs/toolkit";
 
 const ChatScreen = ({ navigation, route }) => {
   // console.log(route.params);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import MainNavigator from "./MainNavigator";
 import AuthNavigator from "./AuthNavigator";
@@ -7,11 +7,29 @@ import StartUpScreen from "../screens/StartUpScreen";
 import * as Updates from 'expo-updates';
 import { removePushToken } from "../utils/tokenHandler";
 import { autoLogout } from "../store/authSlice";
-import { Alert } from "react-native";
+import { Alert, Button, Text, View } from "react-native";
+import NetInfo from '@react-native-community/netinfo'
+import NoInternetScreen from "../screens/NoInternetScreen";
 
 const AppNavigator = () => {
   const dispatch = useDispatch();
-  const userData = useSelector(state => state.auth.userData)
+  const userData = useSelector(state => state.auth.userData);
+
+  // CHECKING INTERNET CONNECTIVITY START ===================================>
+
+  const [networkStatus,setNetworkStatus]= useState(false)
+
+  const unsubscribe = () => NetInfo.addEventListener(state => {
+    // setNetworkStatus(state.isConnected)
+    console.log("Connection type", state.type);
+    console.log("Is connected?", state.isConnected);
+  });
+  useEffect(()=>{
+    unsubscribe();
+  },[])
+  
+
+  //  EXPO UPDATES  START ===================================================>
   const onFetchUpdateAsync = async() =>{
     try {
       const update = await Updates.checkForUpdateAsync();
@@ -36,15 +54,17 @@ const AppNavigator = () => {
     }
   };
   onFetchUpdateAsync();
+  //   EXPO UPDATES END =========================================================>
 
   const isAuth = useSelector( (state) => state.auth.token !== null && state.auth.token !== "");
   const didTryAutoLogin = useSelector((state)=>state.auth.didTryAutoLogin)
   // console.log(isAuth);
   return (
     <NavigationContainer style={{ backgroundColor: "#6F4E37" }}>
-      {isAuth && <MainNavigator />}
-      {!isAuth && didTryAutoLogin && <AuthNavigator />}
-      {!isAuth && !didTryAutoLogin && <StartUpScreen />}
+      {!networkStatus && <NoInternetScreen props={unsubscribe}/>}
+      {isAuth && networkStatus && <MainNavigator />}
+      {!isAuth && networkStatus && didTryAutoLogin && <AuthNavigator />}
+      {!isAuth && !didTryAutoLogin && networkStatus && <StartUpScreen />}
     </NavigationContainer>
   );
 };

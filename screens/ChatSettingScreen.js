@@ -25,7 +25,6 @@ import { Alert } from "react-native";
 import { setChatData, updateChatData } from "../store/chatSlice";
 import userProfilePic from "../assets/images/group.png";
 import { removeFromChat, sendMessage } from "../utils/ChatHandler";
-import { useCallback } from "react";
 
 const ChatSettingScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
