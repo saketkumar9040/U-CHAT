@@ -4,7 +4,7 @@
     "slug": "U-CHAT",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon1.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -23,7 +23,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/adaptive-icon1.png",
         "backgroundColor": "#6f4e37"
       },
       "package": "com.saketkumar.UCHAT"
@@ -47,7 +47,6 @@
           "color": "#6f4e37",
           "sounds": [
             "./assets/tones/pushtone.mp3"
-          
           ]
         }
       ]

@@ -65,7 +65,7 @@ const MessageBubble = ({
   return (
     <SafeAreaView style={styles.messageContainer}>
       <TouchableWithoutFeedback
-        onLongPress={() =>
+        onLongPress={() => !data.type &&
           menuRef.current.props.ctx.menuActions.openMenu(id.current)
         }
       >

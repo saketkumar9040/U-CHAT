@@ -10,33 +10,11 @@ import AppNavigator from "./navigations/AppNavigator";
 import { Provider } from "react-redux";
 import { store } from "./store/Store";
 import { MenuProvider } from "react-native-popup-menu";
-import * as Updates from 'expo-updates';
+
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-
-  const onFetchUpdateAsync = async() =>{
-    try {
-      const update = await Updates.checkForUpdateAsync();
-
-      if (update.isAvailable) {
-        await Updates.fetchUpdateAsync();
-        await Updates.reloadAsync();
-      }
-    } catch (error) {
-      if(error.message == 
-        "You cannot check for updates in development mode. To test manual updates, publish your project using `expo publish` and open the published version in this development client."){
-         console.log(error.message)
-      }else{
-        // You can also add an alert() to see the error message in case of an error when fetching updates.
-        alert(`Error fetching latest Expo update: ${error}`);
-        console.log(error);
-      }
-      // You can also add an alert() to see the error message in case of an error when fetching updates.
-    }
-  };
-  onFetchUpdateAsync();
 
   NavigationBar.setBackgroundColorAsync("#6F4E37");
 
