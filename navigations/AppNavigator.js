@@ -20,9 +20,9 @@ const AppNavigator = () => {
   const [networkStatus,setNetworkStatus]= useState(false)
 
   const unsubscribe = () => NetInfo.addEventListener(state => {
-    // setNetworkStatus(state.isConnected)
-    console.log("Connection type", state.type);
-    console.log("Is connected?", state.isConnected);
+    setNetworkStatus(state.isConnected)
+    // console.log("Connection type", state.type);
+    // console.log("Is connected?", state.isConnected);
   });
   useEffect(()=>{
     unsubscribe();

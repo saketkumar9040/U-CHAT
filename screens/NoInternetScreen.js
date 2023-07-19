@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { MaterialCommunityIcons, Entypo } from "@expo/vector-icons";
-import { Button } from "react-native";
 import { TouchableOpacity } from "react-native";
 
 const NoInternetScreen = ({props}) => {
