@@ -41,6 +41,7 @@ const ChatScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
   // console.log(tempImageURI);
   // console.log(replyingTo)
+  const [allChatUsers,setAllChatUsers] = useState([])
   const flatlist = useRef();
 
   let loggedInUserData = useSelector((state) => state.auth.userData);
@@ -63,20 +64,25 @@ const ChatScreen = ({ navigation, route }) => {
     groupProfilePic= route?.params?.groupProfilePic || "";
   }
 
-  let allChatUsers ;
+  useEffect(()=>{
+
+    let allChatUsers ;
     if(chatId && chatData[chatId]){
       // console.log(chatData[chatId].users)
       const allChatUserUid = chatData[chatId]?.users
-      allChatUsers = allChatUserUid.map(id=>storedUsers[id])
+      allChatUsers = allChatUserUid.map(id=>storedUsers[id]);
+      setAllChatUsers(allChatUsers)
       // console.log(allChatUsers)
     }else{
-      allChatUsers== route?.params?.chatUsers || {};
+      setAllChatUsers( route?.params?.chatUsers)
     }
+  },[])
+  // console.log(allChatUsers)
 
   let selectedUserData =allChatUsers && allChatUsers?.find(
     (e) => e?.uid !== loggedInUserData.uid
   );
-  // console.log(allChatUsers)
+  // console.log(selectedUserData)
 
   // console.log(storedMessageData);
   const messageData = useSelector(state=>{
@@ -98,7 +104,6 @@ const ChatScreen = ({ navigation, route }) => {
       return messageList;
   });
   // console.log(messageData)
-
 
   useEffect(() => {
     navigation.setOptions({
@@ -170,6 +175,7 @@ const ChatScreen = ({ navigation, route }) => {
   const SendMessageHandler = useCallback(async () => {
     try {
       let allChatUsersUid = await allChatUsers?.map((e) => e.uid);
+      // console.log(allChatUsersUid)
       if (!chatId) {
         // console.log(allChatUsersUid);
         let newChatId;
@@ -179,14 +185,14 @@ const ChatScreen = ({ navigation, route }) => {
              allChatUsersUid,
              groupName,
              groupProfilePic
-           ).key;
+           );
         }else{
           newChatId = await SaveNewChat(
             loggedInUserData.uid,
             allChatUsersUid,
-          ).key;
+          );
         }
-  
+        console.log(newChatId)
         await setChatId(newChatId);
         await sendMessage(
           newChatId,

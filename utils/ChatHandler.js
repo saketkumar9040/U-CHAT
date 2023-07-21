@@ -70,8 +70,10 @@ export const sendMessage = async (chatId, senderData, messageText,replyTo=null,i
   if(messageText=="Image"){
     messageText="sent an Image🖼"
   }
-  let otherUsers = chatUsers.filter(e=>e!==senderData.uid)
-  return await sendPushNotifications(otherUsers,senderData.name,messageText,chatId)
+  if(chatUsers){
+    let otherUsers = chatUsers.filter(e=>e!==senderData.uid)
+    return await sendPushNotifications(otherUsers,senderData.name,messageText,chatId)
+  }
 };
 
 export const starMessage = async (userId,chatId,messageId) => {
