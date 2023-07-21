@@ -103,7 +103,7 @@ const ChatScreen = ({ navigation, route }) => {
       }
       return messageList;
   });
-  // console.log(messageData)
+  console.log(messageData)
 
   useEffect(() => {
     navigation.setOptions({
@@ -289,7 +289,10 @@ const ChatScreen = ({ navigation, route }) => {
       <ImageBackground source={BackgroundImage} style={styles.image}>
         <View style={styles.innerContainer}>
           {  //  NO CHAT ID / NO MESSAGE DATA    =======================================>
-          !chatId || messageData.length ===0 && <ErrorBubble text="No messages yet😶. say HI👋" />
+          !chatId && <ErrorBubble text="No messages yet😶. say HI👋" />
+          }
+          {
+          chatId && messageData.length ===0 && <ErrorBubble text="No messages yet😶. say HI👋" />
           } 
           {//  NO INTERNET OR MESSEGE FAILED TO SEND   =================================>
           messageFailed !== "" && (
