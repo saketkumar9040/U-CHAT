@@ -65,7 +65,7 @@ const MessageBubble = ({
   return (
     <SafeAreaView style={styles.messageContainer}>
       <TouchableWithoutFeedback
-        onLongPress={() => !data.type &&
+        onLongPress={() => !data.type && !data.deletedAt &&
           menuRef.current.props.ctx.menuActions.openMenu(id.current)
         }
       >
@@ -332,9 +332,9 @@ const MessageBubble = ({
             )}
           </MenuOption>
           <MenuOption
-            onSelect={() =>data.sentBy === loggedInUserUid ? 
+            onSelect={() => data.sentBy === loggedInUserUid ? 
               deleteMessage(loggedInUserUid, chatId, data):
-              Alert.alert("sorry😕","You can't deleted Other's message")
+              Alert.alert("sorry😕","You can't deleted  message")
             }
             style={styles.menuOptionsContainer}
           >
