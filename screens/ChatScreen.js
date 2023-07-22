@@ -103,7 +103,7 @@ const ChatScreen = ({ navigation, route }) => {
       }
       return messageList;
   });
-  console.log(messageData)
+  // console.log(messageData)
 
   useEffect(() => {
     navigation.setOptions({

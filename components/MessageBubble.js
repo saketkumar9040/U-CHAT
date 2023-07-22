@@ -21,7 +21,7 @@ import {
   MaterialIcons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { starMessage } from "../utils/ChatHandler";
+import { deleteMessage, starMessage } from "../utils/ChatHandler";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
 
@@ -332,7 +332,10 @@ const MessageBubble = ({
             )}
           </MenuOption>
           <MenuOption
-            onSelect={() => alert(`Delete`)}
+            onSelect={() =>data.sentBy === loggedInUserUid ? 
+              deleteMessage(loggedInUserUid, chatId, data):
+              Alert.alert("sorry😕","You can't deleted Other's message")
+            }
             style={styles.menuOptionsContainer}
           >
             <Text

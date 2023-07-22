@@ -2,8 +2,6 @@ import { child, get, getDatabase, push, ref, remove, set, update } from "firebas
 import { app } from "../firebase/FirebaseConfig";
 import { Alert } from "react-native";
 import { getUserPushTokens } from "./tokenHandler";
-import { useDispatch } from "react-redux";
-import { updateChatData } from "../store/chatSlice";
 
 const dbRef = ref(getDatabase(app));
 
@@ -164,5 +162,26 @@ export const sendPushNotifications = async(chatUsers,title,body,chatId) => {
     
   } catch (error) {
       console.log(error)
+  }
+}
+
+export const deleteMessage = async(userId,chatId,messageData) => {
+  try {
+    // console.log(userId)
+    // console.log(chatId)
+    // console.log(messageData);
+    const messageRef = child(dbRef,`Messages/${chatId}/${messageData.key}`);
+    const updatedMessageData = {
+      ...messageData,
+      deletedAt: new Date().toISOString(),
+      text:"This Message was Deleted"
+    }
+    if(messageData.imageURL){
+        delete updatedMessageData.imageURL
+    }
+    await update(messageRef,updatedMessageData);
+
+  } catch (error) {
+    console.log(error)
   }
 }
