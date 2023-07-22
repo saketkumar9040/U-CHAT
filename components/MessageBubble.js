@@ -334,7 +334,7 @@ const MessageBubble = ({
           <MenuOption
             onSelect={() => data.sentBy === loggedInUserUid ? 
               deleteMessage(loggedInUserUid, chatId, data):
-              Alert.alert("sorry😕","You can't deleted  message")
+              Alert.alert("sorry😕","You can't deleted other's message")
             }
             style={styles.menuOptionsContainer}
           >

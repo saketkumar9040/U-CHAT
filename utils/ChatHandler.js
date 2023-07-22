@@ -181,6 +181,13 @@ export const deleteMessage = async(userId,chatId,messageData) => {
     }
     await update(messageRef,updatedMessageData);
 
+    const chatRef = child(dbRef, `Chats/${chatId}`);
+    await update(chatRef, {
+      updatedBy: userId,
+      updatedAt: new Date().toISOString(),
+      latestMessageText: "Last message was deleted",
+    });
+
   } catch (error) {
     console.log(error)
   }
