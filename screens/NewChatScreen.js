@@ -211,6 +211,10 @@ const NewChatScreen = ({ navigation, route }) => {
         Alert.alert("Please Enter a group name");
         return;
       }
+      if(tempUri ===""){   
+        Alert.alert("Please select a profile pic");
+        return;    
+      }
       setIsSaving(true);
       const usersId = selectedUser.map((e) => e.uid);
       usersId.push(loginUserData.uid);
